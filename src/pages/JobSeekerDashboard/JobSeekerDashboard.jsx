@@ -90,10 +90,17 @@ export default function JobSeekerDashboard() {
     setFlipped(newFlipped);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userRole");
+    window.location.reload(); // 상태 반영을 위해 페이지 새로고침 또는 nav("/login")
+  };
+
   const goHome = () => nav("/select");
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
   const goResume = () => nav("/resume-create");
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   return (
     <BackgroundShell>
@@ -110,20 +117,8 @@ export default function JobSeekerDashboard() {
               <div className="jsd-mark" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                   <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
-                  <path
-                    d="M4 10V6a2 2 0 0 1 2-2h4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    opacity=".9"
-                  />
-                  <path
-                    d="M20 14v4a2 2 0 0 1-2 2h-4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    opacity=".9"
-                  />
+                  <path d="M4 10V6a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
+                  <path d="M20 14v4a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
                 </svg>
               </div>
               <div className="jsd-brandText">
@@ -133,30 +128,33 @@ export default function JobSeekerDashboard() {
             </div>
 
             <nav className="jsd-nav" aria-label="메인 메뉴">
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("채용정보(준비중)")}>
-                채용정보
-              </button>
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("AI 매칭(준비중)")}>
-                AI 매칭
-              </button>
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("커뮤니티(준비중)")}>
-                커뮤니티
-              </button>
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("고객센터(준비중)")}>
-                고객센터
-              </button>
+              <button className="jsd-navBtn" type="button" onClick={() => window.alert("채용정보(준비중)")}>채용정보</button>
+              <button className="jsd-navBtn" type="button" onClick={() => window.alert("AI 매칭(준비중)")}>AI 매칭</button>
             </nav>
 
+            {/* [확실한 포인트 3] 조건부 렌더링 (jsd-actions 영역) */}
             <div className="jsd-actions">
-              <button className="jsd-pillBtn" type="button" onClick={goLogin}>
-                로그인
-              </button>
-              <button className="jsd-pillBtn" type="button" onClick={goSignup}>
-                회원가입
-              </button>
-              <button className="jsd-pillBtn primary" type="button" onClick={() => setGateOpen(true)}>
-                마이페이지
-              </button>
+              {!isLoggedIn ? (
+                <>
+                  {/* 로그인이 안 된 상태: 마이페이지 버튼이 아예 생성되지 않음 */}
+                  <button className="jsd-pillBtn" type="button" onClick={goLogin}>
+                    로그인
+                  </button>
+                  <button className="jsd-pillBtn" type="button" onClick={goSignup}>
+                    회원가입
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* 로그인이 된 상태: 로그인/가입 버튼이 사라지고 로그아웃/마이페이지가 나타남 */}
+                  <button className="jsd-pillBtn" type="button" onClick={handleLogout}>
+                    로그아웃
+                  </button>
+                  <button className="jsd-pillBtn primary" type="button" onClick={() => setGateOpen(true)}>
+                    마이페이지
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </header>

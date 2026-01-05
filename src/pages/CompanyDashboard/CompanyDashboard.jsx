@@ -94,6 +94,8 @@ function Ico({ name }) {
 
 export default function CompanyDashboard() {
   const nav = useNavigate();
+  const [gateOpen, setGateOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(0); // 0: 인재매칭, 1: 공고관리
   const [flipped, setFlipped] = useState([false, false, false]);
 
   const toggleFlip = (index) => {
@@ -102,68 +104,73 @@ export default function CompanyDashboard() {
     setFlipped(newFlipped);
   };
 
+  // ✅ 로그아웃 로직
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userRole");
+    nav("/login"); 
+  };
+
   const goHome = () => nav("/select");
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
-  const goMypage = () => {
-    window.alert("로그인 후 이용해 주세요");
-    nav("/login");
-  };
+  
+  // ✅ 로그인 여부 확인
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   return (
     <BackgroundShell>
-      <div className="cd">
-        <header className="cd-header">
-          <div className="cd-headerInner">
+      {/* 디자인 유지를 위해 구직자와 동일한 jsd 클래스 사용 */}
+      <div className="jsd"> 
+        <header className="jsd-header">
+          <div className="jsd-headerInner">
             <div
-              className="cd-brand"
+              className="jsd-brand"
               role="button"
               tabIndex={0}
               onClick={goHome}
               onKeyDown={(e) => e.key === "Enter" && goHome()}
             >
-              <div className="cd-mark" aria-hidden="true">
+              <div className="jsd-mark" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                   <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
-                  <path
-                    d="M4 4h10v10H4z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    opacity=".55"
-                  />
+                  <path d="M4 10V6a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
+                  <path d="M20 14v4a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
                 </svg>
               </div>
-              <div className="cd-brandText">
-                <div className="cd-brandName">잡매치</div>
-                <div className="cd-brandSub">기업회원 메인</div>
+              <div className="jsd-brandText">
+                <div className="jsd-brandName">잡매치</div>
+                <div className="jsd-brandSub">기업 메인</div>
               </div>
             </div>
 
-            <nav className="cd-nav" aria-label="메인 메뉴">
-              <button className="cd-navBtn" type="button" onClick={() => window.alert("공고관리(준비중)")}>
-                공고관리
-              </button>
-              <button className="cd-navBtn" type="button" onClick={() => window.alert("지원자(준비중)")}>
-                지원자
-              </button>
-              <button className="cd-navBtn" type="button" onClick={() => window.alert("인재추천(준비중)")}>
-                인재추천
-              </button>
-              <button className="cd-navBtn" type="button" onClick={() => window.alert("고객센터(준비중)")}>
-                고객센터
-              </button>
+            <nav className="jsd-nav" aria-label="메인 메뉴">
+              <button className="jsd-navBtn" type="button" onClick={() => window.alert("인재 찾기(준비중)")}>인재 찾기</button>
+              <button className="jsd-navBtn" type="button" onClick={() => window.alert("공고 관리(준비중)")}>공고 관리</button>
             </nav>
 
-            <div className="cd-actions">
-              <button className="cd-pillBtn" type="button" onClick={goLogin}>
-                로그인
-              </button>
-              <button className="cd-pillBtn" type="button" onClick={goSignup}>
-                회원가입
-              </button>
-              <button className="cd-pillBtn primary" type="button" onClick={goMypage}>
-                마이페이지
-              </button>
+            {/* ✅ 버튼 영역: CSS 구조를 100% 유지하며 조건부 렌더링 적용 */}
+            <div className="jsd-actions">
+              {!isLoggedIn ? (
+                <>
+                  <button className="jsd-pillBtn" type="button" onClick={goLogin}>
+                    로그인
+                  </button>
+                  <button className="jsd-pillBtn" type="button" onClick={goSignup}>
+                    회원가입
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button className="jsd-pillBtn" type="button" onClick={handleLogout}>
+                    로그아웃
+                  </button>
+                  {/* 기업페이지이므로 마이페이지 대신 '기업 관리'로 표시 가능 */}
+                  <button className="jsd-pillBtn primary" type="button" onClick={() => setGateOpen(true)}>
+                    기업 관리
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </header>

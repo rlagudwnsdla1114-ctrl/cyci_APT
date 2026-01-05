@@ -7,10 +7,10 @@ export default function Splash() {
   const nav = useNavigate();
 
   useEffect(() => {
-        const t = setTimeout(() => {
-        nav("/select", { replace: true });
-        }, 3800);
-
+    // 3.8초 애니메이션 종료 후 회원 선택(Choice) 페이지로 이동
+    const t = setTimeout(() => {
+      nav("/select", { replace: true }); 
+    }, 3800);
 
     return () => clearTimeout(t);
   }, [nav]);
