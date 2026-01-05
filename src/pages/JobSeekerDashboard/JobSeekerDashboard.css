@@ -1,0 +1,1343 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+:root{
+  --p-text: rgba(11,22,53,.92);
+  --p-sub: rgba(11,22,53,.68);
+  --p-border: rgba(255,255,255,.78);
+  --p-shadow: 0 20px 70px rgba(0,0,0,.14);
+  --p-blue: #2f6fff;
+}
+
+.jsd{
+  min-height: 100vh;
+  font-family: "Pretendard Variable", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial;
+  color: var(--p-text);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header - Fixed Position Applied */
+.jsd-header{
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  width: 100%;
+  z-index: 100 !important;
+  backdrop-filter: blur(20px);
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.75));
+  border-bottom: 1.5px solid rgba(47,111,255,.13);
+  box-shadow: 0 4px 16px rgba(47,111,255,.06);
+  min-height: 89px;
+}
+
+.jsd-headerInner{
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 20px 28px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.jsd-brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.jsd-mark{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display:grid;
+  place-items:center;
+  background: linear-gradient(135deg, #fff, #eff6ff);
+  border: 1.5px solid rgba(47,111,255,.13);
+  box-shadow: 0 6px 18px rgba(47,111,255,.10);
+  color: var(--p-blue);
+}
+
+.jsd-brandText{ line-height: 1.1; }
+.jsd-brandName{ font-weight: 950; letter-spacing: -0.6px; font-size: 24px; }
+.jsd-brandSub{ font-size: 15px; color: rgba(11,22,53,.62); font-weight: 700; }
+
+.jsd-nav{ display:flex; justify-content:center; gap: 8px; }
+.jsd-nav a{ text-decoration:none; }
+
+.jsd-navBtn{
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(11,22,53,.7);
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.jsd-navBtn:hover{
+  background: rgba(255,255,255,.6);
+  color: var(--p-text);
+  transform: translateY(-1px);
+}
+
+.jsd-actions{ display:flex; gap: 12px; align-items:center; }
+
+.jsd-pillBtn{
+  appearance:none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  cursor:pointer;
+  border: 1px solid rgba(255,255,255,.72);
+  background: rgba(255,255,255,.50);
+  color: rgba(11,22,53,.80);
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  transition: all .2s ease;
+}
+
+.jsd-pillBtn:hover{ transform: translateY(-2px); background: rgba(255,255,255,.8); box-shadow: 0 14px 40px rgba(0,0,0,.1); }
+
+.jsd-pillBtn.primary{
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border: 1px solid rgba(47,111,255,.3);
+  color: white;
+  box-shadow: 0 10px 30px rgba(47,111,255,.25);
+}
+.jsd-pillBtn.primary:hover{ background: linear-gradient(135deg, #2563eb, #1e40af); }
+
+/* Main */
+.jsd-main{
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  /* padding-top을 늘려서(30px -> 100px) 고정된 헤더 뒤에 내용이 숨지 않도록 조정 */
+  padding: 100px 24px 60px;
+  position: relative;
+  flex: 1;
+}
+
+/* GRID LAYOUT: 3fr (Content) | 1fr (Badge) */
+.jsd-hero{
+  display:grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 24px;
+  width: 100%;
+}
+
+.jsd-heroLeft,
+.jsd-heroRight{
+  border-radius: 32px;
+  background: linear-gradient(145deg, rgba(255,255,255,.8), rgba(255,255,255,.5));
+  border: 1px solid rgba(255,255,255,.8);
+  box-shadow: 0 20px 80px rgba(0,0,0,.1), inset 0 0 0 1px rgba(255,255,255,.5);
+  backdrop-filter: blur(24px);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* === [MODIFIED] Aligned to Top (기업회원과 동일하게 수정) === */
+.jsd-heroLeft{
+  /* 기존 padding: 60px -> 상하 패딩 줄이고 justify-content 변경 */
+  padding: 32px 60px 32px 60px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* center -> flex-start 로 변경하여 위로 올림 */
+  min-height: 400px; /* 최소 높이 추가 */
+}
+
+.jsd-heroLeft::before{
+  content:"";
+  position:absolute;
+  inset:-100px;
+  background:
+    radial-gradient(600px 400px at 10% 20%, rgba(255,255,255,.9), transparent 60%),
+    radial-gradient(600px 400px at 80% 40%, rgba(47,111,255,.12), transparent 60%),
+    radial-gradient(500px 500px at 50% 100%, rgba(255,255,255,.8), transparent 60%);
+  filter: blur(20px);
+  pointer-events:none;
+}
+
+.jsd-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.6);
+  border: 1px solid rgba(255,255,255,.8);
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  color: rgba(11,22,53,.7);
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
+}
+
+.jsd-kickerDot{ width: 8px; height: 8px; border-radius: 999px; background: var(--p-blue); box-shadow: 0 0 0 4px rgba(47,111,255,.2); }
+
+.jsd-title{
+  margin: 8px 0 8px;
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 950;
+  letter-spacing: -1.2px;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,.03);
+}
+
+.jsd-desc{
+  margin: 0 0 18px;
+  color: var(--p-sub);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+}
+
+.jsd-cta{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.jsd-ctaBtn{
+  appearance:none;
+  border-radius: 16px;
+  padding: 16px 28px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  cursor:pointer;
+  border: 1px solid rgba(255,255,255,.8);
+  background: rgba(255,255,255,.6);
+  color: rgba(11,22,53,.84);
+  box-shadow: 0 15px 40px rgba(0,0,0,.08);
+  transition: all .2s ease;
+}
+
+.jsd-ctaBtn:hover{ transform: translateY(-2px); background: #fff; box-shadow: 0 20px 50px rgba(0,0,0,.12); }
+
+.jsd-ctaBtn.primary{
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: 1px solid rgba(37,99,235,.2);
+  box-shadow: 0 15px 40px rgba(37,99,235,.25);
+}
+.jsd-ctaBtn.primary:hover{ transform: translateY(-2px); box-shadow: 0 20px 50px rgba(37,99,235,.35); }
+
+.jsd-tabBtn{
+  appearance:none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  cursor:pointer;
+  border: 1px solid rgba(255,255,255,.8);
+  background: rgba(255,255,255,.6);
+  color: rgba(11,22,53,.7);
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+  transition: all .2s ease;
+}
+
+.jsd-tabBtn:hover{
+  transform: translateY(-1px);
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+.jsd-tabBtn.active{
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: 1px solid rgba(37,99,235,.3);
+  box-shadow: 0 12px 30px rgba(37,99,235,.25);
+}
+
+.jsd-ctaBtn.active{
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: 1px solid rgba(37,99,235,.3);
+  box-shadow: 0 15px 40px rgba(37,99,235,.25);
+  transform: translateY(-2px);
+}
+
+.jsd-stats{
+  margin-top: 40px;
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.jsd-stat{
+  padding: 40px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
+  border: 1.5px solid rgba(255,255,255,.9);
+  box-shadow: 
+    0 0 0 1px rgba(37,99,235,.08),
+    0 8px 16px rgba(0,0,0,.04),
+    0 16px 40px rgba(37,99,235,.1),
+    inset 0 1px 1px rgba(255,255,255,.8);
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.jsd-stat::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px at 20% 50%, rgba(37,99,235,.08) 0%, transparent 80%);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.jsd-stat::after{
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(37,99,235,.15), rgba(59,130,246,.05));
+  border-radius: 28px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.jsd-stat:hover{
+  background: linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+  border-color: rgba(37,99,235,.25);
+  box-shadow: 
+    0 0 0 1px rgba(37,99,235,.15),
+    0 12px 24px rgba(0,0,0,.06),
+    0 20px 60px rgba(37,99,235,.15),
+    inset 0 1px 1px rgba(255,255,255,.9);
+  transform: translateY(-8px);
+}
+
+.jsd-flipCard{
+  height: 100%;
+}
+
+.jsd-flipCardInner{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform-style: preserve-3d;
+}
+
+.jsd-flipCard.flipped .jsd-flipCardInner{
+  transform: rotateY(180deg);
+}
+
+.jsd-flipCardFront,
+.jsd-flipCardBack{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jsd-flipCardBack{
+  transform: rotateY(180deg);
+}
+
+.jsd-statContent{
+  text-align: center;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.jsd-backContent{
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.jsd-backTitle{
+  font-size: 20px;
+  font-weight: 950;
+  color: #0f172a;
+  margin-bottom: 18px;
+  letter-spacing: -0.4px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.jsd-backList{
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jsd-backList li{
+  font-size: 13px;
+  color: #334155;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(37,99,235,.08);
+}
+
+.jsd-backStats{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin: 18px 0;
+  gap: 12px;
+}
+
+.jsd-backStat{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 12px;
+  background: rgba(37,99,235,.05);
+  border-radius: 12px;
+}
+
+.jsd-backStatLabel{
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.jsd-backStatValue{
+  font-size: 20px;
+  font-weight: 950;
+  color: #2563eb;
+  letter-spacing: -0.3px;
+}
+
+.jsd-backAdvice{
+  font-size: 13px;
+  color: #475569;
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.jsd-backBtn{
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Pretendard Variable', sans-serif;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: -0.2px;
+  box-shadow: 0 4px 12px rgba(37,99,235,.25);
+}
+
+.jsd-backBtn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37,99,235,.35);
+}
+
+.jsd-backBtn:active{
+  transform: scale(0.95);
+}
+
+/* 카드 공통 스타일 */
+.jsd-cardTitle{
+  font-size: 18px;
+  font-weight: 950;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.jsd-cardIcon{
+  font-size: 40px;
+  line-height: 1;
+  display: inline-block;
+  margin: 0;
+  color: inherit;
+}
+
+.jsd-cardSubtext{
+  font-size: 13px;
+  color: rgba(11,22,53,.62);
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  margin-top: 8px;
+  margin-top: 4px;
+}
+
+/* 프로필 완성도 */
+.jsd-profileCard{
+  width: 100%;
+}
+
+.jsd-progressContainer{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.jsd-progressBar{
+  flex: 1;
+  height: 14px;
+  background: rgba(37,99,235,.08);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1.5px solid rgba(37,99,235,.15);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.04);
+}
+
+.jsd-progressFill{
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #0ea5e9);
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 16px rgba(37,99,235,.45);
+}
+
+.jsd-progressText{
+  font-size: 18px;
+  font-weight: 950;
+  color: #2563eb;
+  min-width: 50px;
+  text-align: right;
+  letter-spacing: -0.3px;
+}
+
+/* 최근 지원 현황 */
+.jsd-applicationCard{
+  width: 100%;
+}
+
+.jsd-appStatusList{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.jsd-appStatusRow{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,.7), rgba(255,255,255,.5));
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,.6);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.8);
+  transition: all 0.2s ease;
+}
+
+.jsd-appStatusRow:hover{
+  background: linear-gradient(135deg, rgba(255,255,255,.8), rgba(255,255,255,.6));
+  border-color: rgba(37,99,235,.2);
+}
+
+.jsd-statusLabel{
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(11,22,53,.72);
+  letter-spacing: -0.2px;
+}
+
+.jsd-statusValue{
+  font-size: 19px;
+  font-weight: 950;
+  color: #2563eb;
+  letter-spacing: -0.4px;
+}
+
+.jsd-statusValue.accent{
+  color: #f59e0b;
+}
+
+.jsd-statusValue.success{
+  color: #22c55e;
+}
+
+/* 나의 매칭 점수 */
+.jsd-matchCard{
+  width: 100%;
+}
+
+.jsd-scoreDisplay{
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.jsd-scoreBig{
+  font-size: 64px;
+  font-weight: 950;
+  color: #2563eb;
+  letter-spacing: -2px;
+  line-height: 1;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.jsd-scoreMax{
+  font-size: 20px;
+  font-weight: 800;
+  color: rgba(11,22,53,.52);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+}
+
+.jsd-scoreGrade{
+  font-size: 14px;
+  font-weight: 900;
+  color: white;
+  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+  padding: 8px 20px;
+  border-radius: 999px;
+  letter-spacing: -0.3px;
+  margin-top: 8px;
+  box-shadow: 0 6px 20px rgba(37,99,235,.3);
+  display: inline-block;
+  letter-spacing: -0.2px;
+}
+
+/* Badge Wrapper */
+.jsd-heroRight{
+  padding: 0;
+  display: flex;
+  align-items: flex-end; 
+  justify-content: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* Cards */
+.jsd-sectionTitle{
+  margin: 50px 0 20px;
+  font-size: 22px;
+  font-weight: 950;
+  letter-spacing: -0.6px;
+  padding-left: 10px;
+}
+
+.jsd-grid{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 24px;
+}
+
+/* === CARD DESIGN & HOVER EFFECTS (Same as Company) === */
+.jsd-card{
+  border-radius: 24px;
+  border: 1.5px solid rgba(255,255,255,.9);
+  background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.7));
+  box-shadow: 0 20px 60px rgba(0,0,0,.08), inset 0 1px 0 #fff;
+  padding: 32px 28px;
+  cursor:pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  isolation: isolate;
+}
+
+/* Shared Hover */
+.jsd-card:hover { 
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(0,0,0,.15), inset 0 0 0 1px rgba(255,255,255,1);
+}
+
+/* Gradient Overlay */
+.jsd-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.jsd-card:hover::before { opacity: 1; }
+
+/* Icon Transition */
+.jsd-cardIco {
+  width: 56px; height: 56px; 
+  border-radius: 20px; 
+  display:grid; place-items:center; 
+  background: rgba(11,22,53,.05); 
+  color: rgba(11,22,53,.7);
+  transition: all 0.4s ease;
+}
+.jsd-card:hover .jsd-cardIco { color: #fff; transform: scale(1.1) rotate(-5deg); }
+
+/* --- Card 1: Blue --- */
+.jsd-card:nth-child(1):hover { border-color: rgba(59,130,246,.5); }
+.jsd-card:nth-child(1)::before { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
+.jsd-card:nth-child(1):hover .jsd-cardIco { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 8px 20px rgba(37,99,235,.3); }
+
+/* --- Card 2: Purple --- */
+.jsd-card:nth-child(2):hover { border-color: rgba(139,92,246,.5); }
+.jsd-card:nth-child(2)::before { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
+.jsd-card:nth-child(2):hover .jsd-cardIco { background: linear-gradient(135deg, #8b5cf6, #7c3aed); box-shadow: 0 8px 20px rgba(124,58,237,.3); }
+
+/* --- Card 3: Pink --- */
+.jsd-card:nth-child(3):hover { border-color: rgba(236,72,153,.5); }
+.jsd-card:nth-child(3)::before { background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); }
+.jsd-card:nth-child(3):hover .jsd-cardIco { background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 8px 20px rgba(219,39,119,.3); }
+
+/* --- Card 4: Green --- */
+.jsd-card:nth-child(4):hover { border-color: rgba(16,185,129,.5); }
+.jsd-card:nth-child(4)::before { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }
+.jsd-card:nth-child(4):hover .jsd-cardIco { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 20px rgba(5,150,105,.3); }
+
+
+.jsd-cardTop{ display:flex; align-items:center; justify-content: space-between; margin-bottom: 20px; }
+
+.jsd-tag{
+  font-size: 13px;
+  font-weight: 950;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  color: rgba(11,22,53,.6);
+}
+
+.jsd-card h3{ margin: 0 0 8px; font-size: 20px; font-weight: 950; letter-spacing: -0.6px; }
+.jsd-card p{ margin: 0; font-size: 15px; color: rgba(11,22,53,.65); font-weight: 750; }
+.jsd-meta{ margin-top: 24px; font-size: 13px; color: rgba(11,22,53,.55); font-weight: 800; }
+
+/* Modal */
+.jsd-modalBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.32);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
+  z-index: 100;
+}
+
+.jsd-modal{
+  width: min(420px, 94vw);
+  border-radius: 22px;
+  background: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.86);
+  box-shadow: 0 30px 100px rgba(0,0,0,.25);
+  backdrop-filter: blur(12px);
+  padding: 24px;
+}
+
+.jsd-modalTitle{ font-size: 20px; font-weight: 950; letter-spacing: -0.6px; }
+.jsd-modalDesc{ margin-top: 8px; color: rgba(11,22,53,.68); font-weight: 800; }
+
+.jsd-modalActions{ display:flex; gap: 10px; justify-content:flex-end; margin-top: 24px; }
+.jsd-modalBtn{
+  appearance:none;
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-weight: 950;
+  cursor:pointer;
+  border: 1px solid rgba(255,255,255,.78);
+  background: rgba(255,255,255,.55);
+}
+.jsd-modalBtn.primary{ background: linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border-color: rgba(37,99,235,.28); }
+
+/* =========================
+   JOB SEEKER ID BADGE (Premium Quality)
+   ========================= */
+.jsd-idBadge{
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding-top: 100px; /* Space for lanyard */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.jsd-lanyardWrap{
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 220px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.jsd-idLanyard{ position: relative; width: 100%; height: 100%; }
+
+/* Metal Ring */
+.jsd-idLanyard::after{
+  content:"";
+  position:absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #ffffff, #dfe6f2 60%, #94a3b8 100%);
+  border: 1px solid rgba(0,0,0,.15);
+  box-shadow: 
+    0 8px 20px rgba(0,0,0,.2),
+    inset 0 2px 4px rgba(255,255,255,.9);
+  z-index: 2;
+}
+
+/* Fabric Strap Texture */
+.jsd-idStrap{
+  position: absolute;
+  top: 0;
+  width: 24px;
+  height: 200px;
+  border-radius: 12px;
+  background: #2563eb;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+
+.jsd-idStrap::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0px, rgba(255,255,255,.15) 2px, transparent 2px, transparent 4px);
+  mix-blend-mode: overlay;
+}
+.jsd-idStrap::after{
+  content:"";
+  position:absolute;
+  inset: 0 6px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+  mix-blend-mode: overlay;
+}
+
+.jsd-idStrap.left{ left: 50%; margin-left: -60px; transform: rotate(-10deg); transform-origin: top center; background: linear-gradient(180deg, #2563eb, #3b82f6); }
+.jsd-idStrap.right{ left: 50%; margin-left: 36px; transform: rotate(10deg); transform-origin: top center; background: linear-gradient(180deg, #2563eb, #3b82f6); }
+
+/* Metal Clip */
+.jsd-idClip{
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 50%, #94a3b8 100%);
+  border: 1px solid rgba(255,255,255,.6);
+  box-shadow: 0 10px 25px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,1);
+  z-index: 1;
+}
+
+.jsd-idClip::before{
+  content:"";
+  position:absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #fff, #64748b);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.3);
+}
+
+/* Card Body */
+.jsd-idCard{
+  position: relative;
+  width: 100%;
+  border-radius: 28px;
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.8);
+  box-shadow: 
+    0 40px 100px rgba(0,0,0,.15),
+    inset 0 0 0 1px rgba(255,255,255,.6);
+  padding: 30px 24px;
+  text-align: center;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.jsd-idCard::after{
+  content:"";
+  position:absolute;
+  inset: -50%;
+  background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.6) 50%, transparent 60%);
+  transform: rotate(25deg);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.jsd-idTop{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:12px; }
+
+.jsd-idAvatar{
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  display:grid; place-items:center;
+  font-weight: 950; font-size: 26px;
+  color: #1e40af;
+  background: linear-gradient(135deg, #fff, #eff6ff);
+  border: 3px solid #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,.1);
+}
+
+.jsd-idName{ font-weight: 980; letter-spacing: -1px; font-size: 24px; color: #0f172a; }
+.jsd-idSub{ font-weight: 700; font-size: 15px; color: #64748b; }
+
+.jsd-idStats{ position:relative; z-index:2; margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.jsd-idStat{ background:#fff; border-radius:18px; padding:14px; border:1px solid rgba(0,0,0,.04); box-shadow:0 4px 15px rgba(0,0,0,.03); }
+.jsd-idStatLabel{ font-size:12px; font-weight:800; color:#94a3b8; letter-spacing:0.5px; text-transform:uppercase; }
+.jsd-idStatValue{ font-size:22px; font-weight: 950; color:#0f172a; margin-top:4px; }
+
+.jsd-idSection{ position:relative; z-index:2; margin-top:20px; padding-top:16px; border-top:1px dashed rgba(0,0,0,.1); }
+.jsd-idSectionTitle{ font-weight:900; font-size:14px; margin-bottom:10px; color:#475569; }
+.jsd-idList{ list-style:none; padding:0; margin:0; font-size:14px; font-weight:700; color:#334155; display:flex; flex-direction:column; gap:8px; }
+
+.jsd-idBrand{ position:relative; z-index:2; margin-top:24px; font-size:11px; font-weight:900; letter-spacing:2px; color:#94a3b8; }
+
+
+/* Footer */
+.jsd-footer{
+  border-top: 1px solid rgba(255,255,255,.4);
+  background: white;
+  backdrop-filter: blur(10px);
+  padding: 40px 0;
+  margin-top: auto;
+}
+
+.jsd-footerInner{
+  max-width: 1800px; /* Width Increased */
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: rgba(11,22,53,.5);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.jsd-footerInfo, .jsd-footerContact{ display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.jsd-sep{ opacity: 0.3; }
+
+/* 추천 기업 카드 스타일 */
+.jsd-companyName{
+  font-size: 20px;
+  font-weight: 950;
+  color: var(--p-text);
+  margin-top: 12px;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.jsd-companyPosition{
+  font-size: 14px;
+  color: rgba(11,22,53,.68);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.jsd-matchScore{
+  font-size: 18px;
+  font-weight: 950;
+  color: #16a34a;
+  letter-spacing: -0.3px;
+}
+
+/* 희망 조건 스타일 */
+.jsd-conditionList{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.jsd-conditionItem{
+  background: rgba(37,99,235,.1);
+  color: #2563eb;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.jsd-salaryRange{
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.jsd-salaryBig{
+  font-size: 28px;
+  font-weight: 950;
+  color: #dc2626;
+  letter-spacing: -0.5px;
+}
+
+.jsd-salaryUnit{
+  font-size: 14px;
+  color: rgba(11,22,53,.68);
+  font-weight: 700;
+}
+
+.jsd-locationList{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.jsd-locationItem{
+  background: rgba(34,197,94,.1);
+  color: #16a34a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* 강점 카드 스타일 */
+.jsd-strengthCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.jsd-strengthIcon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.jsd-strengthTitle {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+/* AI 분석 결과 스타일 */
+.jsd-strengthList{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.jsd-strengthItem{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(34,197,94,.08);
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #16a34a;
+}
+
+.jsd-strengthLabel{
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--p-text);
+}
+
+.jsd-strengthScore{
+  font-size: 14px;
+  font-weight: 950;
+  color: #16a34a;
+}
+
+.jsd-weaknessWarning{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.jsd-weaknessItem{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(234,179,8,.08);
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #eab308;
+}
+
+.jsd-weaknessLabel{
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--p-text);
+}
+
+.jsd-weaknessScore{
+  font-size: 14px;
+  font-weight: 950;
+  color: #eab308;
+}
+
+.jsd-interviewScore{
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.jsd-interviewBig{
+  font-size: 32px;
+  font-weight: 950;
+  color: #0ea5e9;
+  letter-spacing: -0.5px;
+}
+
+.jsd-interviewMax{
+  font-size: 14px;
+  color: rgba(11,22,53,.68);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.jsd-interviewDate{
+  font-size: 12px;
+  color: rgba(11,22,53,.62);
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* 추천 기업 카드 스타일 */
+.jsd-companyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.jsd-companyLogo {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.jsd-companyName {
+  font-size: 18px;
+  font-weight: 950;
+  color: #0f172a;
+}
+
+.jsd-companyRole {
+  font-size: 14px;
+  color: rgba(11,22,53,.68);
+  font-weight: 700;
+}
+
+.jsd-companyMatch {
+  font-size: 16px;
+  font-weight: 900;
+  color: #2563eb;
+  margin-top: 8px;
+}
+
+/* AI 분석 카드 스타일 */
+.jsd-analysisCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.jsd-analysisIcon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.jsd-analysisTitle {
+  font-size: 18px;
+  font-weight: 950;
+  color: #0f172a;
+}
+
+.jsd-analysisList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+}
+
+.jsd-analysisList li {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.jsd-analysisList li.strength {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+}
+
+.jsd-analysisList li.weakness {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.jsd-analysisList li.opportunity {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+/* 면접 결과 카드 스타일 */
+.jsd-interviewCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.jsd-interviewIcon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.jsd-interviewTitle {
+  font-size: 18px;
+  font-weight: 950;
+  color: #0f172a;
+}
+
+.jsd-interviewScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.jsd-scoreValue {
+  font-size: 32px;
+  font-weight: 950;
+  color: #2563eb;
+}
+
+.jsd-scoreDate {
+  font-size: 12px;
+  color: rgba(11,22,53,.68);
+  font-weight: 700;
+}
+
+/* 기술 스택 평가 카드 스타일 */
+.jsd-skillCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.jsd-skillIcon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.jsd-skillTitle {
+  font-size: 18px;
+  font-weight: 950;
+  color: #0f172a;
+}
+
+.jsd-skillList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+}
+
+.jsd-skillList li {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(11,22,53,.84);
+}
+
+/* Responsive */
+@media (max-width: 1200px){
+  .jsd-hero{ grid-template-columns: 1fr; }
+  .jsd-grid{ grid-template-columns: repeat(2, 1fr); }
+  .jsd-stats{ grid-template-columns: repeat(3, 1fr); }
+  .jsd-heroLeft{ padding: 40px; }
+  .jsd-idBadge{ padding-top: 60px; max-width: 100%; }
+  .jsd-lanyardWrap{ display: none; }
+}
+
+@media (max-width: 600px){
+  .jsd-grid{ grid-template-columns: 1fr; }
+  .jsd-stats{ grid-template-columns: 1fr; }
+  .jsd-headerInner{ grid-template-columns: auto auto; padding: 16px; }
+  .jsd-main{ padding: 20px; }
+  .jsd-nav{ display: none; }
+}

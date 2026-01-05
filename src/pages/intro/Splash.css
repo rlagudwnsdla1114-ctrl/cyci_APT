@@ -1,0 +1,147 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+:root{
+  --sp-font: 28px;                 /* ✅ 3줄 글자 크기 동일 */
+  --sp-text: rgba(11,22,53,.92);
+
+  --sp-card-bg: rgba(255,255,255,.70);
+  --sp-card-stroke: rgba(255,255,255,.86);
+
+  --sp-shadow: 0 18px 60px rgba(0,0,0,.14);
+}
+
+.sp-page{
+  min-height: 100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family: "Pretendard Variable", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial;
+  padding: 80px 16px;
+}
+
+.sp-stack{
+  width: min(820px, 92vw);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 14px;
+  perspective: 1000px;
+}
+
+/* 공통 라인 (3D 원근감 + 물리 엔진) */
+.sp-line{
+  position: relative;
+  text-align:center;
+  color: var(--sp-text);
+  font-size: var(--sp-font);
+  font-weight: 900;
+  letter-spacing: -0.8px;
+
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: var(--sp-card-bg);
+  border: 1px solid var(--sp-card-stroke);
+
+  /* 유리감은 유지하되 과한 흐림 방지 */
+  backdrop-filter: blur(10px);
+
+  box-shadow: var(--sp-shadow);
+
+  /* 초기 상태 */
+  opacity: 0;
+  transform: translate3d(0,-60px,0) rotateX(95deg) rotateY(20deg) rotateZ(8deg) scale(0.92);
+
+  /* ✅ 빠른 낙하→충돌→강한 바운스→정착 + 입체 회전 + 그림자 변화 */
+  animation-name: dropSpring3D, shadowPop, scaleGrow;
+  animation-duration: 1000ms, 1000ms, 1000ms;
+  animation-timing-function: cubic-bezier(.06, .88, .12, 1.15), cubic-bezier(.06, .88, .12, 1.15), cubic-bezier(.34, 1.56, .64, 1);
+  animation-fill-mode: forwards, forwards, forwards;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  will-change: transform, opacity, box-shadow;
+  transform-style: preserve-3d;
+}
+
+/* 피라미드 느낌은 폭으로만 (글자 크기 동일) */
+.l1{ width: min(720px, 92vw); animation-delay: 0ms, 0ms, 0ms; }
+.l2{ width: min(640px, 92vw); animation-delay: 1100ms, 1100ms, 1100ms; }
+.l3{ width: min(560px, 92vw); animation-delay: 2200ms, 2200ms, 2200ms; }
+
+/* 바닥 그림자(쿵 느낌) */
+.sp-line::after{
+  content:"";
+  position:absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -14px;
+  height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgba(0,0,0,.18), transparent 70%);
+  opacity: 0;
+  transform: scaleX(.78);
+  filter: blur(2px);
+  pointer-events:none;
+}
+
+/* 바닥 그림자 애니메이션 (라인 애니메이션과 동일 시간) */
+.l1::after{ animation: ground 1000ms cubic-bezier(.06, .88, .12, 1.15) forwards; animation-delay: 0ms; }
+.l2::after{ animation: ground 1000ms cubic-bezier(.06, .88, .12, 1.15) forwards; animation-delay: 1100ms; }
+.l3::after{ animation: ground 1000ms cubic-bezier(.06, .88, .12, 1.15) forwards; animation-delay: 2200ms; }
+
+/* ✅ 빠른 낙하/바운스 + 강한 3D 회전 물리 엔진 */
+@keyframes dropSpring3D{
+  0%   { opacity:0; transform: translate3d(0,-60px,0) rotateX(95deg) rotateY(20deg) rotateZ(8deg) scale(0.92); }
+  20%  { opacity:0.7; transform: translate3d(0,-20px,0) rotateX(50deg) rotateY(12deg) rotateZ(4deg) scale(0.95); }
+  38%  { opacity:1; transform: translate3d(0,16px,0) rotateX(-20deg) rotateY(-8deg) rotateZ(-6deg) scale(1.02); }  /* 충돌 - 강한 노크 */
+  48%  { opacity:1; transform: translate3d(0,10px,0) rotateX(-10deg) rotateY(-4deg) rotateZ(-2deg) scale(1.01); }
+  58%  { opacity:1; transform: translate3d(0,-10px,0) rotateX(12deg) rotateY(6deg) rotateZ(5deg) scale(1.00); }  /* 창공 반동 */
+  68%  { opacity:1; transform: translate3d(0,6px,0) rotateX(-6deg) rotateY(2deg) rotateZ(-1deg) scale(1.00); }
+  78%  { opacity:1; transform: translate3d(0,-3px,0) rotateX(3deg) rotateY(-1deg) rotateZ(1deg) scale(1.00); }
+  100% { opacity:1; transform: translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }     /* 정착 */
+}
+
+/* ✅ 그림자도 충돌 때 강한 노크 효과 */
+@keyframes shadowPop{
+  0%   { box-shadow: 0 8px 25px rgba(0,0,0,.08); }
+  38%  { box-shadow: 0 40px 100px rgba(0,0,0,.22); }  /* 강한 충돌 */
+  58%  { box-shadow: 0 22px 70px rgba(0,0,0,.16); }
+  100% { box-shadow: var(--sp-shadow); }
+}
+
+/* ✅ 스케일 그로우 - 말풀선상단에서 대출기를 씼기 */
+@keyframes scaleGrow{
+  0%   { scale: 0.92; }
+  100% { scale: 1; }
+}
+
+/* ✅ 바능 그림자도 "충겠" 퍼졌다가 안정 */
+@keyframes ground{
+  0%   { opacity: 0;   transform: scaleX(.72); }
+  38%  { opacity: .65; transform: scaleX(1.15); }  /* 강한 충돌 */
+  58%  { opacity: .42; transform: scaleX(.98); }
+  100% { opacity: .30; transform: scaleX(1.00); }
+}
+
+/* 반응형 */
+@media (max-width: 520px){
+  :root{ --sp-font: 22px; }
+  .l1{ width: min(680px, 92vw); }
+  .l2{ width: min(620px, 92vw); }
+  .l3{ width: min(560px, 92vw); }
+}
+
+/* 접근성 */
+@media (prefers-reduced-motion: reduce){
+  .sp-line{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    box-shadow: var(--sp-shadow) !important;
+  }
+  .sp-line::after{
+    animation: none !important;
+    opacity: .25 !important;
+    transform: scaleX(1) !important;
+  }
+}

@@ -1,0 +1,400 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+:root{
+  --text:#0B1635;
+  --muted: rgba(11,22,53,.68);
+
+  --paper: rgba(255,255,255,.55);
+  --stroke: rgba(255,255,255,.65);
+
+  --cardText:#0B1635;
+  --cardMuted:#52607A;
+
+  --shadow: 0 18px 70px rgba(0,0,0,.16);
+  --shadow2: 0 28px 90px rgba(0,0,0,.20);
+
+  --radius: 22px;
+}
+
+*{ box-sizing:border-box; }
+
+/* ✅ 배경은 BackgroundShell이 담당.
+   여기서는 레이아웃만 담당 */
+.ms-page{
+  min-height: 100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding: 78px 0 70px;
+  font-family: "Pretendard Variable", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial;
+}
+
+.ms-wrap{
+  width: min(1040px, 92vw);
+}
+
+/* 헤더 상단 중앙 + 카드와 간격 */
+.ms-header{
+  text-align:center;
+  margin: 0 0 30px 0;
+  padding: 0 10px;
+}
+
+.ms-kicker{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.62);
+  border: 1px solid rgba(255,255,255,.80);
+  color: rgba(11,22,53,.70);
+  font-weight: 820;
+  font-size: 12px;
+  letter-spacing: .9px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+.ms-header h1{
+  margin: 0 0 10px 0;
+  color: var(--text);
+  font-size: 36px;
+  line-height: 1.12;
+  font-weight: 900;
+  letter-spacing: -0.9px;
+  text-shadow: 0 1px 0 rgba(255,255,255,.25);
+}
+
+.ms-header p{
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* 패널(카드 둘러싼 유리 판) */
+.ms-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  border: 1px solid var(--stroke);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+
+/* 카드 공통 */
+.ms-card{
+  --accentSoft: rgba(10,103,255,.16);
+  --accentSoft2: rgba(10,103,255,.10);
+
+  background:
+    radial-gradient(520px 240px at 18% 6%, rgba(10,103,255,.08), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.98), rgba(246,249,255,.98));
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 20px;
+  padding: 24px;
+  min-height: 318px;
+  cursor: pointer;
+  position: relative;
+  overflow:hidden;
+  box-shadow: 0 14px 55px rgba(0,0,0,.14);
+  transform: translateY(0);
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease;
+  color: var(--cardText);
+  outline: none;
+}
+
+.ms-card:focus-visible{
+  box-shadow: 0 0 0 4px rgba(10,103,255,.18), 0 14px 55px rgba(0,0,0,.14);
+}
+
+.ms-card::after{
+  content:"";
+  position:absolute;
+  right:-90px;
+  top:-90px;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(10,103,255,.12), transparent 62%);
+  transition: opacity .22s ease, background .22s ease;
+  opacity: .9;
+}
+
+.ms-card:hover{
+  transform: translateY(-6px);
+  box-shadow: var(--shadow2);
+  border-color: rgba(255,255,255,.95);
+}
+
+/* ✅ 카드 배경 자체가 역할별로 변함 */
+.ms-card:hover{
+  background:
+    radial-gradient(620px 280px at 16% 8%, var(--accentSoft), transparent 60%),
+    radial-gradient(560px 280px at 88% 16%, var(--accentSoft2), transparent 62%),
+    linear-gradient(180deg, rgba(255,255,255,.99), rgba(246,249,255,.99));
+}
+.ms-card:hover::after{
+  background: radial-gradient(circle, var(--accentSoft), transparent 62%);
+  opacity: 1;
+}
+
+/* 상단 */
+.ms-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.ms-badge{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(10,103,255,.10);
+  border: 1px solid rgba(10,103,255,.14);
+  color: rgba(10,103,255,.95);
+  font-weight: 850;
+  font-size: 13px;
+  transition: background .22s ease, border-color .22s ease, color .22s ease;
+}
+
+.ms-dot{
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: rgba(10,103,255,.95);
+  box-shadow: 0 0 0 6px rgba(10,103,255,.12);
+  transition: background .22s ease, box-shadow .22s ease;
+}
+
+.ms-chip{
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: .6px;
+  color: rgba(11,22,53,.62);
+  background: rgba(11,22,53,.06);
+  border: 1px solid rgba(11,22,53,.10);
+  padding: 8px 10px;
+  border-radius: 999px;
+}
+
+.ms-title{
+  margin-top: 18px;
+  font-size: 23px;
+  font-weight: 920;
+  letter-spacing: -0.7px;
+  color: #0B1635;
+  position: relative;
+  z-index: 1;
+}
+
+.ms-desc{
+  margin: 10px 0 20px 0;
+  color: var(--cardMuted);
+  line-height: 1.7;
+  font-size: 14.7px;
+  position: relative;
+  z-index: 1;
+}
+
+.ms-actions{ position: relative; z-index: 1; }
+
+.ms-btn{
+  appearance:none;
+  border: 1px solid rgba(10,103,255,.22);
+  background: rgba(255,255,255,.92);
+  color: rgba(10,103,255,.98);
+  font-weight: 900;
+  padding: 12px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+  box-shadow: 0 12px 30px rgba(10,103,255,.10);
+}
+
+.ms-btn:hover{ transform: translateY(-1px); }
+
+.ms-arrow{
+  display:inline-block;
+  transform: translateX(0);
+  transition: transform .18s ease;
+}
+.ms-card:hover .ms-arrow{ transform: translateX(3px); }
+
+/* Hover message box */
+.ms-hoverBox{
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(10,103,255,.14);
+  background: rgba(10,103,255,.05);
+  color: rgba(11,22,53,.90);
+  font-weight: 850;
+  min-height: 56px;
+  display:flex;
+  align-items:center;
+
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .20s ease, transform .20s ease, background .20s ease, border-color .20s ease, color .20s ease;
+  position: relative;
+  z-index: 1;
+}
+.ms-card:hover .ms-hoverBox{
+  opacity: 1;
+  transform: translateY(0);
+  background: var(--accentSoft);
+  border-color: rgba(0,0,0,.06);
+}
+
+/* 역할별 Accent (기업: 노랑 / 취업희망자: 초록) */
+.ms-card.company{
+  --accentSoft: rgba(255, 201, 58, .26);
+  --accentSoft2: rgba(255, 201, 58, .14);
+}
+.ms-card.jobseeker{
+  --accentSoft: rgba(53, 200, 106, .22);
+  --accentSoft2: rgba(53, 200, 106, .12);
+}
+
+/* 뱃지/점/버튼 */
+.ms-card.company .ms-badge{
+  background: rgba(255, 201, 58, .18);
+  border-color: rgba(255, 201, 58, .22);
+  color: #6A4A00;
+}
+.ms-card.company .ms-dot{
+  background: rgba(255, 201, 58, .95);
+  box-shadow: 0 0 0 6px rgba(255, 201, 58, .18);
+}
+.ms-card.company:hover .ms-btn{
+  border-color: rgba(255, 201, 58, .40);
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255, 249, 230, .98));
+  color: #6A4A00;
+  box-shadow: 0 16px 36px rgba(255, 201, 58, .22);
+}
+
+.ms-card.jobseeker .ms-badge{
+  background: rgba(53, 200, 106, .16);
+  border-color: rgba(53, 200, 106, .22);
+  color: #0E4A23;
+}
+.ms-card.jobseeker .ms-dot{
+  background: rgba(53, 200, 106, .95);
+  box-shadow: 0 0 0 6px rgba(53, 200, 106, .18);
+}
+.ms-card.jobseeker:hover .ms-btn{
+  border-color: rgba(53, 200, 106, .36);
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(235, 255, 243, .98));
+  color: #0E4A23;
+  box-shadow: 0 16px 36px rgba(53, 200, 106, .20);
+}
+
+/* 반응형 */
+@media (max-width: 820px){
+  .ms-page{ padding: 70px 0 64px; }
+  .ms-header h1{ font-size: 30px; }
+  .ms-grid{ grid-template-columns: 1fr; }
+  .ms-card{ min-height: 290px; }
+}
+
+/* 상단 로그인 버튼 영역 */
+.ms-headerTop{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+/* 로그인 버튼 스타일 */
+.ms-loginBtn{
+  appearance: none;
+  border: 1px solid rgba(11,22,53,.12);
+  background: rgba(255,255,255,.72);
+  color: rgba(11,22,53,.78);
+  font-weight: 900;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.ms-loginBtn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.86);
+  border-color: rgba(11,22,53,.18);
+}
+
+.ms-loginBtn:active{
+  transform: translateY(0px);
+}
+
+/* 상단 로그인 영역: 덩그러니 안 보이게 '문장+버튼'을 한 덩어리로 */
+.ms-topbar{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  padding: 0 10px;
+}
+
+.ms-topbarPill{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.62);
+  border: 1px solid rgba(255,255,255,.80);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+.ms-topbarText{
+  color: rgba(11,22,53,.62);
+  font-weight: 850;
+  font-size: 12px;
+  letter-spacing: .2px;
+}
+
+/* 기존 ms-loginBtn보다 '상단 액션' 느낌으로 더 가볍게 */
+.ms-loginBtn{
+  appearance: none;
+  border: 1px solid rgba(10,103,255,.22);
+  background: rgba(255,255,255,.92);
+  color: rgba(10,103,255,.95);
+  font-weight: 900;
+  font-size: 12.5px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  box-shadow: 0 12px 26px rgba(10,103,255,.10);
+}
+
+.ms-loginBtn:hover{
+  transform: translateY(-1px);
+}
+
+.ms-loginArrow{
+  display: inline-block;
+  transform: translateX(0);
+  transition: transform .18s ease;
+}
+.ms-loginBtn:hover .ms-loginArrow{
+  transform: translateX(3px);
+}
+
+

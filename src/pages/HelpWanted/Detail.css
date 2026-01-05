@@ -1,0 +1,48 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+.rd-wrap {
+  min-height: 100vh;
+  font-family: "Pretendard Variable", sans-serif;
+  color: #1e293b;
+  padding-top: 80px;
+}
+
+.rd-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; backdrop-filter: blur(12px); background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.5); }
+.rd-headerInner { max-width: 1000px; margin: 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.rd-back { background: none; border: none; font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; }
+.rd-back:hover { color: #0f172a; }
+.rd-brand { font-weight: 800; font-size: 18px; color: #0f172a; }
+
+.rd-main { display: flex; justify-content: center; padding: 40px 20px; }
+.rd-paper {
+  width: 100%; max-width: 800px;
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.08);
+  padding: 60px;
+  position: relative;
+}
+
+.rd-badge { background: #2f6fff; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 13px; display: inline-block; margin-bottom: 16px; }
+.rd-title { font-size: 32px; font-weight: 900; line-height: 1.3; color: #0f172a; margin-bottom: 16px; }
+.rd-meta { font-size: 16px; color: #64748b; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.rd-sep { color: #cbd5e1; }
+
+.rd-divider { height: 1px; background: #e2e8f0; margin: 40px 0; }
+
+.rd-file { background: #f8fafc; padding: 16px 20px; border-radius: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+.rd-fileLabel { font-weight: 700; color: #475569; font-size: 14px; }
+.rd-fileLink { text-decoration: none; color: #1e293b; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.rd-down { font-size: 12px; color: #2f6fff; background: #eff6ff; padding: 4px 8px; border-radius: 6px; }
+
+.rd-body { font-size: 17px; line-height: 1.8; color: #334155; white-space: pre-wrap; margin-bottom: 60px; }
+
+.rd-actions { display: flex; justify-content: center; gap: 16px; }
+.rd-btn { padding: 18px 48px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.rd-btn.primary { background: #2f6fff; color: #fff; box-shadow: 0 10px 30px rgba(47,111,255,0.3); }
+.rd-btn.primary:hover { transform: translateY(-2px); }
+.rd-btn.secondary { background: #f1f5f9; color: #475569; }
+.rd-btn.secondary:hover { background: #e2e8f0; }
+
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

@@ -1,0 +1,129 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+.rc-wrap {
+  min-height: 100vh;
+  width: 100%;
+  font-family: "Pretendard Variable", sans-serif;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px; /* 헤더 공간 */
+  background: linear-gradient(135deg, #f8fafc, #eff6ff);
+}
+
+/* Header: 대시보드 스타일 + 단계 표시 */
+.rc-header {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+  backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+  border-bottom: 1px solid rgba(255,255,255,0.6);
+  display: flex; justify-content: center;
+}
+.rc-headerInner {
+  width: 100%; max-width: 1400px; padding: 16px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.rc-brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.rc-mark { width: 40px; height: 40px; background: linear-gradient(135deg, #fff, #eff6ff); border-radius: 12px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 4px 12px rgba(47,111,255,0.1); color: #2f6fff; }
+.rc-brandName { font-weight: 950; font-size: 18px; color: #0f172a; }
+.rc-brandSub { font-size: 13px; font-weight: 700; color: #64748b; }
+
+/* Stepper (중앙) */
+.rc-steps { display: flex; gap: 24px; }
+.rc-stepItem { display: flex; align-items: center; gap: 8px; opacity: 0.4; transition: 0.3s; }
+.rc-stepItem.active { opacity: 1; color: #2f6fff; font-weight: 800; }
+.rc-stepItem.done { opacity: 1; color: #10b981; }
+.rc-stepCircle { width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+.rc-stepItem.active .rc-stepCircle { background: #2f6fff; color: #fff; }
+.rc-stepItem.done .rc-stepCircle { background: #10b981; color: #fff; }
+
+.rc-closeBtn { padding: 8px 20px; border-radius: 99px; background: #fff; border: 1px solid #e2e8f0; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; }
+.rc-closeBtn:hover { background: #f1f5f9; color: #0f172a; }
+
+/* Main Content: Perfectly Centered */
+.rc-main {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center; /* 가로 중앙 */
+  /* align-items: flex-start;  긴 내용은 스크롤해야 하므로 top align */
+  padding: 40px 20px 80px;
+}
+
+.rc-paper {
+  width: 100%;
+  max-width: 1000px;
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02);
+  padding: 100px 40px 100px 40px;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Typography & Fields */
+.rc-title { font-size: 28px; font-weight: 900; margin-bottom: 40px; color: #0f172a; letter-spacing: -0.5px; }
+.rc-subTitle { font-size: 20px; font-weight: 800; margin: 40px 0 16px; color: #334155; display: flex; align-items: center; gap: 8px; }
+.rc-subTitle::before { content:""; display:block; width:4px; height:20px; background:#2f6fff; border-radius:2px; }
+.rc-miniTitle { font-size: 16px; font-weight: 700; color: #64748b; margin-bottom: 12px; }
+
+/* Grid Layouts */
+.rc-grid-basic { display: grid; grid-template-columns: 180px 1fr; gap: 40px; }
+.rc-photoBox { width: 100%; height: 240px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-weight: 700; cursor: pointer; transition: 0.2s; }
+.rc-photoBox:hover { background: #eff6ff; border-color: #2f6fff; color: #2f6fff; }
+.rc-photoIcon { font-size: 32px; margin-bottom: 8px; }
+
+.rc-inputs { display: flex; flex-direction: column; gap: 20px; }
+.rc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.rc-field { display: flex; flex-direction: column; gap: 8px; }
+.rc-field label { font-size: 16px; font-weight: 800; color: #475569; }
+.rc-field input { padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 16px; transition: 0.2s; background: #fcfcfc; }
+.rc-field input:focus { border-color: #2f6fff; outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(47,111,255,0.1); }
+
+.rc-divider { height: 1px; background: #e2e8f0; margin: 50px 0; border: none; }
+
+/* Selection Buttons */
+.rc-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.rc-cardBtn { padding: 20px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+.rc-cardBtn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.rc-cardBtn.selected { background: #2f6fff; color: #fff; border-color: #2f6fff; box-shadow: 0 10px 25px rgba(47,111,255,0.3); }
+
+.rc-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.rc-chip { padding: 10px 24px; border-radius: 99px; background: #fff; border: 1px solid #cbd5e1; font-size: 15px; font-weight: 600; color: #475569; cursor: pointer; transition: 0.2s; }
+.rc-chip.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+
+/* Lists (Education/Career) */
+.rc-rowGroup { display: grid; grid-template-columns: 140px 1fr 1fr 100px 140px auto; gap: 12px; margin-bottom: 12px; align-items: center; }
+.rc-rowGroup input, .rc-rowGroup select { padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 15px; width: 100%; box-sizing: border-box; }
+.rc-boxGroup { background: #f8fafc; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 16px; }
+.rc-boxGroup textarea { min-height: 100px; padding: 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 15px; line-height: 1.6; resize: vertical; width: 100%; box-sizing: border-box; }
+
+/* Buttons */
+.rc-addBtn { width: 100%; padding: 16px; border: 2px dashed #cbd5e1; background: #fff; border-radius: 14px; color: #64748b; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+.rc-addBtn:hover { background: #f1f5f9; border-color: #94a3b8; color: #334155; }
+.rc-del { width: 36px; height: 36px; border-radius: 50%; background: #fee2e2; color: #ef4444; border: none; font-size: 20px; font-weight: 700; cursor: pointer; display: grid; place-items: center; }
+.rc-textDel { align-self: flex-end; color: #ef4444; font-weight: 700; background: none; border: none; cursor: pointer; text-decoration: underline; }
+
+/* Essay */
+.rc-essay { margin: 80px 0 80px 0; }
+.rc-essay label { display: block; font-size: 18px; font-weight: 800; margin-bottom: 12px; color: #1e293b; }
+.rc-essay textarea { width: 100%; min-height: 320px; padding: 24px; border-radius: 16px; border: 1px solid #cbd5e1; font-size: 16px; line-height: 1.8; background: #fff; transition: 0.2s; box-sizing: border-box; margin-top: 24px; margin-bottom: 24px; }
+.rc-essay textarea:focus { border-color: #2f6fff; outline: none; box-shadow: 0 0 0 4px rgba(47,111,255,0.1); }
+
+/* Navigation */
+.rc-bottomNav { display: flex; justify-content: center; gap: 20px; margin-top: 60px; }
+.rc-navBtn { padding: 16px 50px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.rc-navBtn.back { background: #e2e8f0; color: #475569; }
+.rc-navBtn.back:hover { background: #cbd5e1; }
+.rc-navBtn.next { background: #2f6fff; color: #fff; box-shadow: 0 10px 30px rgba(47,111,255,0.3); }
+.rc-navBtn.next:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(47,111,255,0.4); }
+
+.rc-fullInput { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 16px; box-sizing: border-box; }
+
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Mobile */
+@media (max-width: 1024px) {
+  .rc-grid-basic { grid-template-columns: 1fr; }
+  .rc-photoBox { margin: 0 auto; }
+}

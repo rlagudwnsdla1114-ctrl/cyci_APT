@@ -1,0 +1,81 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+.rl-wrap {
+  min-height: 100vh;
+  font-family: "Pretendard Variable", sans-serif;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px; /* 헤더 공간 */
+  background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #f0fdf4 100%);
+  position: relative;
+}
+
+.rl-wrap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(600px 400px at 10% 20%, rgba(34, 197, 94, 0.08), transparent 60%),
+    radial-gradient(600px 400px at 90% 80%, rgba(34, 197, 94, 0.08), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Header (대시보드와 동일 스타일) */
+.rl-header {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+  backdrop-filter: blur(20px);
+  background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+  border-bottom: 1px solid rgba(255,255,255,.6);
+}
+.rl-headerInner { max-width: 1400px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+.rl-brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.rl-mark { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #fff, #e0ffe8); border: 1px solid rgba(255,255,255,.9); display: grid; place-items: center; color: #22c55e; box-shadow: 0 4px 12px rgba(34,197,94,.15); }
+.rl-brandText { font-size: 18px; font-weight: 800; color: #0f172a; }
+.rl-actions { display: flex; gap: 10px; }
+.rl-pillBtn { padding: 10px 20px; border-radius: 99px; border: 1px solid rgba(255,255,255,.8); background: rgba(255,255,255,.5); font-weight: 700; cursor: pointer; transition: 0.2s; }
+.rl-pillBtn:hover { background: #fff; transform: translateY(-2px); }
+.rl-pillBtn.primary { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; border: none; box-shadow: 0 4px 12px rgba(34,197,94,.3); }
+
+/* Main */
+.rl-main { width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 1; }
+
+.rl-top { margin-bottom: 40px; }
+.rl-pageTitle { font-size: 32px; font-weight: 900; margin-bottom: 24px; color: #0f172a; }
+.rl-count { color: #22c55e; font-size: 24px; vertical-align: top; margin-left: 4px; }
+
+.rl-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.rl-filters { display: flex; gap: 8px; }
+.rl-filterBtn { padding: 10px 20px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; }
+.rl-filterBtn.active { background: #22c55e; color: #fff; border-color: #22c55e; }
+.rl-filterBtn:hover:not(.active) { background: #f8fafc; }
+
+.rl-searchBox { display: flex; gap: 8px; }
+.rl-searchBox input { padding: 12px 16px; border-radius: 12px; border: 1px solid #cbd5e1; width: 280px; font-size: 15px; }
+.rl-searchBox input:focus { outline: none; border-color: #22c55e; }
+.rl-searchBox button { padding: 0 24px; border-radius: 12px; background: #1e293b; color: #fff; font-weight: 700; border: none; cursor: pointer; }
+
+/* List Style */
+.rl-list { display: flex; flex-direction: column; gap: 16px; }
+.rl-card { 
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
+  border: 1px solid #fff; border-radius: 20px;
+  padding: 28px 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.rl-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); background: #fff; }
+
+.rl-company { font-size: 14px; font-weight: 800; color: #64748b; margin-bottom: 8px; }
+.rl-cardTitle { font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 12px; }
+.rl-tags { display: flex; gap: 8px; }
+.rl-tag { font-size: 13px; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-weight: 600; color: #475569; }
+
+.rl-cardRight { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.rl-dDay { background: #fee2e2; color: #ef4444; font-weight: 800; padding: 6px 12px; border-radius: 8px; font-size: 14px; }
+.rl-meta { font-size: 13px; color: #94a3b8; font-weight: 500; }
