@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, use } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import BackgroundShell from "../../components/BackgroundShell";
+import axios from "axios";
 import "./ResumeCreate.css";
 
 const JOB_CATEGORIES = [
@@ -21,6 +22,25 @@ const MILITARY_TYPES = ["군필", "미필", "면제", "해당없음"];
 export default function ResumeCreate() {
   const nav = useNavigate();
   const [step, setStep] = useState(1);
+   const [form, setForm] = useState({
+    jobseekerName: "",
+    jobseekerEmail: "",
+    jobseekerPhone: "",
+    jobseekerBirth: "",
+  });
+
+  
+  useEffect(() => {
+      axios.get('http://localhost:8080/api/cover/userinfo', {
+        withCredentials: true,
+      })
+      .then(res => {
+        console.log(res.data);
+        setForm(res.data);
+      });
+  },  []);
+  
+
 
   // 데이터 상태
   const [basicInfo, setBasicInfo] = useState({ name: "", birthday: "", email: "", phone: "", address: "" });
@@ -98,12 +118,12 @@ export default function ResumeCreate() {
                   </div>
                   <div className="rc-inputs">
                     <div className="rc-row">
-                      <div className="rc-field"><label>이름</label><input type="text" name="name" value={basicInfo.name} onChange={handleBasicChange} placeholder="홍길동" /></div>
-                      <div className="rc-field"><label>생년월일</label><input type="text" name="birthday" value={basicInfo.birthday} onChange={handleBasicChange} placeholder="YYYY.MM.DD" /></div>
+                      <div className="rc-field"><label>이름</label><input type="text" name="name" value={form.jobseekerName} readOnly /></div>
+                      <div className="rc-field"><label>생년월일</label><input type="text" name="birthday" value={form.jobseekerBirth} readOnly /></div>
                     </div>
                     <div className="rc-row">
-                      <div className="rc-field"><label>이메일</label><input type="text" name="email" value={basicInfo.email} onChange={handleBasicChange} placeholder="example@email.com" /></div>
-                      <div className="rc-field"><label>연락처</label><input type="text" name="phone" value={basicInfo.phone} onChange={handleBasicChange} placeholder="010-0000-0000" /></div>
+                      <div className="rc-field"><label>이메일</label><input type="text" name="email" value={form.jobseekerEmail} readOnly /></div>
+                      <div className="rc-field"><label>연락처</label><input type="text" name="phone" value={form.jobseekerPhone} readOnly /></div>
                     </div>
                     <div className="rc-field"><label>주소</label><input type="text" name="address" value={basicInfo.address} onChange={handleBasicChange} placeholder="거주지 주소 입력" /></div>
                   </div>
