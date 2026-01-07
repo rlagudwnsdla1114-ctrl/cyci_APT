@@ -13,21 +13,16 @@ export default function Signup() {
   });
 
   const [jobseeker, setJobseeker] = useState({
-    desiredRole: "",
-    experience: "신입",
-    skills: "",
-    portfolio: "",
-    workType: "무관",
-    salaryRange: "협의",
+    name: "",
+    birthDate: "", // 숫자 8자리 입력 방식
+    phone: "",
   });
 
   const [company, setCompany] = useState({
     companyName: "",
     bizNumber: "",
-    industry: "",
+    bizPhone: "",
     companySize: "1~10명",
-    website: "",
-    hiringLocation: "",
   });
 
   const fields = useMemo(() => {
@@ -47,11 +42,11 @@ export default function Signup() {
     if (role === "company") {
       if (!company.companyName) e.companyName = "기업명을 입력해 주세요.";
       if (!company.bizNumber) e.bizNumber = "사업자등록번호를 입력해 주세요.";
-      if (!company.industry) e.industry = "업종을 선택해 주세요.";
-      if (!company.hiringLocation) e.hiringLocation = "채용 근무지를 입력해 주세요.";
+      if (!company.bizPhone) e.bizPhone = "대표번호를 입력해 주세요.";
     } else {
-      if (!jobseeker.desiredRole) e.desiredRole = "희망 직무를 입력해 주세요.";
-      if (!jobseeker.skills) e.skills = "기술 스택을 최소 1개는 적어주세요.";
+      if (!jobseeker.name) e.name = "이름을 입력해 주세요.";
+      if (jobseeker.birthDate.length !== 8) e.birthDate = "생년월일 8자리를 입력해 주세요 (예: 19980505).";
+      if (!jobseeker.phone) e.phone = "전화번호를 입력해 주세요.";
     }
 
     return e;
@@ -63,19 +58,12 @@ export default function Signup() {
     e.preventDefault();
     if (!canSubmit) return;
 
-    // TODO: API 연동 위치
     console.log("SIGNUP PAYLOAD:", { role, ...fields });
-
-    alert(
-      role === "company"
-        ? "기업 회원가입 완료(예시) — 다음 단계로 로그인/온보딩 연결하면 돼요."
-        : "구직자 회원가입 완료(예시) — 다음 단계로 로그인/온보딩 연결하면 돼요."
-    );
+    alert(role === "company" ? "기업 회원가입 완료" : "구직자 회원가입 완료");
   };
 
   return (
     <div className="signup-page">
-      {/* 배경은 “전과 동일”하게 쓰려면 기존 배경 wrapper class를 여기 컨테이너에 그대로 적용하면 돼요 */}
       <div className="signup-bg" />
 
       <main className="signup-shell">
@@ -88,7 +76,6 @@ export default function Signup() {
               </p>
             </div>
 
-            {/* 슬라이더(세그먼트) */}
             <div className={`segmented ${role}`}>
               <button
                 type="button"
@@ -110,7 +97,7 @@ export default function Signup() {
 
           <form className="signup-form" onSubmit={onSubmit}>
             <div className="grid">
-              {/* 공통 */}
+              {/* 공통 필드 */}
               <Field
                 label="이메일"
                 placeholder="example@domain.com"
@@ -118,9 +105,7 @@ export default function Signup() {
                 onChange={(v) => setCommon((p) => ({ ...p, email: v }))}
                 error={errors.email}
                 type="email"
-                autoComplete="email"
               />
-
               <Field
                 label="지역"
                 type="select"
@@ -129,28 +114,24 @@ export default function Signup() {
                 error={errors.region}
                 options={["", "서울", "경기", "인천", "대전", "대구", "부산", "광주", "세종", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"]}
               />
-
               <Field
                 label="비밀번호"
+                type="password"
                 placeholder="8자 이상"
                 value={common.password}
                 onChange={(v) => setCommon((p) => ({ ...p, password: v }))}
                 error={errors.password}
-                type="password"
-                autoComplete="new-password"
               />
-
               <Field
                 label="비밀번호 확인"
+                type="password"
                 placeholder="비밀번호 다시 입력"
                 value={common.password2}
                 onChange={(v) => setCommon((p) => ({ ...p, password2: v }))}
                 error={errors.password2}
-                type="password"
-                autoComplete="new-password"
               />
 
-              {/* 역할별 */}
+              {/* 역할별 필드 */}
               {role === "company" ? (
                 <>
                   <Field
@@ -168,12 +149,11 @@ export default function Signup() {
                     error={errors.bizNumber}
                   />
                   <Field
-                    label="업종"
-                    type="select"
-                    value={company.industry}
-                    onChange={(v) => setCompany((p) => ({ ...p, industry: v }))}
-                    error={errors.industry}
-                    options={["", "IT/소프트웨어", "제조", "유통/물류", "금융", "교육", "의료/바이오", "공공/기관", "기타"]}
+                    label="기업 대표번호"
+                    placeholder="예) 02-1234-5678"
+                    value={company.bizPhone}
+                    onChange={(v) => setCompany((p) => ({ ...p, bizPhone: v }))}
+                    error={errors.bizPhone}
                   />
                   <Field
                     label="규모"
@@ -182,62 +162,30 @@ export default function Signup() {
                     onChange={(v) => setCompany((p) => ({ ...p, companySize: v }))}
                     options={["1~10명", "11~50명", "51~200명", "201~1000명", "1000명 이상"]}
                   />
-                  <Field
-                    label="웹사이트(선택)"
-                    placeholder="https://"
-                    value={company.website}
-                    onChange={(v) => setCompany((p) => ({ ...p, website: v }))}
-                  />
-                  <Field
-                    label="채용 근무지"
-                    placeholder="예) 서울 강남 / 재택 / 혼합"
-                    value={company.hiringLocation}
-                    onChange={(v) => setCompany((p) => ({ ...p, hiringLocation: v }))}
-                    error={errors.hiringLocation}
-                  />
                 </>
               ) : (
                 <>
                   <Field
-                    label="희망 직무"
-                    placeholder="예) 프론트엔드 개발자"
-                    value={jobseeker.desiredRole}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, desiredRole: v }))}
-                    error={errors.desiredRole}
+                    label="이름"
+                    placeholder="이름을 입력해 주세요"
+                    value={jobseeker.name}
+                    onChange={(v) => setJobseeker((p) => ({ ...p, name: v }))}
+                    error={errors.name}
                   />
                   <Field
-                    label="경력"
-                    type="select"
-                    value={jobseeker.experience}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, experience: v }))}
-                    options={["신입", "1~3년", "3~5년", "5년 이상"]}
+                    label="생년월일"
+                    placeholder="예) 19980505 (8자리)"
+                    value={jobseeker.birthDate}
+                    onChange={(v) => setJobseeker((p) => ({ ...p, birthDate: v.replace(/[^0-9]/g, "") }))}
+                    error={errors.birthDate}
+                    maxLength={8}
                   />
                   <Field
-                    label="기술 스택"
-                    placeholder="예) React, TypeScript, Node.js"
-                    value={jobseeker.skills}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, skills: v }))}
-                    error={errors.skills}
-                  />
-                  <Field
-                    label="포트폴리오/깃허브(선택)"
-                    placeholder="https://"
-                    value={jobseeker.portfolio}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, portfolio: v }))}
-                  />
-                  <Field
-                    label="근무 형태"
-                    type="select"
-                    value={jobseeker.workType}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, workType: v }))}
-                    options={["무관", "재택", "출근", "혼합"]}
-                  />
-                  <Field
-                    label="희망 연봉"
-                    type="select"
-                    value={jobseeker.salaryRange}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, salaryRange: v }))}
-                    options={["협의", "2,000~3,000", "3,000~4,000", "4,000~5,000", "5,000+"]}
+                    label="전화번호"
+                    placeholder="010-0000-0000"
+                    value={jobseeker.phone}
+                    onChange={(v) => setJobseeker((p) => ({ ...p, phone: v }))}
+                    error={errors.phone}
                   />
                 </>
               )}
@@ -249,14 +197,12 @@ export default function Signup() {
                 checked={common.agree}
                 onChange={(e) => setCommon((p) => ({ ...p, agree: e.target.checked }))}
               />
-              <span>
-                (필수) 서비스 이용약관 및 개인정보 처리방침에 동의합니다.
-              </span>
+              <span> (필수) 서비스 이용약관 및 개인정보 처리방침에 동의합니다. </span>
             </label>
             {errors.agree && <p className="err">{errors.agree}</p>}
 
             <div className="actions">
-              <button className="btn ghost" type="button" onClick={() => history.back()}>
+              <button className="btn ghost" type="button" onClick={() => window.history.back()}>
                 뒤로가기
               </button>
               <button className="btn primary" type="submit" disabled={!canSubmit}>
@@ -274,30 +220,14 @@ export default function Signup() {
   );
 }
 
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  error,
-  type = "text",
-  autoComplete,
-  options = [],
-}) {
+function Field({ label, value, onChange, placeholder, error, type = "text", options = [], maxLength }) {
   return (
     <div className={`field ${error ? "has-error" : ""}`}>
       <label className="field-label">{label}</label>
-
       {type === "select" ? (
-        <select
-          className="control"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        >
+        <select className="control" value={value} onChange={(e) => onChange(e.target.value)}>
           {options.map((op) => (
-            <option key={op} value={op}>
-              {op === "" ? "선택" : op}
-            </option>
+            <option key={op} value={op}>{op === "" ? "선택" : op}</option>
           ))}
         </select>
       ) : (
@@ -307,10 +237,9 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           type={type}
-          autoComplete={autoComplete}
+          maxLength={maxLength}
         />
       )}
-
       {error && <p className="err">{error}</p>}
     </div>
   );

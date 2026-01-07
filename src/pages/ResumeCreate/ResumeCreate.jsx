@@ -1,7 +1,7 @@
 import { useState, useEffect, use } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BackgroundShell from "../../components/BackgroundShell";
-import axios from "axios";
+import axios from "axios"; 
 import "./ResumeCreate.css";
 
 const JOB_CATEGORIES = [
