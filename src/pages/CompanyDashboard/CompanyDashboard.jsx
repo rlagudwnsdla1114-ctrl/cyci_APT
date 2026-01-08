@@ -104,14 +104,29 @@ export default function CompanyDashboard() {
     setFlipped(newFlipped);
   };
 
-  // ✅ 로그아웃 로직
+
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userRole");
-    nav("/login"); 
+    goHome();
   };
 
-  const goHome = () => nav("/select");
+  const goHome = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const userRole = localStorage.getItem("userRole");
+
+    if(isLoggedIn) {
+      if(userRole === "COMPANY") {
+        nav("/company-dashboard");
+      }
+      else if(userRole === "SEEKER") {
+        nav("/jobseeker");
+      }
+    }
+    else {
+      nav("/select");
+    }
+  }
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
   
@@ -139,7 +154,7 @@ export default function CompanyDashboard() {
                 </svg>
               </div>
               <div className="jsd-brandText">
-                <div className="jsd-brandName">잡매치</div>
+                <div className="jsd-brandName" >잡매치</div>
                 <div className="jsd-brandSub">기업 메인</div>
               </div>
             </div>
@@ -190,9 +205,6 @@ export default function CompanyDashboard() {
               <div className="cd-cta">
                 <button className="cd-ctaBtn primary" type="button" onClick={() => nav('/helpwanted')}>
                   공고 작성
-                </button>
-                <button className="cd-ctaBtn" type="button" onClick={() => window.alert("조건 관리(준비중)")}>
-                  조건 관리
                 </button>
                 <button className="cd-ctaBtn" type="button" onClick={() => window.alert("AI 추천 인재(준비중)")}>
                   추천 인재 보기
@@ -416,7 +428,6 @@ export default function CompanyDashboard() {
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="briefcase" />
                 </div>
-                <span className="cd-tag">작성중 80%</span>
               </div>
               <h3>채용 공고 입력/수정</h3>
               <p>채용 조건을 입력하세요</p>
@@ -428,7 +439,6 @@ export default function CompanyDashboard() {
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="check" />
                 </div>
-                <span className="cd-tag">작성중 90%</span>
               </div>
               <h3>필수/우대 조건 관리</h3>
               <p>상세 조건을 설정하세요</p>
@@ -440,7 +450,6 @@ export default function CompanyDashboard() {
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="spark" />
                 </div>
-                <span className="cd-tag">NEW</span>
               </div>
               <h3>AI 추천 인재</h3>
               <p>조건에 맞는 인재를 확인하세요</p>
@@ -452,7 +461,6 @@ export default function CompanyDashboard() {
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="users" />
                 </div>
-                <span className="cd-tag">신규 지원</span>
               </div>
               <h3>지원자 관리</h3>
               <p>지원자 현황을 확인하세요</p>
