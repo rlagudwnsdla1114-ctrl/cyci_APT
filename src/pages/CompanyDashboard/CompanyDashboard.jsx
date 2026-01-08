@@ -231,19 +231,6 @@ export default function CompanyDashboard() {
                           </div>
                           <div className="cd-statBig">3건</div>
                           <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* 뒷면 */}
-                    <div className="cd-flipCardBack">
-                      <div className="cd-statContent">
-                        <div className="cd-backContent">
-                          <div className="cd-backTitle">공고 분석</div>
-                          <ul className="cd-backList">
-                            <li>○ 프론트엔드: 5명 지원</li>
-                            <li>○ 백엔드: 7명 지원</li>
-                            <li>○ 데이터분석가: 2명 지원</li>
-                          </ul>
                           <button className="cd-backBtn" onClick={() => nav('/helpwanted')} type="button">
                             공고 관리하기
                           </button>
@@ -275,29 +262,6 @@ export default function CompanyDashboard() {
                         </div>
                       </div>
                     </div>
-                    {/* 뒷면 */}
-                    <div className="cd-flipCardBack">
-                      <div className="cd-statContent">
-                        <div className="cd-backContent">
-                          <div className="cd-backTitle">지원자 분석</div>
-                          <div className="cd-backStats">
-                            <div className="cd-backStat">
-                              <span className="cd-backStatLabel">신규</span>
-                              <span className="cd-backStatValue">3명</span>
-                            </div>
-                            <div className="cd-backStat">
-                              <span className="cd-backStatLabel">검토중</span>
-                              <span className="cd-backStatValue">7명</span>
-                            </div>
-                            <div className="cd-backStat">
-                              <span className="cd-backStatLabel">최종</span>
-                              <span className="cd-backStatValue">4명</span>
-                            </div>
-                          </div>
-                          <p className="cd-backAdvice">신규 지원자를 확인하세요!</p>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -310,41 +274,6 @@ export default function CompanyDashboard() {
                   onKeyDown={(e) => e.key === "Enter" && toggleFlip(2)}
                 >
                   <div className="cd-flipCardInner">
-                    {/* 앞면 */}
-                    <div className="cd-flipCardFront">
-                      <div className="cd-statContent">
-                        <div style={{ width: '100%' }}>
-                          <div className="cd-cardTitle">
-                            <span className="cd-cardIcon">🎯</span>
-                            적합도 높은 지원자
-                          </div>
-                          <div className="cd-topCandidatesList">
-                            <div className="cd-candidateItem">
-                              <div className="cd-candidateRank">1</div>
-                              <div className="cd-candidateInfo">
-                                <div className="cd-candidateName">김준호</div>
-                                <div className="cd-candidateScore">88%</div>
-                              </div>
-                            </div>
-                            <div className="cd-candidateItem">
-                              <div className="cd-candidateRank">2</div>
-                              <div className="cd-candidateInfo">
-                                <div className="cd-candidateName">이서진</div>
-                                <div className="cd-candidateScore">85%</div>
-                              </div>
-                            </div>
-                            <div className="cd-candidateItem">
-                              <div className="cd-candidateRank">3</div>
-                              <div className="cd-candidateInfo">
-                                <div className="cd-candidateName">박지현</div>
-                                <div className="cd-candidateScore">82%</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* 뒷면 */}
                     <div className="cd-flipCardBack">
                       <div className="cd-statContent">
                         <div className="cd-backContent">
@@ -405,14 +334,6 @@ export default function CompanyDashboard() {
                     </div>
                   </div>
 
-                  <div className="cd-idSection">
-                    <div className="cd-idSectionTitle">최근 공고</div>
-                    <ul className="cd-idList">
-                      <li>프론트엔드 개발자 · 12/18</li>
-                      <li>백엔드 개발자 · 12/10</li>
-                    </ul>
-                  </div>
-
                   <div className="cd-idBrand" aria-hidden="true">
                     JOB MATCH · COMPANY ID
                   </div>
@@ -423,7 +344,7 @@ export default function CompanyDashboard() {
 
           <div className="cd-sectionTitle">핵심 기능</div>
           <section className="cd-grid" aria-label="기업 기능 카드">
-            <button className="cd-card" type="button" onClick={() => nav('/helpwanted')}> 
+            <button className="cd-card" type="button" onClick={() => nav('/helpwanted/create')}>
               <div className="cd-cardTop">
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="briefcase" />
@@ -432,17 +353,6 @@ export default function CompanyDashboard() {
               <h3>채용 공고 입력/수정</h3>
               <p>채용 조건을 입력하세요</p>
               <div className="cd-meta">마지막 수정: 12/16</div>
-            </button>
-
-            <button className="cd-card" type="button" onClick={() => window.alert("필수/우대 조건 관리 (준비중)")}>
-              <div className="cd-cardTop">
-                <div className="cd-cardIco" aria-hidden="true">
-                  <Ico name="check" />
-                </div>
-              </div>
-              <h3>필수/우대 조건 관리</h3>
-              <p>상세 조건을 설정하세요</p>
-              <div className="cd-meta">마지막 수정: 12/17</div>
             </button>
 
             <button className="cd-card" type="button" onClick={() => window.alert("AI 추천 인재 (준비중)")}>
