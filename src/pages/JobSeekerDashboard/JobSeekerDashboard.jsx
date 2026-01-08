@@ -48,10 +48,26 @@ export default function JobSeekerDashboard() {
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userRole");
+    goHome();
     window.location.reload();
   };
 
-  const goHome = () => nav("/select");
+  const goHome = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const userRole = localStorage.getItem("userRole");
+
+    if(isLoggedIn) {
+      if(userRole === "COMPANY") {
+        nav("/company-dashboard");
+      }
+      else if(userRole === "SEEKER") {
+        nav("/jobseeker");
+      }
+    }
+    else {
+      nav("/select");
+    }
+  }
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
   const goResume = () => nav("/resume-create");
