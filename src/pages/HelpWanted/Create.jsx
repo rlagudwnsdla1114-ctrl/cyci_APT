@@ -5,7 +5,9 @@ import './Create.css';
 
 export default function Create() {
   const nav = useNavigate();
-  const [form, setForm] = useState({ title: '', content: '' });
+  const [form, setForm] = useState({ view: '', url: '', personnel: '', title: '', employment : '' , personal_history: '', education: '', salary: '', support_period: '', skills: ''});
+
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
