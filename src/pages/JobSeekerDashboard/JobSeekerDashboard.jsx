@@ -35,6 +35,15 @@ function Ico({ name }) {
           <path d="M12 18v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
+      case "lock-solid":
+        return (
+          <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 0 0-8 0v2Z"
+              fill="currentColor"
+            />
+          </svg>
+        );
     default:
       return null;
   }
@@ -93,8 +102,9 @@ export default function JobSeekerDashboard() {
             </div>
 
             <nav className="jsd-nav" aria-label="메인 메뉴">
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("준비중")}>채용정보</button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav('/helpwanted')}>채용정보</button>
               <button className="jsd-navBtn" type="button" onClick={() => window.alert("준비중")}>AI 매칭</button>
+              <button className="jsd-navBtn" type="button" onClick={() => window.alert("준비중")}>AI 모의 면접</button>
             </nav>
 
             <div className="jsd-actions">
@@ -227,8 +237,16 @@ export default function JobSeekerDashboard() {
 
             <button className="jsd-card" type="button" onClick={() => window.alert("준비중")}>
               <div className="jsd-cardTop">
+                <div className="jsd-cardIco"><Ico name="lock-solid" /></div>
+              </div>
+              <h3>회원 정보 수정</h3>
+              <p>보안을 위해 회원자님의 정보를 보호하세요!</p>
+              <div className="jsd-meta">보안 중요!</div>
+            </button>
+
+            <button className="jsd-card" type="button" onClick={() => window.alert("준비중")}>
+              <div className="jsd-cardTop">
                 <div className="jsd-cardIco"><Ico name="spark" /></div>
-                <span className="jsd-tag">NEW</span>
               </div>
               <h3>AI 매칭 결과</h3>
               <p>나에게 맞는 기업을 확인하세요</p>
@@ -238,9 +256,8 @@ export default function JobSeekerDashboard() {
             <button className="jsd-card" type="button" onClick={() => window.alert("준비중")}>
               <div className="jsd-cardTop">
                 <div className="jsd-cardIco"><Ico name="mic" /></div>
-                <span className="jsd-tag">최근 점수</span>
               </div>
-              <h3>모의 면접</h3>
+              <h3>AI 모의 면접 결과</h3>
               <p>AI와 함께 면접 연습하기</p>
               <div className="jsd-meta">연습 진행 중</div>
             </button>
