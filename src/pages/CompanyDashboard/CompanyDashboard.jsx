@@ -87,6 +87,15 @@ function Ico({ name }) {
           />
         </svg>
       );
+      case "lock-solid":
+        return (
+          <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 0 0-8 0v2Z"
+              fill="currentColor"
+            />
+          </svg>
+        );
     default:
       return null;
   }
@@ -161,7 +170,7 @@ export default function CompanyDashboard() {
 
             <nav className="jsd-nav" aria-label="메인 메뉴">
               <button className="jsd-navBtn" type="button" onClick={() => window.alert("인재 찾기(준비중)")}>인재 찾기</button>
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("공고 관리(준비중)")}>공고 관리</button>
+              <button className="jsd-navBtn" type="button" onClick={() => window.alert("공고 관리(준비중)")}>AI 추천 인재</button>
             </nav>
 
             {/* ✅ 버튼 영역: CSS 구조를 100% 유지하며 조건부 렌더링 적용 */}
@@ -207,7 +216,7 @@ export default function CompanyDashboard() {
                   공고 작성
                 </button>
                 <button className="cd-ctaBtn" type="button" onClick={() => window.alert("AI 추천 인재(준비중)")}>
-                  추천 인재 보기
+                  추천 인재
                 </button>
               </div>
 
@@ -222,7 +231,7 @@ export default function CompanyDashboard() {
                       </div>
                       <div className="cd-statBig">3건</div>
                       <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
-                      <button className="cd-backBtn" onClick={() => nav('/helpwanted')}>
+                      <button className="cd-backBtn" onClick={() => window.alert("공고 현황(준비중)")}>
                         공고 관리하기
                       </button>
                     </div>
@@ -306,7 +315,7 @@ export default function CompanyDashboard() {
             </div>
           </section>
 
-          <div className="cd-sectionTitle">핵심 기능</div>
+          <div className="cd-sectionTitle">내 프로필 관리</div>
           <section className="cd-grid" aria-label="기업 기능 카드">
             <button className="cd-card" type="button" onClick={() => nav('/helpwanted/create')}>
               <div className="cd-cardTop">
@@ -316,18 +325,16 @@ export default function CompanyDashboard() {
               </div>
               <h3>채용 공고 입력/수정</h3>
               <p>채용 조건을 입력하세요</p>
-              <div className="cd-meta">마지막 수정: 12/16</div>
             </button>
 
-            <button className="cd-card" type="button" onClick={() => window.alert("AI 추천 인재 (준비중)")}>
+            <button className="cd-card" type="button" onClick={() => window.alert("(준비중)")}>
               <div className="cd-cardTop">
                 <div className="cd-cardIco" aria-hidden="true">
-                  <Ico name="spark" />
+                  <Ico name="lock-solid" />
                 </div>
               </div>
-              <h3>AI 추천 인재</h3>
-              <p>조건에 맞는 인재를 확인하세요</p>
-              <div className="cd-meta">Top 1 매칭률 82%</div>
+              <h3>회원 정보 수정</h3>
+              <p>보안을 위해 회원자님의 정보를 보호하세요!</p>
             </button>
 
             <button className="cd-card" type="button" onClick={() => window.alert("지원자 관리 (준비중)")}>
@@ -338,7 +345,6 @@ export default function CompanyDashboard() {
               </div>
               <h3>지원자 관리</h3>
               <p>지원자 현황을 확인하세요</p>
-              <div className="cd-meta">3명</div>  
             </button>
           </section>
         </main>
