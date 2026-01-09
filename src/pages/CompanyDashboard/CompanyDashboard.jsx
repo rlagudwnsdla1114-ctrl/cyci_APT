@@ -211,97 +211,61 @@ export default function CompanyDashboard() {
                 </button>
               </div>
 
-              <div className="cd-stats" aria-label="요약 지표">
-                {/* 공고 현황 */}
-                <div 
-                  className={`cd-stat cd-flipCard ${flipped[0] ? 'flipped' : ''}`}
-                  onClick={() => toggleFlip(0)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === "Enter" && toggleFlip(0)}
-                >
-                  <div className="cd-flipCardInner">
-                    {/* 앞면 */}
-                    <div className="cd-flipCardFront">
-                      <div className="cd-statContent">
-                        <div style={{ width: '100%' }}>
-                          <div className="cd-cardTitle">
-                            <span className="cd-cardIcon">📢</span>
-                            공고 현황
-                          </div>
-                          <div className="cd-statBig">3건</div>
-                          <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
-                          <button className="cd-backBtn" onClick={() => nav('/helpwanted')} type="button">
-                            공고 관리하기
-                          </button>
-                        </div>
+              {/* 통계 섹션 전체 */}
+              <div className="cd-stats">
+                  
+                  {/* 1. 공고 현황 카드 */}
+                  <div className="cd-stat">
+                    <div className="cd-statContent">
+                      <div className="cd-cardTitle">
+                        <span className="cd-cardIcon">📢</span> 공고 현황
                       </div>
+                      <div className="cd-statBig">3건</div>
+                      <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
+                      <button className="cd-backBtn" onClick={() => nav('/helpwanted')}>
+                        공고 관리하기
+                      </button>
                     </div>
                   </div>
-                </div>
 
-                {/* 지원자 현황 */}
-                <div 
-                  className={`cd-stat cd-flipCard ${flipped[1] ? 'flipped' : ''}`}
-                  onClick={() => toggleFlip(1)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === "Enter" && toggleFlip(1)}
-                >
-                  <div className="cd-flipCardInner">
-                    {/* 앞면 */}
-                    <div className="cd-flipCardFront">
-                      <div className="cd-statContent">
-                        <div style={{ width: '100%' }}>
-                          <div className="cd-cardTitle">
-                            <span className="cd-cardIcon">👥</span>
-                            지원자 현황
-                          </div>
-                          <div className="cd-statBig">14명</div>
-                          <div className="cd-cardSubtext">신규 3 · 검토중 7 · 최종 4</div>
-                        </div>
+                  {/* 2. 지원자 현황 카드 */}
+                  <div className="cd-stat">
+                    <div className="cd-statContent">
+                      <div className="cd-cardTitle">
+                        <span className="cd-cardIcon">👥</span> 지원자 현황
                       </div>
+                      <div className="cd-statBig">14명</div>
+                      <div className="cd-cardSubtext">신규 3 · 검토중 7 · 최종 4</div>
+                      <button className="cd-backBtn" onClick={() => window.alert("지원 현황으로 이동")}>
+                        지원자 보기
+                      </button>
                     </div>
                   </div>
-                </div>
 
-                {/* 적합도 높은 지원자 TOP 3 */}
-                <div 
-                  className={`cd-stat cd-flipCard ${flipped[2] ? 'flipped' : ''}`}
-                  onClick={() => toggleFlip(2)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === "Enter" && toggleFlip(2)}
-                >
-                  <div className="cd-flipCardInner">
-                    <div className="cd-flipCardBack">
-                      <div className="cd-statContent">
-                        <div className="cd-backContent">
-                          <div className="cd-backTitle">TOP 3 상세</div>
-                          <ul className="cd-backCandidateList">
-                            <li>
-                              <strong>1. 김준호</strong><br/>
-                              <span className="cd-backCandidateScore">88% · 경력 5년</span>
-                            </li>
-                            <li>
-                              <strong>2. 이서진</strong><br/>
-                              <span className="cd-backCandidateScore">85% · 경력 3년</span>
-                            </li>
-                            <li>
-                              <strong>3. 박지현</strong><br/>
-                              <span className="cd-backCandidateScore">82% · 경력 2년</span>
-                            </li>
-                          </ul>
-                          <button className="cd-backBtn" onClick={() => window.alert("지원자 상세보기 (준비중)")} type="button">
-                            지원자 보기
-                          </button>
-                        </div>
+                  {/* 3. 매칭 상세 카드 */}
+                  <div className="cd-stat">
+                    <div className="cd-statContent">
+                      <div className="cd-cardTitle">
+                        <span className="cd-cardIcon">🏆</span> TOP 3 상세
                       </div>
+                      <ul className="cd-backCandidateList">
+                        <li>
+                          <strong>1. 김준호</strong>
+                          <span className="cd-backCandidateScore">88% · 경력 5년</span>
+                        </li>
+                        <li>
+                          <strong>2. 이서진</strong>
+                          <span className="cd-backCandidateScore">85% · 경력 3년</span>
+                        </li>
+                        <li>
+                          <strong>3. 오현</strong>
+                          <span className="cd-backCandidateScore">70% · 경력 2년</span>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
             <div className="cd-heroRight">
               <aside className="cd-idBadge" aria-label="내 프로필(사원증)">
@@ -374,7 +338,7 @@ export default function CompanyDashboard() {
               </div>
               <h3>지원자 관리</h3>
               <p>지원자 현황을 확인하세요</p>
-              <div className="cd-meta">3명</div>
+              <div className="cd-meta">3명</div>  
             </button>
           </section>
         </main>
