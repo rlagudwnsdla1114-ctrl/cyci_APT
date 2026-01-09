@@ -189,10 +189,6 @@ export default function CompanyDashboard() {
                   <button className="jsd-pillBtn" type="button" onClick={handleLogout}>
                     로그아웃
                   </button>
-                  {/* 기업페이지이므로 마이페이지 대신 '기업 관리'로 표시 가능 */}
-                  <button className="jsd-pillBtn primary" type="button" onClick={() => setGateOpen(true)}>
-                    기업 관리
-                  </button>
                 </>
               )}
             </div>

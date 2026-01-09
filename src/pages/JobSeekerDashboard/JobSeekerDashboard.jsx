@@ -116,7 +116,6 @@ export default function JobSeekerDashboard() {
               ) : (
                 <>
                   <button className="jsd-pillBtn" type="button" onClick={handleLogout}>로그아웃</button>
-                  <button className="jsd-pillBtn primary" type="button" onClick={() => setGateOpen(true)}>마이페이지</button>
                 </>
               )}
             </div>
@@ -164,7 +163,6 @@ export default function JobSeekerDashboard() {
                           <li>커뮤니케이션: 8.5/10</li>
                           <li>자기주도성: 9/10</li>
                         </ul>
-                        <button className="jsd-backBtn" onClick={() => window.alert("준비중")} type="button">강점 개발하기</button>
                       </div>
                     </div>
                     {/* [이동] 삭제된 '나의 프로필' 탭에 있던 '역량 분석 결과'를 이곳으로 옮김 */}
