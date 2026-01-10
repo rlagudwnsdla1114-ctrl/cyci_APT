@@ -1,0 +1,166 @@
+/* 전체 레이아웃 */
+.mi-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Pretendard Variable", sans-serif;
+  color: #0b1635;
+  padding: 20px;
+}
+
+/* 카드 공통 스타일 */
+.mi-card, .mi-result-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.mi-icon-3d { font-size: 48px; margin-bottom: 20px; }
+.mi-title { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+.mi-desc { color: #555; line-height: 1.6; margin-bottom: 30px; font-size: 15px; }
+
+.mi-info-box {
+  background: rgba(47, 111, 255, 0.08);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2f6fff;
+}
+
+.mi-btn-start {
+  background: #0b1635;
+  color: white;
+  padding: 16px 32px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 100%;
+}
+.mi-btn-start:hover { transform: scale(1.02); background: #1a2b5e; }
+
+/* 로딩 애니메이션 */
+.mi-spinner {
+  width: 50px; height: 50px; border: 4px solid #eee; border-top-color: #0b1635;
+  border-radius: 50%; margin: 0 auto 20px; animation: spin 1s infinite linear;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 면접 진행 화면 */
+.mi-interview-layout {
+  width: 100%; max-width: 700px; text-align: center;
+}
+
+.mi-question-box {
+  margin-bottom: 50px;
+}
+.mi-badge {
+  background: #2f6fff; color: white; padding: 6px 12px;
+  border-radius: 20px; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.mi-q-text {
+  margin-top: 20px; font-size: 24px; line-height: 1.5; font-weight: 700;
+  word-break: keep-all;
+}
+
+/* 오디오 비주얼라이저 (말할 때 움직이는 바) */
+.mi-audio-visualizer {
+  height: 60px; display: flex; justify-content: center; align-items: center; gap: 6px;
+  margin-bottom: 50px;
+}
+.mi-audio-visualizer .bar {
+  width: 8px; height: 10px; background: #ddd; border-radius: 4px;
+  transition: 0.2s;
+}
+.mi-audio-visualizer.active .bar {
+  background: #2f6fff;
+  animation: wave 1s infinite ease-in-out;
+}
+.mi-audio-visualizer.active .bar:nth-child(1) { animation-delay: 0.1s; }
+.mi-audio-visualizer.active .bar:nth-child(2) { animation-delay: 0.2s; }
+.mi-audio-visualizer.active .bar:nth-child(3) { animation-delay: 0.3s; }
+.mi-audio-visualizer.active .bar:nth-child(4) { animation-delay: 0.2s; }
+.mi-audio-visualizer.active .bar:nth-child(5) { animation-delay: 0.1s; }
+
+@keyframes wave {
+  0%, 100% { height: 10px; }
+  50% { height: 50px; }
+}
+
+.mi-mic-btn {
+  width: 70px; height: 70px; border-radius: 50%; border: none;
+  background: #2f6fff; color: white; font-size: 28px;
+  cursor: pointer; box-shadow: 0 10px 30px rgba(47, 111, 255, 0.4);
+  transition: 0.2s; display: flex; align-items: center; justify-content: center; margin: 0 auto;
+}
+.mi-mic-btn:hover { transform: scale(1.1); }
+.mi-mic-btn.stop { background: #ff4b4b; box-shadow: 0 10px 30px rgba(255, 75, 75, 0.4); }
+
+.mi-status-text { margin-top: 16px; color: #888; font-size: 14px; }
+
+/* 결과 화면 */
+.mi-score-circle {
+  font-size: 60px; font-weight: 800; color: #2f6fff; margin: 20px 0;
+}
+.mi-score-circle .label { font-size: 20px; color: #888; }
+
+.mi-feedback-detail { text-align: left; background: rgba(255,255,255,0.6); padding: 20px; border-radius: 16px; margin-bottom: 24px; }
+.mi-fb-item { margin-bottom: 16px; }
+.mi-fb-item h4 { margin: 0 0 6px; font-size: 15px; color: #333; }
+.mi-fb-item.warning h4 { color: #e67e22; }
+.mi-fb-item p { margin: 0; font-size: 14px; color: #555; line-height: 1.5; }
+
+.mi-btn-retry {
+  padding: 14px 28px; background: white; border: 1px solid #ddd;
+  border-radius: 12px; cursor: pointer; font-weight: 600; color: #555;
+  transition: 0.2s;
+}
+.mi-btn-retry:hover { background: #f9f9f9; border-color: #bbb; }
+
+/* 상단 진행률 바 (Progress Bar) */
+.mi-progress-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
+.mi-progress-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.mi-progress-bg {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mi-progress-fill {
+  height: 100%;
+  background: #2f6fff;
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}

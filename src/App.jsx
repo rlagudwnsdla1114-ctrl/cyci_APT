@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Splash from "./pages/intro/Splash";
-import MemberSelect from "./pages/Choice/MemberSelect"; // 다시 추가
+import MemberSelect from "./pages/Choice/MemberSelect";
 import JobSeekerDashboard from "./pages/JobSeekerDashboard/JobSeekerDashboard";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
@@ -9,6 +9,12 @@ import ResumeCreate from "./pages/ResumeCreate/ResumeCreate";
 import HelpWantedList from "./pages/HelpWanted/List";
 import HelpWantedDetail from "./pages/HelpWanted/Detail";
 import HelpWantedCreate from "./pages/HelpWanted/Create";
+import AIRecommendedTalent from "./pages/AIRecommendedTalent/AIRecommendedTalent";
+import AIRecommendedCompany from "./pages/AIRecommendedCompany/AIRecommendedCompany";
+import MockInterview from "./pages/MockInterview/MockInterview";
+import AiInterviewHistory from "./pages/AiInterviewHistory/AiInterviewHistory";
+import AiMatchingCompany from "./pages/AiMatchingCompany/AiMatchingCompany";
+import AiMatchingJob from "./pages/AiMatchingJob/AiMatchingJob";
 
 export default function App() {
   return (
@@ -29,6 +35,20 @@ export default function App() {
         <Route path="/helpwanted" element={<HelpWantedList />} />
         <Route path="/helpwanted/create" element={<HelpWantedCreate />} />
         <Route path="/helpwanted/:id" element={<HelpWantedDetail />} />
+
+        {/*기업 AI 매칭*/}
+        <Route path="/ai-talent" element={<AIRecommendedTalent />} />
+        {/*구직자 AI 매칭*/}
+        <Route path="/ai-match" element={<AIRecommendedCompany />} />
+        {/*구직자 AI 면접*/}
+        <Route path="/mock" element={<MockInterview />} />
+
+        {/*면접 결과보기*/}
+        <Route path="/ai-view" element={<AiInterviewHistory />} />
+        {/*(회사) AI 매칭 결과*/}
+        <Route path="/ai-com" element={<AiMatchingCompany />} />
+        {/*(구직자) AI 매칭 결과*/}
+        <Route path="/ai-job" element={<AiMatchingJob />} />
       </Routes>
     </BrowserRouter>
   );
