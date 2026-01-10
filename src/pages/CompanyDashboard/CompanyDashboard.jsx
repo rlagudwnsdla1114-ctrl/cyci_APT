@@ -139,8 +139,14 @@ export default function CompanyDashboard() {
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
   
-  // ✅ 로그인 여부 확인
+  // 로그인 여부 확인
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  const [recommendedTalents] = useState([
+    { id: 1, name: "김철수", job: "프론트엔드", score: 95, tags: ["React", "3년차"] },
+    { id: 2, name: "이영희", job: "UI/UX 디자이너", score: 88, tags: ["Figma", "신입"] },
+    { id: 3, name: "박지성", job: "백엔드", score: 82, tags: ["Java", "Spring"] },
+  ]);
 
   return (
     <BackgroundShell>
@@ -208,67 +214,82 @@ export default function CompanyDashboard() {
               </p>
 
               <div className="cd-cta">
-                <button className="cd-ctaBtn primary" type="button" onClick={() => nav('/helpwanted')}>
+                <button className= {`cd-ctaBtn ${activeTab === 0 ? 'primary' : ''}`} type="button" onClick={() => setActiveTab(0)}>
                   공고 작성
                 </button>
-                <button className="cd-ctaBtn" type="button" onClick={() => window.alert("AI 추천 인재(준비중)")}>
+                <button className={`cd-ctaBtn ${activeTab === 1 ? 'primary' : ''}`} type="button" onClick={() => setActiveTab(1)}>
                   추천 인재
                 </button>
               </div>
 
               {/* 통계 섹션 전체 */}
               <div className="cd-stats">
-                  
+                 
                   {/* 1. 공고 현황 카드 */}
-                  <div className="cd-stat">
-                    <div className="cd-statContent">
-                      <div className="cd-cardTitle">
-                        <span className="cd-cardIcon">📢</span> 공고 현황
+                  {activeTab === 0 && (
+                  <>
+                    <div className="cd-stat">
+                      <div className="cd-statContent">
+                        <div className="cd-cardTitle">
+                          <span className="cd-cardIcon">📢</span> 공고 현황
+                        </div>
+                        <div className="cd-statBig">3건</div>
+                        <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
+                        <button className="cd-backBtn" onClick={() => window.alert("공고 현황(준비중)")}>
+                          공고 관리하기
+                        </button>
                       </div>
-                      <div className="cd-statBig">3건</div>
-                      <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
-                      <button className="cd-backBtn" onClick={() => window.alert("공고 현황(준비중)")}>
-                        공고 관리하기
-                      </button>
                     </div>
-                  </div>
 
-                  {/* 2. 지원자 현황 카드 */}
-                  <div className="cd-stat">
-                    <div className="cd-statContent">
-                      <div className="cd-cardTitle">
-                        <span className="cd-cardIcon">👥</span> 지원자 현황
+                    {/* 2. 지원자 현황 카드 */}
+                    <div className="cd-stat">
+                      <div className="cd-statContent">
+                        <div className="cd-cardTitle">
+                          <span className="cd-cardIcon">👥</span> 지원자 현황
+                        </div>
+                        <div className="cd-statBig">14명</div>
+                        <div className="cd-cardSubtext">신규 3 · 검토중 7 · 최종 4</div>
+                        <button className="cd-backBtn" onClick={() => window.alert("지원 현황으로 이동")}>
+                          지원자 보기
+                        </button>
                       </div>
-                      <div className="cd-statBig">14명</div>
-                      <div className="cd-cardSubtext">신규 3 · 검토중 7 · 최종 4</div>
-                      <button className="cd-backBtn" onClick={() => window.alert("지원 현황으로 이동")}>
-                        지원자 보기
-                      </button>
                     </div>
-                  </div>
 
-                  {/* 3. 매칭 상세 카드 */}
-                  <div className="cd-stat">
-                    <div className="cd-statContent">
-                      <div className="cd-cardTitle">
-                        <span className="cd-cardIcon">🏆</span> TOP 3 상세
+                    {/* 3. 매칭 상세 카드 */}
+                    <div className="cd-stat">
+                      <div className="cd-statContent">
+                        <div className="cd-cardTitle">
+                          <span className="cd-cardIcon">🏆</span> 최신 매칭
+                        </div>
+                        <ul className="cd-backCandidateList">
+                          <li><strong>1. 김준호</strong> <span className="cd-backCandidateScore">88%</span></li>
+                          <li><strong>2. 이서진</strong> <span className="cd-backCandidateScore">85%</span></li>
+                          <li><strong>3. 오현</strong> <span className="cd-backCandidateScore">70%</span></li>
+                        </ul>
                       </div>
-                      <ul className="cd-backCandidateList">
-                        <li>
-                          <strong>1. 김준호</strong>
-                          <span className="cd-backCandidateScore">88% · 경력 5년</span>
-                        </li>
-                        <li>
-                          <strong>2. 이서진</strong>
-                          <span className="cd-backCandidateScore">85% · 경력 3년</span>
-                        </li>
-                        <li>
-                          <strong>3. 오현</strong>
-                          <span className="cd-backCandidateScore">70% · 경력 2년</span>
-                        </li>
-                      </ul>
                     </div>
-                  </div>
+                  </>
+                )}
+                {activeTab === 1 && (
+                  <>
+                    {recommendedTalents.map((talent) => (
+                      <div key={talent.id} className="cd-stat">
+                        <div className="cd-statContent">
+                          <div className="cd-cardTitle">
+                            <span className="cd-cardIcon">✨</span> {talent.job}
+                          </div>
+                          <div className="cd-statBig" style={{color:'#2f6fff'}}>{talent.score}점</div>
+                          <div className="cd-cardSubtext">
+                            {talent.name}님 | {talent.tags.join(', ')}
+                          </div>
+                          <button className="cd-backBtn" onClick={() => nav('/ai-talent')}>
+                            상세 프로필 보기
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
                 </div>
               </div>
 

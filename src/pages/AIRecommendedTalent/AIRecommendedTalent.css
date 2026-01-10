@@ -1,0 +1,143 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+:root {
+  --ait-text: rgba(11,22,53,.92);
+  --ait-sub: rgba(11,22,53,.68);
+  --ait-blue: #2f6fff;
+  --ait-card-bg: rgba(255, 255, 255, 0.65);
+  --ait-border: rgba(255, 255, 255, 0.8);
+}
+
+.ait-container {
+  min-height: 100vh;
+  font-family: "Pretendard Variable", sans-serif;
+  color: var(--ait-text);
+  padding-bottom: 80px;
+}
+
+/* Header Style */
+.ait-header {
+  padding: 40px 20px;
+  text-align: center;
+}
+.ait-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, #2f6fff, #0b1635);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.ait-subtitle {
+  color: var(--ait-sub);
+  font-size: 16px;
+}
+
+/* Grid Layout */
+.ait-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.ait-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+/* Card Style (Glassmorphism) */
+.ait-card {
+  background: var(--ait-card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--ait-border);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+.ait-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(47, 111, 255, 0.15);
+}
+
+.ait-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.ait-score-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(47, 111, 255, 0.1);
+  color: var(--ait-blue);
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.ait-job {
+  font-size: 14px;
+  color: var(--ait-sub);
+  font-weight: 500;
+}
+
+.ait-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+.ait-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.ait-tag {
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(11,22,53,0.1);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ait-sub);
+}
+
+.ait-reason-box {
+  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(238,245,255,0.9));
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(47, 111, 255, 0.1);
+}
+.ait-reason-title {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--ait-blue);
+}
+.ait-reason-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ait-text);
+  margin: 0;
+}
+
+.ait-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--ait-blue);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.ait-btn:hover {
+  opacity: 0.9;
+}
