@@ -10,7 +10,6 @@ const AiMatchingSeeker = () => {
   const nav = useNavigate();
 
   useEffect(() => {
-    // 실제 구현 시: axios.get('/api/matching/seeker/history')...
     const dummyData = Array.from({ length: 20 }, (_, i) => ({
       m_idx: 200 - i, // DB 인덱스
       c_name: `(주)혁신테크 ${i + 1}`, // 기업명

@@ -7,10 +7,9 @@ const AiMatchingCompany = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    // 실제 구현 시: axios.get('/api/matching/company/history')...
     const dummyData = Array.from({ length: 20 }, (_, i) => ({
       m_idx: 500 - i,
-      u_name: `지원자 ${String.fromCharCode(65 + i)}`, // 지원자명 (A, B, C...)
+      u_name: `지원자 ${String.fromCharCode(65 + i)}`,
       u_skills: ['Java', 'Spring', 'MySQL', 'React'].slice(0, Math.floor(Math.random() * 3) + 2),
       job_cate: '서버 개발자',
       m_rate: 88 - i,

@@ -1,0 +1,199 @@
+/* src/pages/MyActivity/MyActivity.css */
+
+.activity-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* 배경을 밝은 그레이 톤으로 변경 */
+  background-color: #f8fafc;
+}
+
+.activity-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* 배경 그라데이션을 은은한 파스텔톤으로 변경 */
+  background: 
+    radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+    linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+}
+
+.activity-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+  padding: 60px 20px;
+}
+
+.activity-card {
+  /* 카드 배경을 화이트로, 테두리는 아주 연하게 */
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 24px;
+  padding: 40px;
+  /* 그림자를 더 부드럽고 넓게 확산 */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.activity-title {
+  /* 텍스트를 깊은 네이비/블랙으로 변경 */
+  color: #1e293b;
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.activity-sub {
+  color: #64748b;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.btn-back {
+  /* 버튼 배경을 연한 그레이로 */
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background: #e2e8f0;
+}
+
+/* 탭 스타일 */
+.activity-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 2px solid #f1f5f9;
+  margin-bottom: 32px;
+}
+
+.tab-item {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 4px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-item.active {
+  color: #1e293b;
+}
+
+.tab-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #3b82f6; /* 포인트 컬러 유지 */
+}
+
+.tab-item .count {
+  font-size: 14px;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* 리스트 아이템 스타일 */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status-item {
+  /* 리스트 배경을 매우 연한 그레이나 화이트로 */
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  padding: 24px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.status-item:hover {
+  transform: translateX(4px);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.item-company {
+  color: #3b82f6;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.item-title {
+  color: #1e293b;
+  margin: 4px 0 8px 0;
+  font-size: 18px;
+}
+
+.item-date, .item-location {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* 상태 라벨 (가독성을 위해 명도 조정) */
+.item-status {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.item-status.wait { background: #f1f5f9; color: #64748b; }
+.item-status.pass { background: #dcfce7; color: #15803d; }
+.item-status.fail { background: #fee2e2; color: #b91c1c; }
+
+/* 관심목록 사이드 영역 */
+.item-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.d-day {
+  color: #d97706;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.btn-apply-sm {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}

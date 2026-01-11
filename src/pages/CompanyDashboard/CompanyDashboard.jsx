@@ -150,7 +150,6 @@ export default function CompanyDashboard() {
 
   return (
     <BackgroundShell>
-      {/* 디자인 유지를 위해 구직자와 동일한 jsd 클래스 사용 */}
       <div className="jsd"> 
         <header className="jsd-header">
           <div className="jsd-headerInner">
@@ -178,7 +177,6 @@ export default function CompanyDashboard() {
               <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}>AI 추천 인재</button>
             </nav>
 
-            {/* ✅ 버튼 영역: CSS 구조를 100% 유지하며 조건부 렌더링 적용 */}
             <div className="jsd-actions">
               {!isLoggedIn ? (
                 <>
@@ -233,7 +231,7 @@ export default function CompanyDashboard() {
                           <span className="cd-cardIcon">📢</span> 공고 현황
                         </div>
                         <div className="cd-statBig">3건</div>
-                        <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
+                        <div className="cd-cardSubtext">활성화된 공고 | 3건</div>
                         <button className="cd-backBtn" onClick={() => nav("/postlist")}>
                           공고 관리하기
                         </button>
@@ -247,8 +245,8 @@ export default function CompanyDashboard() {
                           <span className="cd-cardIcon">👥</span> 지원자 현황
                         </div>
                         <div className="cd-statBig">14명</div>
-                        <div className="cd-cardSubtext">신규 3 · 검토중 7 · 최종 4</div>
-                        <button className="cd-backBtn" onClick={() => window.alert("지원 현황으로 이동")}>
+                        <div className="cd-cardSubtext">지원자 | 14건</div>
+                        <button className="cd-backBtn" onClick={() => nav("/management")}>
                           지원자 보기
                         </button>
                       </div>
@@ -294,7 +292,6 @@ export default function CompanyDashboard() {
 
             <div className="cd-heroRight">
               <aside className="cd-idBadge" aria-label="내 프로필(사원증)">
-                {/* Lanyard wrapper to center it */}
                 <div className="cd-lanyardWrap">
                   <div className="cd-idLanyard" aria-hidden="true">
                     <span className="cd-idStrap left" />
@@ -343,7 +340,7 @@ export default function CompanyDashboard() {
               <p>채용 조건을 입력하세요</p>
             </button>
 
-            <button className="cd-card" type="button" onClick={() => window.alert("(준비중)")}>
+            <button className="cd-card" type="button" onClick={() => nav("/cedit")}>
               <div className="cd-cardTop">
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="lock-solid" />

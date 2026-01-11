@@ -9,7 +9,7 @@ const AIRecommendedCompany = () => {
       id: 1, 
       company: "(주)사이시옷", 
       title: "주니어 웹 개발자 채용", 
-      score: 92, // JOB_MATCH_SCORE
+      score: 92,
       reason: "지원자님의 기술 스택(React)과 회사의 주요 프로젝트 언어가 일치하며, 선호하는 기업 규모에 해당합니다.", // JOB_AI_REASON
       salary: "3,500만원",
       loc: "서울 강남구"
