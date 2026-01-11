@@ -20,6 +20,9 @@ import CompanyPostList from "./pages/CompanyPostList/CompanyPostList";
 import CompanyPostDetail from "./pages/CompanyPostDetail/CompanyPostDetail";
 import JobDetail from "./pages/JobDetail/JobDetail";
 import TalentProfileDetail from './pages/TalentProfileDetail/TalentProfileDetail';
+import CEdit from "./pages/MemberInformation/CompanyEdit";
+import Jedit from './pages/MemberInformation/JobSeekerEdit';
+import MyActivity from './pages/MyActivity/MyActivity';
 
 export default function App() {
   return (
@@ -63,9 +66,20 @@ export default function App() {
         {/*(기업) 내 공고 상세보기*/}
         <Route path="/postdetail" element={<CompanyPostDetail />} />
 
+        {/*(구직자) 채용 공고 상세페이지*/}
         <Route path="/job-detail/:id" element={<JobDetail />} />
 
+        {/*(기업) 구직자 상세 페이지*/}
         <Route path="/talent-detail/:id" element={<TalentProfileDetail />} />
+
+        {/*(기업) 회원 정보 수정*/}
+        <Route path="/cedit" element={<CEdit />} />
+
+        {/*(구직자) 회원 정보 수정*/}
+        <Route path="/jedit" element={<Jedit />} />
+
+        {/*(구직자) 내 지원 현황보기*/}
+        <Route path="/myactivity" element={<MyActivity />} />
       </Routes>
     </BrowserRouter>
   );

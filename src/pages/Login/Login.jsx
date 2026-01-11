@@ -12,25 +12,6 @@ export default function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
-    /* // [Axios 연동 및 로그인 상태 저장 로직]
-    const response = await axios.post("http://localhost:8080/api/login", {
-      email: email,
-      password: password
-    });
-
-    const { accountTypeIdx, token } = response.data;
-    
-    // 로그인 성공 시 로컬 스토리지 등에 상태 저장
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userRole", accountTypeIdx); 
-
-    if (accountTypeIdx === 1) {
-      nav("/jobseeker", { replace: true });
-    } else if (accountTypeIdx === 2) {
-      nav("/company-dashboard", { replace: true });
-    }
-    */
-
     // [테스트용] 로그인 버튼 누르면 일단 구직자 페이지로 이동
     localStorage.setItem("isLoggedIn", "true"); // 임시로 로그인 상태 저장
     nav("/jobseeker");

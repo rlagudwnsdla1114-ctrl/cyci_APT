@@ -137,7 +137,6 @@ export default function JobSeekerDashboard() {
               <div className="jsd-cta">
                 <button className={`jsd-tabBtn ${activeTab === 0 ? 'active' : ''}`} type="button" onClick={() => setActiveTab(0)}>AI 매칭 보기</button>
                 <button className={`jsd-tabBtn ${activeTab === 1 ? 'active' : ''}`} type="button" onClick={() => setActiveTab(1)}>추천 기업</button>
-                {/* [삭제] '나의 프로필' 탭 버튼 제거됨 */}
               </div>
 
               <div className="jsd-stats">
@@ -165,7 +164,6 @@ export default function JobSeekerDashboard() {
                         </ul>
                       </div>
                     </div>
-                    {/* [이동] 삭제된 '나의 프로필' 탭에 있던 '역량 분석 결과'를 이곳으로 옮김 */}
                     <div className="jsd-stat fixed-content">
                       <div className="jsd-backContent">
                         <div className="jsd-backTitle">역량 분석 결과</div>
@@ -198,7 +196,6 @@ export default function JobSeekerDashboard() {
                     ))}
                   </>
                 )}
-                {/* [삭제] activeTab === 2 (나의 프로필) 전체 블록 제거됨 */}
               </div>
             </div>
 
@@ -233,7 +230,7 @@ export default function JobSeekerDashboard() {
               <p>자신의 경험을 잘 드러내는 자소서를 작성하세요</p>
             </button>
 
-            <button className="jsd-card" type="button" onClick={() => window.alert("준비중")}>
+            <button className="jsd-card" type="button" onClick={() => nav("/jedit")}>
               <div className="jsd-cardTop">
                 <div className="jsd-cardIco"><Ico name="lock-solid" /></div>
               </div>
@@ -258,6 +255,15 @@ export default function JobSeekerDashboard() {
               <h3>AI 모의 면접 결과</h3>
               <p>AI와 함께 면접 연습하기</p>
               <div className="jsd-meta">연습 진행 중</div>
+            </button>
+
+            <button className="jsd-card" type="button" onClick={() => nav("/myactivity")}>
+              <div className="jsd-cardTop">
+                <div className="jsd-cardIco"><Ico name="mic" /></div>
+              </div>
+              <h3>지원 현황 보기</h3>
+              <p>내가 지원한 현황을 모두 확인해보세요</p>
+              <div className="jsd-meta">지원한 곳 보기</div>
             </button>
           </section>
         </main>

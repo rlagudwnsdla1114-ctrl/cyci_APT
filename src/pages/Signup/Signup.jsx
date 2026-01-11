@@ -14,7 +14,7 @@ export default function Signup() {
 
   const [jobseeker, setJobseeker] = useState({
     name: "",
-    birthDate: "", // 숫자 8자리 입력 방식
+    birthDate: "",
     phone: "",
   });
 

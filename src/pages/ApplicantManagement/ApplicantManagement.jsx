@@ -7,7 +7,6 @@ export default function ApplicantManagement() {
   const nav = useNavigate();
   const [selectedJobPost, setSelectedJobPost] = useState(null);
 
-  // 내가 작성한 채용공고 목록 (실제로는 API에서 가져와야 함)
   const myJobPosts = [
     {
       id: 101,
@@ -32,7 +31,6 @@ export default function ApplicantManagement() {
     }
   ];
 
-  // 지원자 데이터 (공고 ID별로 매핑, 실제로는 API에서 가져와야 함)
   const applicantsByJob = {
     101: [
       {
@@ -149,12 +147,12 @@ export default function ApplicantManagement() {
   };
 
   const handleViewResume = (resumeUrl) => {
-    // 이력서 상세 보기 (추후 구현)
+    // 이력서 상세 보기
     alert(`이력서 상세 페이지: ${resumeUrl}\n(추후 구현 예정)`);
   };
 
   const handleStatusChange = (applicantId, newStatus) => {
-    // 지원자 상태 변경 (실제로는 API 호출)
+    // 지원자 상태 변경
     console.log(`지원자 ${applicantId}의 상태를 ${newStatus}로 변경`);
     alert(`지원자 상태가 "${newStatus}"로 변경되었습니다.`);
   };
@@ -162,7 +160,6 @@ export default function ApplicantManagement() {
   return (
     <BackgroundShell>
       <div className="am-wrap">
-        {/* 헤더 */}
         <header className="am-header">
           <div className="am-headerInner">
             <div className="am-brand" onClick={() => nav("/company-dashboard")}>
@@ -185,7 +182,6 @@ export default function ApplicantManagement() {
 
         <main className="am-main">
           <div className="am-container">
-            {/* 좌측: 공고 선택 */}
             <aside className="am-sidebar">
               <h2 className="am-sidebarTitle">내 채용공고</h2>
               <div className="am-jobPostList">

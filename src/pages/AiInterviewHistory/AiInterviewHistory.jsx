@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './AiInterviewHistory.css';
 
 const AiInterviewHistory = () => {
-  // 1. 상태 관리: DB에서 가져온 면접 리스트와 현재 펼쳐진 카드의 ID
   const [interviewList, setInterviewList] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
 
   // 2. 백엔드 연동을 가정한 데이터 로드 (useEffect)
   useEffect(() => {
-    // 실제 구현 시: axios.get('/api/interview/all').then(...)
     const dummyData = [
       {
         interview_id: 1,
@@ -59,7 +57,7 @@ const AiInterviewHistory = () => {
             key={item.interview_id} 
             className={`interview-item-card ${expandedId === item.interview_id ? 'is-open' : ''}`}
           >
-            {/* 상단: 요약 정보 (항상 노출) */}
+            {/* 상단: 요약 정보 */}
             <div className="card-summary" onClick={() => handleToggle(item.interview_id)}>
               <div className="info-left">
                 <span className="date-badge">{item.interview_date}</span>
@@ -71,14 +69,14 @@ const AiInterviewHistory = () => {
                   <span>종합점수</span>
                   <strong>{item.total_score}점</strong>
                 </div>
-                {/* 텍스트 펼치기 버튼 (이미지 스타일 반영) */}
+                {/* 텍스트 펼치기 버튼 */}
                 <button className={`expand-circle-btn ${expandedId === item.interview_id ? 'rotated' : ''}`}>
                   <span className="arrow-icon">∨</span>
                 </button>
               </div>
             </div>
 
-            {/* 하단: 상세 내용 (펼쳐졌을 때만 노출) */}
+            {/* 하단: 상세 내용 */}
             <div className="card-detail-content">
               <div className="detail-inner">
                 <div className="detail-section">

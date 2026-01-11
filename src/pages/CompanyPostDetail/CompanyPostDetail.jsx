@@ -7,10 +7,8 @@ export default function CompanyPostDetail() {
   const [searchParams] = useSearchParams();
   const nav = useNavigate();
 
-  // 1. URL 쿼리 파라미터에서 id 가져오기 (?id=113)
   const id = searchParams.get("id");
 
-  // 예시 데이터 (실제로는 useEffect 내에서 id를 이용해 API 호출을 해야 합니다)
   const post = {
     id: id || 113,
     title: '2026년 실리콘밸리 AWS 클라우드 관리자 모집',
@@ -53,7 +51,6 @@ export default function CompanyPostDetail() {
             </div>
 
             <div className="rd-actions">
-              {/* 2. 상단에서 정의한 id 변수를 사용하여 수정 페이지로 연결 */}
               <button 
                 className="rd-btn primary" 
                 onClick={() => nav(`/helpwanted/create?id=${id}`)}

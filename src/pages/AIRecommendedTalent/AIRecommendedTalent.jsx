@@ -11,7 +11,7 @@ function Ico({ name }) {
 }
 
 const AIRecommendedTalent = () => {
-  // 1. 현재 선택된 공고 상태 (null이면 공고 선택 화면, 값이 있으면 인재 추천 화면)
+  // 1. 현재 선택된 공고 상태
   const [selectedJob, setSelectedJob] = useState(null);
 
   // 2. 내 공고 목록 (DB: HELP_WANTED 테이블 데이터 예시)
@@ -19,10 +19,9 @@ const AIRecommendedTalent = () => {
     { id: 101, title: "프론트엔드 시니어 개발자 채용", department: "개발팀", date: "2024-03-20" },
     { id: 102, title: "UI/UX 디자이너 경력직", department: "디자인팀", date: "2024-03-15" },
     { id: 103, title: "백엔드 자바 개발자 (Spring)", department: "개발팀", date: "2024-03-10" },
-    // ... 공고가 10개 이상일 상황 대응
   ];
 
-  // 3. 공고별 추천 인재 데이터 (실제로는 API 호출 시 selectedJob.id를 인자로 보냄)
+  // 3. 공고별 추천 인재 데이터
   const talentData = {
     101: [
       { id: 1, name: "김철수", job: "프론트엔드 개발자", score: 95, reason: "React 숙련도가 매우 높으며 공고의 기술 스택과 일치합니다.", tags: ["React", "3년차"] },
@@ -59,7 +58,6 @@ const AIRecommendedTalent = () => {
 
         <main className="ait-content">
           {!selectedJob ? (
-            /* --- 1단계: 내 공고 리스트 (선택 화면) --- */
             <div className="ait-job-list">
               {myPostings.map(post => (
                 <div key={post.id} className="ait-job-card" onClick={() => setSelectedJob(post)}>
@@ -73,7 +71,6 @@ const AIRecommendedTalent = () => {
               ))}
             </div>
           ) : (
-            /* --- 2단계: 선택된 공고의 인재 리스트 --- */
             <div className="ait-grid">
               {(talentData[selectedJob.id] || []).map(talent => (
                 <article key={talent.id} className="ait-card">

@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './JobDetail.css'; // 새로워진 CSS 적용
+import './JobDetail.css';
 
 const JobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // 페이지 최상단으로 스크롤 이동 (상세 페이지 진입 시 필수 UX)
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -14,7 +13,6 @@ const JobDetail = () => {
   return (
     <div className="job-detail-wrapper">
       <div className="job-detail-container">
-        {/* --- 1. 상단 네비게이션 및 헤더 --- */}
         <div className="detail-header">
           <button className="btn-back-text" onClick={() => navigate(-1)}>
             ← 뒤로가기
@@ -32,7 +30,6 @@ const JobDetail = () => {
 
         <hr className="divider" />
 
-        {/* --- 2. 상세 내용 본문 (구조화된 정보) --- */}
         <div className="detail-body">
           <section className="content-section">
             <h3>이런 일을 합니다 (주요 업무)</h3>
@@ -68,7 +65,6 @@ const JobDetail = () => {
         </div>
       </div>
 
-      {/* --- 3. 하단 액션 버튼 (요청하신 스타일) --- */}
       <div className="action-footer-bar">
         <div className="action-button-group-fixed">
           <button className="btn-apply-blue">지원하기</button>
