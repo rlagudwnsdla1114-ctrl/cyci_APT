@@ -44,6 +44,15 @@ function Ico({ name }) {
             />
           </svg>
         );
+        case "file-text-solid":
+          return (
+            <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm2 16H8v-2h8v2Zm0-4H8v-2h8v2Zm-3-5V3.5L18.5 9H13Z"
+                fill="currentColor"
+              />
+            </svg>
+          );
     default:
       return null;
   }
@@ -259,7 +268,7 @@ export default function JobSeekerDashboard() {
 
             <button className="jsd-card" type="button" onClick={() => nav("/myactivity")}>
               <div className="jsd-cardTop">
-                <div className="jsd-cardIco"><Ico name="mic" /></div>
+                <div className="jsd-cardIco"><Ico name="file-text-solid" /></div>
               </div>
               <h3>지원 현황 보기</h3>
               <p>내가 지원한 현황을 모두 확인해보세요</p>
