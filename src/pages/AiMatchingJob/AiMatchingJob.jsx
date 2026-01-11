@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AiMatching.css';
 
 const AiMatchingSeeker = () => {
   const [matches, setMatches] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  const nav = useNavigate();
 
   useEffect(() => {
     // 실제 구현 시: axios.get('/api/matching/seeker/history')...
@@ -56,7 +59,7 @@ const AiMatchingSeeker = () => {
                 </td>
                 <td>{item.m_date}</td>
                 <td><span className="badge-status">{item.m_status}</span></td>
-                <td><button className="btn-detail-view">결과지 보기</button></td>
+                <td><button className="btn-detail-view" onClick={() => nav(`/job-detail/${item.m_idx}`)}>공고 보기</button></td>
               </tr>
             ))}
           </tbody>

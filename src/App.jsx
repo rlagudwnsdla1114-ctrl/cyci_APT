@@ -18,6 +18,8 @@ import AiMatchingJob from "./pages/AiMatchingJob/AiMatchingJob";
 import Management from "./pages/ApplicantManagement/ApplicantManagement";
 import CompanyPostList from "./pages/CompanyPostList/CompanyPostList";
 import CompanyPostDetail from "./pages/CompanyPostDetail/CompanyPostDetail";
+import JobDetail from "./pages/JobDetail/JobDetail";
+import TalentProfileDetail from './pages/TalentProfileDetail/TalentProfileDetail';
 
 export default function App() {
   return (
@@ -60,6 +62,10 @@ export default function App() {
         <Route path="/postlist" element={<CompanyPostList />} />
         {/*(기업) 내 공고 상세보기*/}
         <Route path="/postdetail" element={<CompanyPostDetail />} />
+
+        <Route path="/job-detail/:id" element={<JobDetail />} />
+
+        <Route path="/talent-detail/:id" element={<TalentProfileDetail />} />
       </Routes>
     </BrowserRouter>
   );

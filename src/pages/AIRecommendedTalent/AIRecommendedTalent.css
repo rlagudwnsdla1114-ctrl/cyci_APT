@@ -1,65 +1,133 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
-
-:root {
-  --ait-text: rgba(11,22,53,.92);
-  --ait-sub: rgba(11,22,53,.68);
-  --ait-blue: #2f6fff;
-  --ait-card-bg: rgba(255, 255, 255, 0.65);
-  --ait-border: rgba(255, 255, 255, 0.8);
-}
-
+/* 컨테이너 및 헤더 */
 .ait-container {
-  min-height: 100vh;
-  font-family: "Pretendard Variable", sans-serif;
-  color: var(--ait-text);
-  padding-bottom: 80px;
-}
-
-/* Header Style */
-.ait-header {
-  padding: 40px 20px;
-  text-align: center;
-}
-.ait-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin: 0 0 10px;
-  background: linear-gradient(135deg, #2f6fff, #0b1635);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.ait-subtitle {
-  color: var(--ait-sub);
-  font-size: 16px;
-}
-
-/* Grid Layout */
-.ait-content {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
-}
-.ait-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
+  padding: 40px 20px;
 }
 
-/* Card Style (Glassmorphism) */
-.ait-card {
-  background: var(--ait-card-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--ait-border);
-  border-radius: 24px;
-  padding: 28px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.ait-header {
+  margin-bottom: 40px;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 20px;
+}
+
+.ait-header-inner {
+  position: relative;
+}
+
+.ait-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  padding: 5px 0;
+  transition: color 0.2s;
+}
+
+.ait-back-btn:hover {
+  color: #007bff;
+}
+
+.ait-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 10px 0;
+}
+
+.ait-subtitle {
+  font-size: 16px;
+  color: #666;
+}
+
+/* --- 1단계: 공고 리스트 스타일 --- */
+.ait-job-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.ait-job-card {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
-.ait-card:hover {
+
+.ait-job-card:hover {
+  border-color: #007bff;
   transform: translateY(-5px);
-  box-shadow: 0 20px 50px rgba(47, 111, 255, 0.15);
+  box-shadow: 0 8px 16px rgba(0,123,255,0.1);
+}
+
+.ait-job-dept {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #007bff;
+  background: #eef6ff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.ait-job-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.ait-job-date {
+  font-size: 13px;
+  color: #999;
+}
+
+.ait-job-select-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  color: #444;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ait-job-card:hover .ait-job-select-btn {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* --- 2단계: 인재 추천 카드 스타일 (기존 유지 및 강화) --- */
+.ait-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.ait-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #ececec;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  position: relative;
 }
 
 .ait-card-header {
@@ -68,76 +136,79 @@
   align-items: center;
   margin-bottom: 16px;
 }
+
 .ait-score-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(47, 111, 255, 0.1);
-  color: var(--ait-blue);
+  gap: 5px;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: #fff;
   padding: 6px 12px;
-  border-radius: 99px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 14px;
 }
+
 .ait-job {
-  font-size: 14px;
-  color: var(--ait-sub);
-  font-weight: 500;
+  font-size: 13px;
+  color: #888;
 }
 
 .ait-name {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-  margin: 0 0 16px;
+  margin-bottom: 12px;
 }
 
 .ait-tags {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
+
 .ait-tag {
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(11,22,53,0.1);
+  background: #f1f3f5;
+  color: #495057;
   padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  color: var(--ait-sub);
+  border-radius: 4px;
+  font-size: 12px;
 }
 
 .ait-reason-box {
-  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(238,245,255,0.9));
-  padding: 16px;
-  border-radius: 16px;
-  margin-bottom: 24px;
-  border: 1px solid rgba(47, 111, 255, 0.1);
+  background: #f8faff;
+  border-left: 4px solid #007bff;
+  padding: 15px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 20px;
 }
+
 .ait-reason-title {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
+  color: #007bff;
   margin-bottom: 6px;
-  color: var(--ait-blue);
 }
+
 .ait-reason-text {
   font-size: 14px;
   line-height: 1.5;
-  color: var(--ait-text);
+  color: #555;
   margin: 0;
 }
 
 .ait-btn {
-  margin-top: auto;
   width: 100%;
-  padding: 16px;
+  padding: 12px;
+  background: #222;
+  color: #fff;
   border: none;
-  border-radius: 14px;
-  background: var(--ait-blue);
-  color: white;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 16px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: background 0.2s;
 }
+
 .ait-btn:hover {
-  opacity: 0.9;
+  background: #000;
 }
