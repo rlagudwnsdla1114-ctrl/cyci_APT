@@ -281,7 +281,7 @@ export default function CompanyDashboard() {
                           <div className="cd-cardSubtext">
                             {talent.name}님 | {talent.tags.join(', ')}
                           </div>
-                          <button className="cd-backBtn" onClick={() => nav('/ai-talent')}>
+                          <button className="cd-backBtn" onClick={() => nav(`/talent-detail/${talent.id}`)}>
                             상세 프로필 보기
                           </button>
                         </div>

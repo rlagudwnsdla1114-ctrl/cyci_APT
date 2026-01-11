@@ -1,0 +1,23 @@
+.tpd-container { max-width: 1000px; margin: 0 auto; padding: 30px; }
+.tpd-back { background: none; border: none; color: #666; cursor: pointer; margin-bottom: 20px; font-size: 16px; }
+.tpd-layout { display: flex; gap: 40px; background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+/* 사이드바 */
+.tpd-sidebar { width: 250px; text-align: center; border-right: 1px solid #eee; padding-right: 40px; }
+.tpd-profile-img { width: 120px; height: 120px; background: #f0f2f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; margin: 0 auto 20px; }
+.tpd-name { font-size: 24px; margin-bottom: 5px; }
+.tpd-job-title { color: #007bff; font-weight: 600; margin-bottom: 30px; }
+.tpd-score-circle { width: 100px; height: 100px; border: 5px solid #007bff; border-radius: 50%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.tpd-score-num { font-size: 24px; font-weight: 800; color: #007bff; }
+.tpd-score-label { font-size: 11px; color: #888; }
+
+/* 메인 컨텐츠 */
+.tpd-main { flex: 1; }
+.tpd-section { margin-bottom: 35px; }
+.tpd-section h3 { font-size: 18px; margin-bottom: 15px; color: #333; }
+.tpd-ai-box { background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 5px solid #007bff; color: #444; line-height: 1.6; }
+.tpd-skill-tags { display: flex; gap: 10px; }
+.tpd-tag { background: #eee; padding: 6px 12px; border-radius: 20px; font-size: 14px; }
+.tpd-actions { display: flex; gap: 15px; margin-top: 40px; }
+.tpd-contact-btn { flex: 1; padding: 15px; border-radius: 10px; border: 1px solid #007bff; color: #007bff; background: #fff; cursor: pointer; font-weight: 700; }
+.tpd-offer-btn { flex: 1; padding: 15px; border-radius: 10px; background: #007bff; color: #fff; border: none; cursor: pointer; font-weight: 700; }
