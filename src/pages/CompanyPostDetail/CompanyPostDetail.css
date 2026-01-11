@@ -1,0 +1,40 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+/* 기존 Detail.css의 구조를 따름 */
+.rd-wrap { min-height: 100vh; font-family: "Pretendard Variable", sans-serif; padding-top: 80px; background: #f8fafc; }
+
+.rd-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; backdrop-filter: blur(12px); background: rgba(255,255,255,0.8); border-bottom: 1px solid #e2e8f0; }
+.rd-headerInner { max-width: 1000px; margin: 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+
+.rd-paper {
+  width: 100%; max-width: 800px; margin: 40px auto;
+  background: #fff; border-radius: 32px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.05);
+  padding: 60px;
+}
+
+/* 관리중 뱃지 - 파란색 */
+.rd-badge { background: #3b82f6; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 13px; margin-bottom: 16px; display: inline-block; }
+
+.rd-title { font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 16px; }
+
+.rd-divider { height: 1px; background: #f1f5f9; margin: 40px 0; }
+
+.rd-body { font-size: 17px; line-height: 1.8; color: #334155; white-space: pre-wrap; margin-bottom: 60px; }
+
+/* 기업용 수정하기 버튼 강조 */
+.rd-actions { display: flex; justify-content: center; gap: 16px; }
+.rd-btn { padding: 18px 48px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+
+.rd-btn.primary { 
+  background: #1e293b; /* 수정 버튼은 조금 더 무게감 있는 색상 */
+  color: #fff; 
+  box-shadow: 0 10px 30px rgba(30, 41, 59, 0.2); 
+}
+
+.rd-btn.primary:hover { transform: translateY(-2px); background: #0f172a; }
+
+.rd-btn.secondary { background: #f1f5f9; color: #64748b; }
+
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

@@ -103,8 +103,8 @@ export default function JobSeekerDashboard() {
 
             <nav className="jsd-nav" aria-label="메인 메뉴">
               <button className="jsd-navBtn" type="button" onClick={() => nav('/helpwanted')}>채용정보</button>
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("준비중")}>AI 매칭</button>
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("준비중")}>AI 모의 면접</button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-match")}>AI 매칭</button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/mock")}>AI 모의 면접</button>
             </nav>
 
             <div className="jsd-actions">
@@ -242,7 +242,7 @@ export default function JobSeekerDashboard() {
               <div className="jsd-meta">보안 중요!</div>
             </button>
 
-            <button className="jsd-card" type="button" onClick={() => window.alert("준비중")}>
+            <button className="jsd-card" type="button" onClick={() => nav("/ai-job")}>
               <div className="jsd-cardTop">
                 <div className="jsd-cardIco"><Ico name="spark" /></div>
               </div>
@@ -251,7 +251,7 @@ export default function JobSeekerDashboard() {
               <div className="jsd-meta">매칭 완료</div>
             </button>
 
-            <button className="jsd-card" type="button" onClick={() => window.alert("준비중")}>
+            <button className="jsd-card" type="button" onClick={() => nav("/ai-view")}>
               <div className="jsd-cardTop">
                 <div className="jsd-cardIco"><Ico name="mic" /></div>
               </div>
