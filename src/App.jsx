@@ -15,6 +15,7 @@ import MockInterview from "./pages/MockInterview/MockInterview";
 import AiInterviewHistory from "./pages/AiInterviewHistory/AiInterviewHistory";
 import AiMatchingCompany from "./pages/AiMatchingCompany/AiMatchingCompany";
 import AiMatchingJob from "./pages/AiMatchingJob/AiMatchingJob";
+import Management from "./pages/ApplicantManagement/ApplicantManagement";
 
 export default function App() {
   return (
@@ -49,6 +50,9 @@ export default function App() {
         <Route path="/ai-com" element={<AiMatchingCompany />} />
         {/*(구직자) AI 매칭 결과*/}
         <Route path="/ai-job" element={<AiMatchingJob />} />
+
+        {/*(기업) 지원자 관리*/}
+        <Route path="/management" element={<Management />} />
       </Routes>
     </BrowserRouter>
   );
