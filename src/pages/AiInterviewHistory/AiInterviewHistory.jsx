@@ -94,11 +94,6 @@ const AiInterviewHistory = () => {
                     {item.ai_feedback}
                   </div>
                 </div>
-
-                <div className="detail-actions">
-                  <button className="video-btn">면접 영상 다시보기</button>
-                  <button className="download-btn">PDF 리포트 저장</button>
-                </div>
               </div>
             </div>
           </div>

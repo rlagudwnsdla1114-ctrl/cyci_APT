@@ -16,6 +16,8 @@ import AiInterviewHistory from "./pages/AiInterviewHistory/AiInterviewHistory";
 import AiMatchingCompany from "./pages/AiMatchingCompany/AiMatchingCompany";
 import AiMatchingJob from "./pages/AiMatchingJob/AiMatchingJob";
 import Management from "./pages/ApplicantManagement/ApplicantManagement";
+import CompanyPostList from "./pages/CompanyPostList/CompanyPostList";
+import CompanyPostDetail from "./pages/CompanyPostDetail/CompanyPostDetail";
 
 export default function App() {
   return (
@@ -53,6 +55,11 @@ export default function App() {
 
         {/*(기업) 지원자 관리*/}
         <Route path="/management" element={<Management />} />
+        
+        {/*(기업) 내 공고 목록들*/}
+        <Route path="/postlist" element={<CompanyPostList />} />
+        {/*(기업) 내 공고 상세보기*/}
+        <Route path="/postdetail" element={<CompanyPostDetail />} />
       </Routes>
     </BrowserRouter>
   );

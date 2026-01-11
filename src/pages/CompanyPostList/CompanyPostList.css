@@ -1,0 +1,49 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+.cp-list-wrap {
+  min-height: 100vh;
+  font-family: "Pretendard Variable", sans-serif;
+  padding-top: 80px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); /* 관리용은 조금 더 차분한 배경 */
+}
+
+.cp-header {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cp-headerInner {
+  max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.cp-back { background: none; border: none; font-weight: 700; color: #64748b; cursor: pointer; }
+.cp-title { font-size: 20px; font-weight: 800; color: #0f172a; }
+
+/* 신규 등록 버튼 - 파란색 강조 */
+.cp-add-btn {
+  padding: 10px 20px; border-radius: 99px; border: none;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.cp-main { max-width: 1000px; margin: 0 auto; padding: 40px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+.cp-card {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 20px;
+  padding: 24px 32px; cursor: pointer; transition: 0.3s;
+}
+
+.cp-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  border-color: #3b82f6; /* 호버 시 파란색 테두리 */
+}
+
+.cp-info h3 { font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+.cp-info p { font-size: 14px; color: #64748b; }
+.cp-arrow { font-size: 14px; font-weight: 700; color: #3b82f6; }

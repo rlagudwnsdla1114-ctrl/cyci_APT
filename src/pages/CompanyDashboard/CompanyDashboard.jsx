@@ -175,8 +175,7 @@ export default function CompanyDashboard() {
             </div>
 
             <nav className="jsd-nav" aria-label="메인 메뉴">
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("인재 찾기(준비중)")}>인재 찾기</button>
-              <button className="jsd-navBtn" type="button" onClick={() => window.alert("공고 관리(준비중)")}>AI 추천 인재</button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}>AI 추천 인재</button>
             </nav>
 
             {/* ✅ 버튼 영역: CSS 구조를 100% 유지하며 조건부 렌더링 적용 */}
@@ -235,7 +234,7 @@ export default function CompanyDashboard() {
                         </div>
                         <div className="cd-statBig">3건</div>
                         <div className="cd-cardSubtext">활성화된 공고 | 14명 지원중</div>
-                        <button className="cd-backBtn" onClick={() => window.alert("공고 현황(준비중)")}>
+                        <button className="cd-backBtn" onClick={() => nav("/postlist")}>
                           공고 관리하기
                         </button>
                       </div>
@@ -354,14 +353,14 @@ export default function CompanyDashboard() {
               <p>보안을 위해 회원자님의 정보를 보호하세요!</p>
             </button>
 
-            <button className="cd-card" type="button" onClick={() => window.alert("지원자 관리 (준비중)")}>
+            <button className="cd-card" type="button" onClick={() => nav("/management")}>
               <div className="cd-cardTop">
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="users" />
                 </div>
               </div>
-              <h3>지원자 관리</h3>
-              <p>지원자 현황을 확인하세요</p>
+              <h3>AI 매칭 결과</h3>
+              <p>AI의 매칭 결과를 확인해보세요!</p>
             </button>
           </section>
         </main>
