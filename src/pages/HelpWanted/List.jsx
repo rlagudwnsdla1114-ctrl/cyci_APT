@@ -5,8 +5,8 @@ import './List.css';
 
 const dummyPosts = Array.from({ length: 8 }).map((_, i) => ({
   id: 114 - i,
-  company: 'AWS Korea',
-  title: `${2026 - Math.floor(i / 3)} 실리콘밸리 AWS 클라우드 관리자 모집 ${i + 1}`,
+  company: i % 2 === 0 ? 'AWS Korea' : 'Google Korea',
+  title: `${2026 - Math.floor(i / 3)} 실리콘밸리 클라우드 관리자 모집 ${i + 1}`,
   tags: ['경력무관', '판교', '정규직'],
   dDay: 'D-12',
   views: Math.floor(Math.random() * 2000),
@@ -16,30 +16,40 @@ const dummyPosts = Array.from({ length: 8 }).map((_, i) => ({
 export default function List() {
   const nav = useNavigate();
   const [filter, setFilter] = useState("전체");
+  const [tempInput, setTempInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredPosts = dummyPosts.filter(post =>
+    post.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <BackgroundShell>
       <div className="rl-wrap">
-        {/* 헤더 (고정) */}
         <header className="rl-header">
           <div className="rl-headerInner">
-            <div className="rl-brand" onClick={() => nav("/company-dashboard")}>
+            {/* 구직자 대시보드로 이동하도록 변경 */}
+            <div className="rl-brand" onClick={() => nav("/jobseeker")}>
               <div className="rl-mark">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" /><path d="M4 10V6a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" opacity=".9"/><path d="M20 14v4a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeWidth="2" opacity=".9"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
+                  <path d="M4 10V6a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" opacity=".9"/>
+                  <path d="M20 14v4a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeWidth="2" opacity=".9"/>
+                </svg>
               </div>
               <div className="rl-brandText">잡매치 · 채용공고</div>
             </div>
             <div className="rl-actions">
-              <button className="rl-pillBtn primary" onClick={() => nav("/helpwanted/create")}>공고 등록</button>
-              <button className="rl-pillBtn" onClick={() => nav("/company-dashboard")}>나가기</button>
+              {/* 공고 등록 버튼 제거 및 나가기 경로 수정 */}
+              <button className="rl-pillBtn" onClick={() => nav("/jobseeker")}>나가기</button>
             </div>
           </div>
         </header>
 
         <main className="rl-main">
-          {/* 타이틀 및 검색 */}
           <div className="rl-top">
-            <h1 className="rl-pageTitle">진행 중인 채용공고 <span className="rl-count">{dummyPosts.length}</span></h1>
+            <h1 className="rl-pageTitle">진행 중인 채용공고 <span className="rl-count">{filteredPosts.length}</span></h1>
             <div className="rl-controls">
               <div className="rl-filters">
                 {["전체", "개발", "디자인", "기획"].map(f => (
@@ -47,15 +57,20 @@ export default function List() {
                 ))}
               </div>
               <div className="rl-searchBox">
-                <input type="text" placeholder="직무, 회사명 검색" />
-                <button>검색</button>
+                <input 
+                  type="text" 
+                  placeholder="직무, 회사명 검색" 
+                  value={tempInput}
+                  onChange={(e) => setTempInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && setSearchTerm(tempInput)}
+                />
+                <button onClick={() => setSearchTerm(tempInput)}>검색</button>
               </div>
             </div>
           </div>
 
-          {/* 리스트 (카드형) */}
           <div className="rl-list">
-            {dummyPosts.map(post => (
+            {filteredPosts.map(post => (
               <div key={post.id} className="rl-card" onClick={() => nav(`/helpwanted/${post.id}`)}>
                 <div className="rl-cardLeft">
                   <div className="rl-company">{post.company}</div>

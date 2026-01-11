@@ -1,0 +1,534 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+.am-wrap {
+  min-height: 100vh;
+  font-family: "Pretendard Variable", sans-serif;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+  position: relative;
+}
+
+.am-wrap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(600px 400px at 10% 20%, rgba(59, 130, 246, 0.08), transparent 60%),
+    radial-gradient(600px 400px at 90% 80%, rgba(59, 130, 246, 0.08), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Header */
+.am-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+  border-bottom: 1px solid rgba(255,255,255,.6);
+}
+
+.am-headerInner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.am-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.am-brand:hover {
+  opacity: 0.8;
+}
+
+.am-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff, #e0f2fe);
+  border: 1px solid rgba(255,255,255,.9);
+  display: grid;
+  place-items: center;
+  color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59,130,246,.15);
+}
+
+.am-brandText {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.am-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.am-pillBtn {
+  padding: 10px 20px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,255,255,.8);
+  background: rgba(255,255,255,.5);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.am-pillBtn:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Main */
+.am-main {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.am-container {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 24px;
+  min-height: calc(100vh - 200px);
+}
+
+/* Sidebar */
+.am-sidebar {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.am-sidebarTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.am-jobPostList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.am-jobPostCard {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.am-jobPostCard:hover {
+  border-color: #3b82f6;
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59,130,246,0.1);
+}
+
+.am-jobPostCard.active {
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59,130,246,0.2);
+}
+
+.am-jobPostHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.am-statusBadge {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.am-statusBadge.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.am-statusBadge.closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.am-applicantCount {
+  font-size: 13px;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+.am-jobPostTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.am-jobPostMeta {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Content */
+.am-content {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.am-contentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.am-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.am-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.am-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.am-filterBtn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.am-filterBtn.active {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+.am-filterBtn:hover:not(.active) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Empty State */
+.am-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.am-emptyIcon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.6;
+}
+
+.am-emptyText {
+  font-size: 18px;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.am-emptySubtext {
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* Applicant List */
+.am-applicantList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.am-applicantCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.2s;
+}
+
+.am-applicantCard:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 8px 24px rgba(59,130,246,0.1);
+  transform: translateY(-2px);
+}
+
+.am-applicantHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.am-applicantInfo {
+  flex: 1;
+}
+
+.am-applicantName {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.am-applicantMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.am-applicantScore {
+  margin-left: 24px;
+}
+
+.am-scoreCircle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+}
+
+.am-scoreValue {
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.am-scoreLabel {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.am-applicantSkills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.am-skillTag {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #bae6fd;
+}
+
+.am-applicantContact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.am-contactInfo {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.am-statusSelect {
+  display: flex;
+  align-items: center;
+}
+
+.am-statusSelectInput {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  background: #fff;
+  color: #1e293b;
+}
+
+.am-statusSelectInput.am-status-신규 {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.am-statusSelectInput.am-status-검토중 {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.am-statusSelectInput.am-status-최종 {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.am-applicantActions {
+  display: flex;
+  gap: 12px;
+}
+
+.am-actionBtn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.am-actionBtn.primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+}
+
+.am-actionBtn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+}
+
+.am-actionBtn.secondary {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.am-actionBtn.secondary:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .am-container {
+    grid-template-columns: 1fr;
+  }
+
+  .am-sidebar {
+    position: relative;
+    top: 0;
+  }
+
+  .am-jobPostList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .am-main {
+    padding: 24px 16px;
+  }
+
+  .am-content {
+    padding: 20px;
+  }
+
+  .am-contentHeader {
+    flex-direction: column;
+  }
+
+  .am-applicantHeader {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .am-applicantScore {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+
+  .am-applicantContact {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .am-applicantActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .am-actionBtn {
+    width: 100%;
+  }
+}
