@@ -57,9 +57,6 @@ export default function App() {
         <Route path="/ai-com" element={<AiMatchingCompany />} />
         {/*(구직자) AI 매칭 결과*/}
         <Route path="/ai-job" element={<AiMatchingJob />} />
-
-        {/*(기업) 지원자 관리*/}
-        <Route path="/management" element={<Management />} />
         
         {/*(기업) 내 공고 목록들*/}
         <Route path="/postlist" element={<CompanyPostList />} />
@@ -68,18 +65,18 @@ export default function App() {
 
         {/*(구직자) 채용 공고 상세페이지*/}
         <Route path="/job-detail/:id" element={<JobDetail />} />
-
         {/*(기업) 구직자 상세 페이지*/}
         <Route path="/talent-detail/:id" element={<TalentProfileDetail />} />
 
         {/*(기업) 회원 정보 수정*/}
         <Route path="/cedit" element={<CEdit />} />
-
         {/*(구직자) 회원 정보 수정*/}
         <Route path="/jedit" element={<Jedit />} />
 
         {/*(구직자) 내 지원 현황보기*/}
         <Route path="/myactivity" element={<MyActivity />} />
+        {/*(기업) 지원자 관리*/}
+        <Route path="/management" element={<Management />} />
       </Routes>
     </BrowserRouter>
   );
