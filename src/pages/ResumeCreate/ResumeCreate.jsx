@@ -22,12 +22,14 @@ const MILITARY_TYPES = ["군필", "미필", "면제", "해당없음"];
 export default function ResumeCreate() {
   const nav = useNavigate();
   const [step, setStep] = useState(1);
-   const [form, setForm] = useState({
+  const [form, setForm] = useState({
     jobseekerName: "",
     jobseekerEmail: "",
     jobseekerPhone: "",
     jobseekerBirth: "",
   });
+
+
 
   
   useEffect(() => {
@@ -39,29 +41,73 @@ export default function ResumeCreate() {
         setForm(res.data);
       });
   },  []);
-  
+
 
 
   // 데이터 상태
-  const [basicInfo, setBasicInfo] = useState({ name: "", birthday: "", email: "", phone: "", address: "" });
+  // const [addressInfo, setAddressInfo] = useState({ address: "", detail: "" });
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSub, setSelectedSub] = useState([]);
-  const [selectedRegions, setSelectedRegions] = useState([]);
-  const [educationList, setEducationList] = useState([{ type: "", name: "", major: "", status: "", date: "" }]);
-  const [military, setMilitary] = useState({ type: "미필", rank: "", reason: "" });
-  const [careerList, setCareerList] = useState([]);
-  const [certList, setCertList] = useState([]);
-  const [langList, setLangList] = useState([]);
-  const [skills, setSkills] = useState("");
-  const [intro, setIntro] = useState({ motivation: "", growth: "", personality: "", crisis: "" });
+  const [hopeJob, setHopeJob] = useState({ category: "", sub: [] });
+  const [hopeRegion, setHopeRegion] = useState([]);
+  const [education, setEducation] = useState([{ type: "", name: "", major: "", status: "", date: "" }]);
+  const [militaryStatus, setMilitaryStatus] = useState({ type: "미필", date: ""});
+  const [career, setCareer] = useState([]);
+  const [certification, setCertification] = useState([]);
+  const [languageSkill, setLanguageSkill] = useState([]);
+  const [applyMotive, setApplyMotive] = useState("");
+  const [growthProcess, setGrowthProcess] = useState("");
+  const [personality, setPersonality] = useState("");
+  const [jobExperience, setJobExperience] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+    const payload = {
+    hopeJob : JSON.stringify(hopeJob),
+    hopeRegion : JSON.stringify(hopeRegion),
+    education : JSON.stringify(education),
+    militaryStatus : JSON.stringify(militaryStatus),
+    career : JSON.stringify(career),
+    certification : JSON.stringify(certification),
+    languageSkill : JSON.stringify(languageSkill),
+    applyMotive : applyMotive,
+    growthProcess : growthProcess,
+    personality :personality,
+    jobExperience : jobExperience,
+    imageUrl : imageUrl
+  };
+
+  const ymToInput = (ym) => (ym && ym.length === 6 ? `${ym.slice(0, 4)}-${ym.slice(4, 6)}` : "");
+  const inputToYm = (v) => (v ? v.replace("-", "") : "");
+
+  const ymdToInput = (ymd) =>
+    (ymd && ymd.length === 8 ? `${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}` : "");
+  const inputToYmd = (v) => (v ? v.replaceAll("-", "") : "");
+
+  const getStartYm = (period) => (typeof period === "string" ? period.slice(0, 6) : "");
+  const getEndYm = (period) => (typeof period === "string" ? period.slice(6, 12) : "");
+
+
 
   // 핸들러
-  const handleBasicChange = (e) => setBasicInfo({ ...basicInfo, [e.target.name]: e.target.value });
-  const handleSubToggle = (sub) => {
-    selectedSub.includes(sub) ? setSelectedSub(selectedSub.filter(s => s !== sub)) : setSelectedSub([...selectedSub, sub]);
-  };
+  // const handleAddressChange = (e) => setAddressInfo({ ...addressInfo, [e.target.name]: e.target.value });
+  function handleSubToggle(sub) {
+      setSelectedSub(prev => {
+      const next = prev.includes(sub)
+        ? prev.filter(x => x !== sub)
+        : [...prev, sub];
+
+      console.log("[세부직무 토글]", next); // ✅ 토글 결과 로그
+      setHopeJob(prevHopeJob => ({
+        ...prevHopeJob,
+        sub: next
+      }));
+      console.log("[희망직무 업데이트]", hopeJob); // ✅ 희망직무 업데이트 로그
+      return next;
+    });
+
+  }
   const handleRegionToggle = (reg) => {
-    selectedRegions.includes(reg) ? setSelectedRegions(selectedRegions.filter(r => r !== reg)) : setSelectedRegions([...selectedRegions, reg]);
+    hopeRegion.includes(reg) ? setHopeRegion(hopeRegion.filter(r => r !== reg)) : setHopeRegion([...hopeRegion, reg]);
   };
   const updateList = (setFunc, list, idx, field, val) => {
     const newList = [...list]; newList[idx][field] = val; setFunc(newList);
@@ -69,7 +115,25 @@ export default function ResumeCreate() {
   const addToList = (setFunc, list, template) => setFunc([...list, template]);
   const removeFromList = (setFunc, list, idx) => setFunc(list.filter((_, i) => i !== idx));
 
-  const goNext = () => step < 4 ? setStep(step + 1) : window.alert("이력서가 저장되었습니다!");
+  function goNext() {
+    if (step < 4) {
+      setStep(step + 1);
+    } else {
+      window.alert("이력서가 저장되었습니다!");
+      
+      axios.post('http://localhost:8080/api/cover/resume', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
+      .then(res => {
+        console.log(res.data);
+      });
+
+      nav("/jobseeker");
+    }
+  }
   const goBack = () => step > 1 ? setStep(step - 1) : nav("/jobseeker");
 
   return (
@@ -125,7 +189,7 @@ export default function ResumeCreate() {
                       <div className="rc-field"><label>이메일</label><input type="text" name="email" value={form.jobseekerEmail} readOnly /></div>
                       <div className="rc-field"><label>연락처</label><input type="text" name="phone" value={form.jobseekerPhone} readOnly /></div>
                     </div>
-                    <div className="rc-field"><label>주소</label><input type="text" name="address" value={basicInfo.address} onChange={handleBasicChange} placeholder="거주지 주소 입력" /></div>
+                    {/* <div className="rc-field"><label>주소</label><input type="text" name="address" value={addressInfo.address} onChange={handleAddressChange} placeholder="거주지 주소 입력" /></div> */}
                   </div>
                 </div>
 
@@ -134,7 +198,12 @@ export default function ResumeCreate() {
                 <h3 className="rc-subTitle">희망 직군 선택</h3>
                 <div className="rc-grid-4">
                   {JOB_CATEGORIES.map((cat) => (
-                    <button key={cat.id} className={`rc-cardBtn ${selectedCategory?.id === cat.id ? "selected" : ""}`} onClick={() => { setSelectedCategory(cat); setSelectedSub([]); }}>{cat.label}</button>
+                    <button key={cat.id} className={`rc-cardBtn ${selectedCategory?.id === cat.id ? "selected" : ""}`} onClick={() => { 
+                      console.log("[직군 선택]", cat); 
+                      setSelectedCategory(cat); 
+                      setHopeJob({...hopeJob, category: cat.label, sub: []});
+                      setSelectedSub([]); 
+                    }}>{cat.label}</button>
                   ))}
                 </div>
 
@@ -152,7 +221,10 @@ export default function ResumeCreate() {
                 <h3 className="rc-subTitle" style={{marginTop:30}}>희망 근무 지역</h3>
                 <div className="rc-chips">
                   {REGIONS.map(reg => (
-                    <button key={reg} className={`rc-chip ${selectedRegions.includes(reg) ? "active" : ""}`} onClick={() => handleRegionToggle(reg)}>{reg}</button>
+                    <button key={reg} className={`rc-chip ${hopeRegion.includes(reg) ? "active" : ""}`} onClick={() => {
+                      handleRegionToggle(reg);
+                      console.log("[희망지역 토글]", hopeRegion);
+                    }}>{reg}</button>
                   ))}
                 </div>
               </div>
@@ -164,34 +236,43 @@ export default function ResumeCreate() {
                 <h2 className="rc-title">학력 및 경력 사항</h2>
                 
                 <h3 className="rc-subTitle">학력</h3>
-                {educationList.map((edu, idx) => (
+                {education.map((edu, idx) => (
                   <div key={idx} className="rc-rowGroup">
-                    <select value={edu.type} onChange={(e) => updateList(setEducationList, educationList, idx, "type", e.target.value)}>
+                    <select value={edu.type} onChange={(e) => updateList(setEducation, education, idx, "type", e.target.value)}>
                       <option value="">구분</option>
                       {EDU_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
-                    <input type="text" placeholder="학교명" value={edu.name} onChange={(e) => updateList(setEducationList, educationList, idx, "name", e.target.value)} />
-                    <input type="text" placeholder="전공" value={edu.major} onChange={(e) => updateList(setEducationList, educationList, idx, "major", e.target.value)} />
-                    <select className="short" value={edu.status} onChange={(e) => updateList(setEducationList, educationList, idx, "status", e.target.value)}>
+                    <input type="text" placeholder="학교명" value={edu.name} onChange={(e) => updateList(setEducation, education, idx, "name", e.target.value)} />
+                    <input type="text" placeholder="전공" value={edu.major} onChange={(e) => updateList(setEducation, education, idx, "major", e.target.value)} />
+                    <select className="short" value={edu.status} onChange={(e) => updateList(setEducation, education, idx, "status", e.target.value)}>
                       <option value="">상태</option><option>졸업</option><option>재학</option>
                     </select>
-                    <input type="text" placeholder="졸업년월" value={edu.date} onChange={(e) => updateList(setEducationList, educationList, idx, "date", e.target.value)} />
-                    {idx > 0 && <button className="rc-del" onClick={() => removeFromList(setEducationList, educationList, idx)}>×</button>}
+                    <input
+                      type="month"
+                      placeholder="졸업년월"
+                      value={ymToInput(edu.date)}  // 화면에는 YYYY-MM
+                      onChange={(e) => updateList(setEducation, education, idx, "date", inputToYm(e.target.value))} // 저장은 YYYYMM
+                    />
+                    {idx > 0 && <button className="rc-del" onClick={() => removeFromList(setEducation, education, idx)}>×</button>}
                   </div>
                 ))}
-                <button className="rc-addBtn" onClick={() => addToList(setEducationList, educationList, { type: "", name: "", major: "", status: "", date: "" })}>+ 학력 추가</button>
+                <button className="rc-addBtn" onClick={() => addToList(setEducation, education, { type: "", name: "", major: "", status: "", date: "" })}>+ 학력 추가</button>
 
                 <div className="rc-divider" />
 
                 <h3 className="rc-subTitle">병역</h3>
                 <div className="rc-rowGroup">
-                  <select value={military.type} onChange={(e) => setMilitary({...military, type: e.target.value})}>
+                  <select value={militaryStatus.type} onChange={(e) => setMilitaryStatus({...militaryStatus, type: e.target.value})}>
                     {MILITARY_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
-                  {military.type === "군필" && (
+                  {militaryStatus.type === "군필" && (
                     <>
-                      <input type="text" placeholder="계급" value={military.rank} onChange={(e) => setMilitary({...military, rank: e.target.value})} />
-                      <input type="text" placeholder="군별" value={military.reason} onChange={(e) => setMilitary({...military, reason: e.target.value})} />
+                      <input
+                        type="month"
+                        placeholder="전역년월"
+                        value={ymToInput(militaryStatus.date)}
+                        onChange={(e) => setMilitaryStatus({ ...militaryStatus, date: inputToYm(e.target.value) })}
+                      />
                     </>
                   )}
                 </div>
@@ -199,17 +280,44 @@ export default function ResumeCreate() {
                 <div className="rc-divider" />
 
                 <h3 className="rc-subTitle">경력 사항</h3>
-                {careerList.map((car, idx) => (
+                {career.map((car, idx) => (
                   <div key={idx} className="rc-boxGroup">
                     <div className="rc-row">
-                      <input type="text" placeholder="회사명" value={car.company} onChange={(e) => updateList(setCareerList, careerList, idx, "company", e.target.value)} />
-                      <input type="text" placeholder="근무기간" value={car.period} onChange={(e) => updateList(setCareerList, careerList, idx, "period", e.target.value)} />
-                    </div>
-                    <textarea placeholder="담당 업무 및 성과" value={car.task} onChange={(e) => updateList(setCareerList, careerList, idx, "task", e.target.value)} />
-                    <button className="rc-textDel" onClick={() => removeFromList(setCareerList, careerList, idx)}>삭제</button>
+                      <input type="text" placeholder="회사명" value={car.company} onChange={(e) => updateList(setCareer, career, idx, "company", e.target.value)} />
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <span style={{ minWidth: 60, fontWeight: 600 }}>근무기간</span>
+
+                        <input
+                          type="month"
+                          aria-label="근무 시작월"
+                          value={ymToInput(getStartYm(car.period))}
+                          onChange={(e) => {
+                            const start = inputToYm(e.target.value); // YYYYMM
+                            const end = getEndYm(car.period);
+                            updateList(setCareer, career, idx, "period", `${start}${end}`);
+                          }}
+                        />
+
+                        <span>~</span>
+
+                        <input
+                          type="month"
+                          aria-label="근무 종료월"
+                          value={ymToInput(getEndYm(car.period))}
+                          onChange={(e) => {
+                            const end = inputToYm(e.target.value); // YYYYMM
+                            const start = getStartYm(car.period);
+                            updateList(setCareer, career, idx, "period", `${start}${end}`);
+                          }}
+                        />
+                      </div>
+
+                      </div>
+                    <textarea placeholder="담당 업무 및 성과" value={car.task} onChange={(e) => updateList(setCareer, career, idx, "task", e.target.value)} />
+                    <button className="rc-textDel" onClick={() => removeFromList(setCareer, career, idx)}>삭제</button>
                   </div>
                 ))}
-                <button className="rc-addBtn" onClick={() => addToList(setCareerList, careerList, { company: "", period: "", task: "" })}>+ 경력 추가</button>
+                <button className="rc-addBtn" onClick={() => addToList(setCareer, career, { company: "", period: "", task: "" })}>+ 경력 추가</button>
               </div>
             )}
 
@@ -219,35 +327,54 @@ export default function ResumeCreate() {
                 <h2 className="rc-title">보유 기술 및 자격</h2>
                 
                 <div className="rc-field">
-                  <label>핵심 기술 (Skills)</label>
-                  <input className="rc-fullInput" type="text" placeholder="예: React, Python, Figma (쉼표로 구분)" value={skills} onChange={(e) => setSkills(e.target.value)} />
+                  <label>핵심 기술 (applyMotive)</label>
+                  <input className="rc-fullInput" type="text" placeholder="예: React, Python, Figma (쉼표로 구분)" value={applyMotive} onChange={(e) => setApplyMotive(e.target.value)} />
                 </div>
 
                 <div className="rc-divider" />
 
                 <h3 className="rc-subTitle">자격증</h3>
-                {certList.map((cert, idx) => (
+                {certification.map((cert, idx) => (
                   <div key={idx} className="rc-rowGroup">
-                    <input type="text" placeholder="자격증명" value={cert.name} onChange={(e) => updateList(setCertList, certList, idx, "name", e.target.value)} />
-                    <input type="text" placeholder="발행처" value={cert.issuer} onChange={(e) => updateList(setCertList, certList, idx, "issuer", e.target.value)} />
-                    <input type="text" placeholder="취득일" value={cert.date} onChange={(e) => updateList(setCertList, certList, idx, "date", e.target.value)} />
-                    <button className="rc-del" onClick={() => removeFromList(setCertList, certList, idx)}>×</button>
+                    <input type="text" placeholder="자격증명" value={cert.name} onChange={(e) => updateList(setCertification, certification, idx, "name", e.target.value)} />
+                    <input type="text" placeholder="발행처" value={cert.issuer} onChange={(e) => updateList(setCertification, certification, idx, "issuer", e.target.value)} />
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <span style={{ minWidth: 50, fontWeight: 600 }}>취득일 : </span>
+
+                      <input
+                        type="date"
+                        aria-label="취득일"
+                        value={ymdToInput(cert.date)} // 화면 YYYY-MM-DD
+                        onChange={(e) =>
+                          updateList(setCertification, certification, idx, "date", inputToYmd(e.target.value)) // 저장 YYYYMMDD
+                        }
+                      />
+                    </div>
+                    <button className="rc-del" onClick={() => removeFromList(setCertification, certification, idx)}>×</button>
                   </div>
                 ))}
-                <button className="rc-addBtn" onClick={() => addToList(setCertList, certList, { name: "", issuer: "", date: "" })}>+ 자격증 추가</button>
+                <button className="rc-addBtn" onClick={() => addToList(setCertification, certification, { name: "", issuer: "", date: "" })}>+ 자격증 추가</button>
 
                 <div className="rc-divider" />
 
                 <h3 className="rc-subTitle">어학</h3>
-                {langList.map((lang, idx) => (
+                {languageSkill.map((lang, idx) => (
                   <div key={idx} className="rc-rowGroup">
-                    <input type="text" placeholder="언어" value={lang.lang} onChange={(e) => updateList(setLangList, langList, idx, "lang", e.target.value)} />
-                    <input type="text" placeholder="시험명" value={lang.test} onChange={(e) => updateList(setLangList, langList, idx, "test", e.target.value)} />
-                    <input type="text" placeholder="점수" value={lang.score} onChange={(e) => updateList(setLangList, langList, idx, "score", e.target.value)} />
-                    <button className="rc-del" onClick={() => removeFromList(setLangList, langList, idx)}>×</button>
+                    <input type="text" placeholder="언어" value={lang.lang} onChange={(e) => updateList(setLanguageSkill, languageSkill, idx, "lang", e.target.value)} />
+                    <input type="text" placeholder="시험명" value={lang.test} onChange={(e) => updateList(setLanguageSkill, languageSkill, idx, "test", e.target.value)} />
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      step="1"
+                      min="0"
+                      placeholder="점수"
+                      value={lang.score}
+                      onChange={(e) => updateList(setLanguageSkill, languageSkill, idx, "score", e.target.value)}
+                    />
+                    <button className="rc-del" onClick={() => removeFromList(setLanguageSkill, languageSkill, idx)}>×</button>
                   </div>
                 ))}
-                <button className="rc-addBtn" onClick={() => addToList(setLangList, langList, { lang: "", test: "", score: "" })}>+ 어학 추가</button>
+                <button className="rc-addBtn" onClick={() => addToList(setLanguageSkill, languageSkill, { lang: "", test: "", score: "" })}>+ 어학 추가</button>
               </div>
             )}
 
@@ -255,23 +382,21 @@ export default function ResumeCreate() {
             {step === 4 && (
               <div className="rc-content">
                 <h2 className="rc-title">자기소개서 작성</h2>
-                <p className="rc-desc">구체적인 경험을 바탕으로 작성해주세요. 글자 크기를 키워 가독성을 높였습니다.</p>
-
                 <div className="rc-essay">
                   <label>1. 지원 동기 및 입사 후 포부</label>
-                  <textarea placeholder="내용을 입력하세요..." value={intro.motivation} onChange={(e) => setIntro({...intro, motivation: e.target.value})} />
+                  <textarea placeholder="내용을 입력하세요..." value={applyMotive} onChange={(e) => setApplyMotive(e.target.value)} />
                 </div>
                 <div className="rc-essay">
                   <label>2. 성장 과정</label>
-                  <textarea placeholder="내용을 입력하세요..." value={intro.growth} onChange={(e) => setIntro({...intro, growth: e.target.value})} />
+                  <textarea placeholder="내용을 입력하세요..." value={growthProcess} onChange={(e) => setGrowthProcess( e.target.value)} />
                 </div>
                 <div className="rc-essay">
                   <label>3. 성격의 장단점</label>
-                  <textarea placeholder="내용을 입력하세요..." value={intro.personality} onChange={(e) => setIntro({...intro, personality: e.target.value})} />
+                  <textarea placeholder="내용을 입력하세요..." value={personality} onChange={(e) => setPersonality(e.target.value)} />
                 </div>
                 <div className="rc-essay">
                   <label>4. 직무 관련 경험 및 위기 극복</label>
-                  <textarea placeholder="내용을 입력하세요..." value={intro.crisis} onChange={(e) => setIntro({...intro, crisis: e.target.value})} />
+                  <textarea placeholder="내용을 입력하세요..." value={jobExperience} onChange={(e) => setJobExperience(e.target.value)} />
                 </div>
               </div>
             )}
