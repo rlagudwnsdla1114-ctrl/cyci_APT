@@ -1,8 +1,17 @@
 import { useMemo, useState } from "react";
+// [변경 전] import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+// [추가] useNavigate: 회원가입 성공 후 로그인 페이지로 이동하기 위해 추가
+import axios from "axios";
+// [추가] axios: API 호출을 위해 추가
 import "./Signup.css";
 
 export default function Signup() {
+  const nav = useNavigate();
+  // [추가] nav: 회원가입 성공 후 페이지 이동을 위해 추가
   const [role, setRole] = useState("jobseeker"); // "company" | "jobseeker"
+  const [isLoading, setIsLoading] = useState(false);
+  // [추가] isLoading: API 호출 중 로딩 상태를 관리하기 위해 추가
 
   const [common, setCommon] = useState({
     email: "",
@@ -54,12 +63,82 @@ export default function Signup() {
 
   const canSubmit = Object.keys(errors).length === 0;
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (!canSubmit) return;
+  // [변경 전] const onSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (!canSubmit) return;
+  //
+  //   console.log("SIGNUP PAYLOAD:", { role, ...fields });
+  //   alert(role === "company" ? "기업 회원가입 완료" : "구직자 회원가입 완료");
+  // };
 
-    console.log("SIGNUP PAYLOAD:", { role, ...fields });
-    alert(role === "company" ? "기업 회원가입 완료" : "구직자 회원가입 완료");
+  // [변경 후] async/await를 사용하여 axios로 API 호출하도록 변경
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!canSubmit || isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const payload = {
+        role,
+        email: common.email,
+        password: common.password,
+        region: common.region,
+        ...(role === "company"
+          ? {
+              companyName: company.companyName,
+              bizNumber: company.bizNumber,
+              bizPhone: company.bizPhone,
+              companySize: company.companySize,
+            }
+          : {
+              name: jobseeker.name,
+              birthDate: jobseeker.birthDate,
+              phone: jobseeker.phone,
+            }),
+      };
+
+      // [변경 전] "http://localhost:8080/api/auth/signup"
+      // [변경 후] role에 따라 다른 엔드포인트 사용
+      // - 기업: "http://localhost:8080/api/signup/companyusersignup"
+      // - 구직자: "http://localhost:8080/api/signup/jobseekerusersignup"
+      const endpoint = role === "company" 
+        ? "http://localhost:8080/api/member/companyusersignup"
+        : "http://localhost:8080/api/member/jobseekerusersignup";
+      
+      const response = await axios.post(
+        endpoint,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("회원가입 성공:", response.data);
+      alert(role === "company" ? "기업 회원가입이 완료되었습니다." : "구직자 회원가입이 완료되었습니다.");
+      nav("/login");
+      // [추가] 회원가입 성공 시 로그인 페이지로 이동
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      // [추가] 에러 처리 로직 추가
+      if (error.response) {
+        // 서버에서 에러 응답이 온 경우
+        const errorMessage = error.response.data?.message || error.response.data?.error || "회원가입에 실패했습니다.";
+        alert(errorMessage);
+      } else if (error.request) {
+        // 요청은 보냈지만 응답을 받지 못한 경우
+        alert("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+      } else {
+        // 요청 설정 중 에러가 발생한 경우
+        alert("회원가입 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsLoading(false);
+      // [추가] 로딩 상태 해제
+    }
   };
 
   return (
@@ -205,8 +284,10 @@ export default function Signup() {
               <button className="btn ghost" type="button" onClick={() => window.history.back()}>
                 뒤로가기
               </button>
-              <button className="btn primary" type="submit" disabled={!canSubmit}>
-                {role === "company" ? "기업 회원가입" : "구직자 회원가입"}
+              {/* [변경 전] <button className="btn primary" type="submit" disabled={!canSubmit}> */}
+              {/* [변경 후] isLoading 상태 추가 및 로딩 중 버튼 텍스트 변경 */}
+              <button className="btn primary" type="submit" disabled={!canSubmit || isLoading}>
+                {isLoading ? "처리 중..." : role === "company" ? "기업 회원가입" : "구직자 회원가입"}
               </button>
             </div>
 
