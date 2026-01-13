@@ -1,5 +1,5 @@
-import { useState, useEffect, use } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef  } from "react";
+import { useNavigate } from "react-router-dom";
 import BackgroundShell from "../../components/BackgroundShell";
 import axios from "axios"; 
 import "./ResumeCreate.css";
@@ -21,6 +21,7 @@ const MILITARY_TYPES = ["군필", "미필", "면제", "해당없음"];
 
 export default function ResumeCreate() {
   const nav = useNavigate();
+  const fileInputRef = useRef(null);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     jobseekerName: "",
@@ -29,18 +30,144 @@ export default function ResumeCreate() {
     jobseekerBirth: "",
   });
 
+  const safeParse = (v, fallback) => {
+    try {
+      if (v == null) return fallback;
+      if (typeof v === "string") return JSON.parse(v);
+      return v; // 서버가 이미 객체/배열로 내려주는 경우
+    } catch {
+      return fallback;
+    }
+  };
+
+ 
+  const [photoPreview, setPhotoPreview] = useState(""); // 화면 미리보기용
+  const [uploadingPhoto, setUploadingPhoto] = useState(false); // 업로드 중 표시(선택)
+
+  const onPickPhoto = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  // 1) 화면 미리보기(로컬)
+  const localUrl = URL.createObjectURL(file);
+  setPhotoPreview(localUrl);
+
+  // 2) 서버 업로드해서 "URL" 받기 (DB에는 이 URL 저장)
+  try {
+    setUploadingPhoto(true);
+
+    const fd = new FormData();
+    fd.append("file", file);
+
+    const res = await axios.post(
+      "http://localhost:8080/api/cover/profile-image", // ✅ 백엔드 업로드 API (아래 예시 제공)
+      fd,
+      { withCredentials: true }
+    );
+
+    // 백엔드가 { imageUrl: "..." }로 준다고 가정
+    setImageUrl(res.data.imageUrl);
+  } catch (err) {
+    alert("사진 업로드 실패");
+    setImageUrl("");
+  } finally {
+    setUploadingPhoto(false);
+  }
+};
+
+const essayFileRef = useRef(null);
+const [ocrLoading, setOcrLoading] = useState(false);
+
+const onEssayOcrPick = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  try {
+    setOcrLoading(true);
+
+    const fd = new FormData();
+    fd.append("file", file);
+
+    const res = await axios.post(
+      "http://localhost:8080/api/cover/essay-ocr",
+      fd,
+      { withCredentials: true }
+    );
+
+    const sections = res.data?.sections || {};
+
+    setApplyMotive(sections.applyMotive || "");
+    setGrowthProcess(sections.growthProcess || "");
+    setPersonality(sections.personality || "");
+    setJobExperience(sections.jobExperience || "");
 
 
-  
+  } catch (err) {
+    alert("OCR 자동입력 실패 (서버 로그 확인)");
+  } finally {
+    setOcrLoading(false);
+    e.target.value = ""; // 같은 파일 다시 선택 가능하게 초기화
+  }
+};
+
+
+// 미리보기 URL 메모리 해제(권장)
+useEffect(() => {
+  return () => {
+    if (photoPreview && photoPreview.startsWith("blob:")) {
+       URL.revokeObjectURL(photoPreview);
+    }
+  };
+}, [photoPreview]);
+    
   useEffect(() => {
       axios.get('http://localhost:8080/api/cover/userinfo', {
         withCredentials: true,
       })
       .then(res => {
-        console.log(res.data);
+
         setForm(res.data);
       });
   },  []);
+
+ useEffect(() => {
+  axios
+    .get("http://localhost:8080/api/cover/resume/my", { withCredentials: true })
+    .then((res) => {
+      if (res.status === 204 || !res.data) return;
+
+      const r = res.data;
+    
+
+      const hopeJobObj = safeParse(r.hopeJob, { category: "", sub: [] });
+
+      setHopeJob(hopeJobObj);
+      setSelectedCategory(JOB_CATEGORIES.find(c => c.label === hopeJobObj.category) ?? null);
+      setSelectedSub(Array.isArray(hopeJobObj.sub) ? hopeJobObj.sub : []);
+
+      setHopeRegion(safeParse(r.hopeRegion, []));
+      setEducation(safeParse(r.education, [{ type: "", name: "", major: "", status: "", date: "" }]));
+      setMilitaryStatus(safeParse(r.militaryStatus, { type: "미필", date: "" }));
+      setCareer(safeParse(r.career, []));
+      setCertification(safeParse(r.certification, []));
+      setLanguageSkill(safeParse(r.languageSkill, []));
+
+      setKeySkill(r.keySkill ?? "");
+      setApplyMotive(r.applyMotive ?? "");
+      setGrowthProcess(r.growthProcess ?? "");
+      setPersonality(r.personality ?? "");
+      setJobExperience(r.jobExperience ?? "");
+
+      setImageUrl(r.imageUrl ?? "");
+      setPhotoPreview(r.imageUrl ?? "");
+    })
+    .catch((err) => {
+      const st = err.response?.status;
+      if (st === 404 || st === 204) return;
+      alert("이력서 불러오기 실패");
+    });
+}, []);
+
 
 
 
@@ -53,6 +180,7 @@ export default function ResumeCreate() {
   const [education, setEducation] = useState([{ type: "", name: "", major: "", status: "", date: "" }]);
   const [militaryStatus, setMilitaryStatus] = useState({ type: "미필", date: ""});
   const [career, setCareer] = useState([]);
+  const [keySkill, setKeySkill] = useState("");
   const [certification, setCertification] = useState([]);
   const [languageSkill, setLanguageSkill] = useState([]);
   const [applyMotive, setApplyMotive] = useState("");
@@ -67,6 +195,7 @@ export default function ResumeCreate() {
     education : JSON.stringify(education),
     militaryStatus : JSON.stringify(militaryStatus),
     career : JSON.stringify(career),
+    keySkill : keySkill,
     certification : JSON.stringify(certification),
     languageSkill : JSON.stringify(languageSkill),
     applyMotive : applyMotive,
@@ -76,32 +205,52 @@ export default function ResumeCreate() {
     imageUrl : imageUrl
   };
 
-  const ymToInput = (ym) => (ym && ym.length === 6 ? `${ym.slice(0, 4)}-${ym.slice(4, 6)}` : "");
-  const inputToYm = (v) => (v ? v.replace("-", "") : "");
+   const isBlank = (v) => !v || v.trim().length === 0;
+
+  const essayInvalid =
+    isBlank(applyMotive) ||
+    isBlank(growthProcess) ||
+    isBlank(personality) ||
+    isBlank(jobExperience);
+
+    
+  // 날짜 변환 유틸
 
   const ymdToInput = (ymd) =>
     (ymd && ymd.length === 8 ? `${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}` : "");
   const inputToYmd = (v) => (v ? v.replaceAll("-", "") : "");
 
-  const getStartYm = (period) => (typeof period === "string" ? period.slice(0, 6) : "");
-  const getEndYm = (period) => (typeof period === "string" ? period.slice(6, 12) : "");
+
+  const getStartYm = (period = "") => {
+    const [start] = String(period).split("~");
+    return start || "";
+  };
+
+  const getEndYm = (period = "") => {
+    const [, end] = String(period).split("~");
+    return end || "";
+  };
+
+  const ymToInput = (ym = "") => {
+    if (!ym || ym.length !== 6) return "";
+    return `${ym.slice(0, 4)}-${ym.slice(4, 6)}`; // YYYY-MM
+  };
+
+  const inputToYm = (v = "") => v.replace("-", ""); // YYYYMM
 
 
 
-  // 핸들러
-  // const handleAddressChange = (e) => setAddressInfo({ ...addressInfo, [e.target.name]: e.target.value });
+
   function handleSubToggle(sub) {
       setSelectedSub(prev => {
       const next = prev.includes(sub)
         ? prev.filter(x => x !== sub)
         : [...prev, sub];
 
-      console.log("[세부직무 토글]", next); // ✅ 토글 결과 로그
       setHopeJob(prevHopeJob => ({
         ...prevHopeJob,
         sub: next
       }));
-      console.log("[희망직무 업데이트]", hopeJob); // ✅ 희망직무 업데이트 로그
       return next;
     });
 
@@ -115,25 +264,34 @@ export default function ResumeCreate() {
   const addToList = (setFunc, list, template) => setFunc([...list, template]);
   const removeFromList = (setFunc, list, idx) => setFunc(list.filter((_, i) => i !== idx));
 
-  function goNext() {
-    if (step < 4) {
-      setStep(step + 1);
-    } else {
-      window.alert("이력서가 저장되었습니다!");
-      
-      axios.post('http://localhost:8080/api/cover/resume', payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      })
-      .then(res => {
-        console.log(res.data);
-      });
+const saveResume = () => {
+  axios.put("http://localhost:8080/api/cover/resume/my", payload, {
+    headers: { "Content-Type": "application/json" },
+    withCredentials: true,
+  })
+  .then(() => {
+    alert("이력서가 저장되었습니다!");
+    nav("/jobseeker");
+  })
+  .catch((err) => {
+    alert("저장 실패");
+  });
+};
 
-      nav("/jobseeker");
-    }
+function goNext() {
+  if (step < 4) {
+    setStep(step + 1);
+    return;
   }
+
+  // ✅ STEP 4에서만 검사
+  if (isBlank(applyMotive) || isBlank(growthProcess) || isBlank(personality) || isBlank(jobExperience)) {
+    alert("자기소개서 4개 항목을 모두 입력해 주세요.");
+    return; // ✅ 여기서 종료 (저장/이동 안 함)
+  }
+  saveResume();
+}
+
   const goBack = () => step > 1 ? setStep(step - 1) : nav("/jobseeker");
 
   return (
@@ -176,10 +334,29 @@ export default function ResumeCreate() {
               <div className="rc-content">
                 <h2 className="rc-title">기본 정보 및 희망 직무</h2>
                 <div className="rc-grid-basic">
-                  <div className="rc-photoBox">
-                    <div className="rc-photoIcon">📷</div>
-                    <span>사진 등록 (3x4)</span>
-                  </div>
+                  <div className="rc-photoBox"
+                      onClick={() => fileInputRef.current?.click()}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      {photoPreview ? ( 
+                        <img className="rc-photoPreview" src={photoPreview} alt="증명사진" />
+                      ) : (
+                        <>
+                          <div className="rc-photoIcon">📷</div>
+                          <span>{uploadingPhoto ? "업로드 중..." : "사진 등록 (3x4)"}</span>
+                        </>
+                      )}
+                    </div>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={onPickPhoto}
+                    />
+
                   <div className="rc-inputs">
                     <div className="rc-row">
                       <div className="rc-field"><label>이름</label><input type="text" name="name" value={form.jobseekerName} readOnly /></div>
@@ -199,7 +376,6 @@ export default function ResumeCreate() {
                 <div className="rc-grid-4">
                   {JOB_CATEGORIES.map((cat) => (
                     <button key={cat.id} className={`rc-cardBtn ${selectedCategory?.id === cat.id ? "selected" : ""}`} onClick={() => { 
-                      console.log("[직군 선택]", cat); 
                       setSelectedCategory(cat); 
                       setHopeJob({...hopeJob, category: cat.label, sub: []});
                       setSelectedSub([]); 
@@ -223,7 +399,6 @@ export default function ResumeCreate() {
                   {REGIONS.map(reg => (
                     <button key={reg} className={`rc-chip ${hopeRegion.includes(reg) ? "active" : ""}`} onClick={() => {
                       handleRegionToggle(reg);
-                      console.log("[희망지역 토글]", hopeRegion);
                     }}>{reg}</button>
                   ))}
                 </div>
@@ -288,28 +463,29 @@ export default function ResumeCreate() {
                         <span style={{ minWidth: 60, fontWeight: 600 }}>근무기간</span>
 
                         <input
-                          type="month"
-                          aria-label="근무 시작월"
-                          value={ymToInput(getStartYm(car.period))}
-                          onChange={(e) => {
-                            const start = inputToYm(e.target.value); // YYYYMM
-                            const end = getEndYm(car.period);
-                            updateList(setCareer, career, idx, "period", `${start}${end}`);
-                          }}
-                        />
+                            type="month"
+                            aria-label="근무 시작월"
+                            value={ymToInput(getStartYm(car.period))}
+                            onChange={(e) => {
+                              const start = inputToYm(e.target.value); // YYYYMM
+                              const end = getEndYm(car.period);        // YYYYMM
+                              updateList(setCareer, career, idx, "period", `${start}~${end}`);
+                            }}
+                          />
 
-                        <span>~</span>
+                          <span>~</span>
 
-                        <input
-                          type="month"
-                          aria-label="근무 종료월"
-                          value={ymToInput(getEndYm(car.period))}
-                          onChange={(e) => {
-                            const end = inputToYm(e.target.value); // YYYYMM
-                            const start = getStartYm(car.period);
-                            updateList(setCareer, career, idx, "period", `${start}${end}`);
-                          }}
-                        />
+                          <input
+                            type="month"
+                            aria-label="근무 종료월"
+                            value={ymToInput(getEndYm(car.period))}
+                            onChange={(e) => {
+                              const end = inputToYm(e.target.value);   // YYYYMM
+                              const start = getStartYm(car.period);    // YYYYMM
+                              updateList(setCareer, career, idx, "period", `${start}~${end}`);
+                            }}
+                          />
+
                       </div>
 
                       </div>
@@ -327,8 +503,8 @@ export default function ResumeCreate() {
                 <h2 className="rc-title">보유 기술 및 자격</h2>
                 
                 <div className="rc-field">
-                  <label>핵심 기술 (applyMotive)</label>
-                  <input className="rc-fullInput" type="text" placeholder="예: React, Python, Figma (쉼표로 구분)" value={applyMotive} onChange={(e) => setApplyMotive(e.target.value)} />
+                  <label>핵심 기술 (keySkill)</label>
+                  <input className="rc-fullInput" type="text" placeholder="예: React, Python, Figma (쉼표로 구분)" value={keySkill} onChange={(e) => setKeySkill(e.target.value)} />
                 </div>
 
                 <div className="rc-divider" />
@@ -382,6 +558,24 @@ export default function ResumeCreate() {
             {step === 4 && (
               <div className="rc-content">
                 <h2 className="rc-title">자기소개서 작성</h2>
+                <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+                  <button
+                    type="button"
+                    className="rc-addBtn"
+                    onClick={() => essayFileRef.current?.click()}
+                    disabled={ocrLoading}
+                  >
+                    {ocrLoading ? "OCR 분석중..." : "자소서 사진으로 자동입력"}
+                  </button>
+
+                  <input
+                    ref={essayFileRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={onEssayOcrPick}
+                  />
+                </div>
                 <div className="rc-essay">
                   <label>1. 지원 동기 및 입사 후 포부</label>
                   <textarea placeholder="내용을 입력하세요..." value={applyMotive} onChange={(e) => setApplyMotive(e.target.value)} />
@@ -402,9 +596,29 @@ export default function ResumeCreate() {
             )}
 
             <div className="rc-bottomNav">
-              <button className="rc-navBtn back" onClick={goBack}>{step === 1 ? "취소" : "이전"}</button>
-              <button className="rc-navBtn next" onClick={goNext}>{step === 4 ? "완료" : "다음"}</button>
-            </div>
+              <button type="button" className="rc-navBtn back" onClick={goBack}>
+                {step === 1 ? "취소" : "이전"}
+              </button>
+              <button
+                type="button"
+                className={`rc-navBtn next ${step === 4 && essayInvalid ? "disabledLike" : ""}`}
+                onClick={() => {
+                  // 업로드/OCR 중이면 막기
+                  if (uploadingPhoto || ocrLoading) return;
+
+                  // ✅ STEP4 + 빈칸이면 alert만 띄우고 막기
+                  if (step === 4 && essayInvalid) {
+                    alert("자기소개서 4개 항목을 모두 입력해 주세요.");
+                    return;
+                  }
+
+                  goNext();
+                }}
+                aria-disabled={(step === 4 && essayInvalid) || uploadingPhoto || ocrLoading}
+              >
+                {step === 4 ? "완료" : "다음"}
+              </button>
+            </div>  
           </div>
         </main>
       </div>
