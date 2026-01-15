@@ -88,7 +88,7 @@ export default function Create() {
   }
     
     // 완료 후 기업용 공고 관리 리스트로 이동
-    nav('/company/helpwanted'); 
+    nav('/company-dashboard/helpwanted'); 
   };
 
   return (

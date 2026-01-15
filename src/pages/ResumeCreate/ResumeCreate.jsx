@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef  } from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundShell from "../../components/BackgroundShell";
-import axios from "axios"; 
+import { api } from "../../api/api";
 import "./ResumeCreate.css";
 
 const JOB_CATEGORIES = [
@@ -59,8 +59,8 @@ export default function ResumeCreate() {
     const fd = new FormData();
     fd.append("file", file);
 
-    const res = await axios.post(
-      "http://localhost:8080/api/cover/profile-image", // ✅ 백엔드 업로드 API (아래 예시 제공)
+    const res = await api.post(
+      "/api/cover/profile-image", // ✅ 백엔드 업로드 API (아래 예시 제공)
       fd,
       { withCredentials: true }
     );
@@ -88,8 +88,8 @@ const onEssayOcrPick = async (e) => {
     const fd = new FormData();
     fd.append("file", file);
 
-    const res = await axios.post(
-      "http://localhost:8080/api/cover/essay-ocr",
+    const res = await api.post(
+      "/api/cover/essay-ocr",
       fd,
       { withCredentials: true }
     );
@@ -121,7 +121,7 @@ useEffect(() => {
 }, [photoPreview]);
     
   useEffect(() => {
-      axios.get('http://localhost:8080/api/cover/userinfo', {
+      api.get('/api/cover/userinfo', {
         withCredentials: true,
       })
       .then(res => {
@@ -131,7 +131,7 @@ useEffect(() => {
   },  []);
 
  useEffect(() => {
-  axios
+  api
     .get("http://localhost:8080/api/cover/resume/my", { withCredentials: true })
     .then((res) => {
       if (res.status === 204 || !res.data) return;
@@ -265,9 +265,8 @@ useEffect(() => {
   const removeFromList = (setFunc, list, idx) => setFunc(list.filter((_, i) => i !== idx));
 
 const saveResume = () => {
-  axios.put("http://localhost:8080/api/cover/resume/my", payload, {
+  api.put("/api/cover/resume/my", payload, {
     headers: { "Content-Type": "application/json" },
-    withCredentials: true,
   })
   .then(() => {
     alert("이력서가 저장되었습니다!");

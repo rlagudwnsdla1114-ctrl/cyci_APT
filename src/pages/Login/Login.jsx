@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
+import { api } from "../../api/api";
 import BackgroundShell from "../../components/BackgroundShell";
 import "./Login.css";
 
@@ -13,27 +13,26 @@ export default function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
-    const logindata = {
-      email : email,
-      password : password
-      // role은 백엔드 DTO에 없으므로 안 보내도 되지만, 보내도 상관없습니다.
-    };
+    const logindata =
+  role === "company"
+    ? { companyEmail: email, companyPassword: password }
+    : { jobseekerEmail: email, jobseekerPassword: password };
 
     // [핵심 1] 역할에 따라 요청 보낼 주소 결정
     const loginUrl = role === "company" 
-      ? "http://localhost:8080/api/member/login" 
-      : "http://localhost:8080/api/member/jblogin";
+      ? "/api/company/login" 
+      : "/api/jobseeker/login";
 
     try {
       // 결정된 주소(loginUrl)로 요청 전송
-      const response = await axios.post(loginUrl, logindata);
+      const response = await api.post(loginUrl, logindata);
 
       if(response.status === 200) {
         console.log("로그인 성공");
         
         // [핵심 2] 백엔드에서 객체({token: "..."})가 아니라 문자열("apple_...")을 바로 줌
         // response.data.token이 아니라 response.data를 저장해야 함
-        const token = response.data; 
+      const token = response.data?.data;
 
         // 토큰이 비어있으면 로그인 실패 처리 (백엔드에서 null 리턴 시)
         if (!token) {
@@ -54,7 +53,11 @@ export default function Login() {
           nav("/jobseeker");
         }
       }
-    } catch (error) {
+    }  catch (error) {
+      if (error.response?.status === 401) {
+        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+        return;
+      }
       console.error(error);
       alert("로그인 처리 중 오류가 발생했습니다."); 
     }
