@@ -21,7 +21,7 @@ export default function Login() {
 
     // 역할에 따라 이동 경로를 다르게 설정할 수도 있습니다.
     if (role === "company") {
-       nav("/company"); // 기업 메인 페이지 예시
+       nav("/company-dashboard"); // 기업 메인 페이지 예시
     } else {
        nav("/jobseeker");
     }
