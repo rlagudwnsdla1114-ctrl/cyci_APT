@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 // [변경 전] import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // [추가] useNavigate: 회원가입 성공 후 로그인 페이지로 이동하기 위해 추가
-import axios from "axios";
+import { api } from "../../api/api";
 // [추가] axios: API 호출을 위해 추가
 import "./Signup.css";
 
@@ -33,6 +33,22 @@ export default function Signup() {
     bizPhone: "",
     companySize: "1~10명",
   });
+
+  // "20050501" -> "2005.05.01"
+  const formatBirthDot = (v = "") => {
+    const s = String(v).replace(/\D/g, "").slice(0, 8);
+    if (s.length !== 8) return s;
+    return `${s.slice(0, 4)}.${s.slice(4, 6)}.${s.slice(6, 8)}`;
+  };
+
+  // "01012345678" 또는 "010-1234-5678" -> "010-1234-5678"
+  const formatPhone = (v = "") => {
+    const s = String(v).replace(/\D/g, "");
+    if (s.length === 11) return `${s.slice(0, 3)}-${s.slice(3, 7)}-${s.slice(7, 11)}`;
+    if (s.length === 10) return `${s.slice(0, 3)}-${s.slice(3, 6)}-${s.slice(6, 10)}`;
+    return v; // 길이가 애매하면 일단 원본
+  };
+
 
   const fields = useMemo(() => {
     return role === "company"
@@ -80,35 +96,40 @@ export default function Signup() {
     setIsLoading(true);
 
     try {
-      const payload = {
-        role,
-        email: common.email,
-        password: common.password,
-        // 구직자일 때는 region 제외
-        ...(role === "company"
-          ? {
-              region: common.region,
-              companyName: company.companyName,
-              bizNumber: company.bizNumber,
-              bizPhone: company.bizPhone,
-              companySize: company.companySize,
-            }
-          : {
-              name: jobseeker.name,
-              birthDate: jobseeker.birthDate,
-              phone: jobseeker.phone,
-            }),
-      };
+      const payload =
+  role === "company"
+    ? {
+        // Company DTO에 맞춰서 키 이름 변경
+        companyEmail: common.email,
+        companyPassword: common.password,
+        companyRegion: common.region,
+        companyName: company.companyName,
+        companyBizNumber: company.bizNumber,
+        companyBizPhone: formatPhone(company.bizPhone),
+        companySize: company.companySize,
+      }
+    : {
+        // JobSeekerUserDTO에 맞춰서 키 이름 변경
+        jobSeekerEmail: common.email,
+        jobSeekerPassword: common.password,
+        jobSeekerName: jobseeker.name,
+        jobSeekerBirthDate: formatBirthDot(jobseeker.birthDate),
+        jobSeekerPhone: formatPhone(jobseeker.phone),
+
+        // 구직자 region을 DB에 저장할 거면 이 줄 추가, 아니면 빼
+        // jobSeekerRegion: common.region,
+    };
 
       // [변경 전] "http://localhost:8080/api/auth/signup"
       // [변경 후] role에 따라 다른 엔드포인트 사용
       // - 기업: "http://localhost:8080/api/signup/companyusersignup"
       // - 구직자: "http://localhost:8080/api/signup/jobseekerusersignup"
-      const endpoint = role === "company" 
-        ? "http://localhost:8080/api/member/companyusersignup"
-        : "http://localhost:8080/api/member/jobseekerusersignup";
+      const endpoint = role === "company"
+      ? "/api/company/signup"
+      : "/api/jobseeker/signup";
+
       
-      const response = await axios.post(
+      const response = await api.post(
         endpoint,
         payload,
         {
