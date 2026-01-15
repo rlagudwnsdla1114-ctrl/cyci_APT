@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 import BackgroundShell from '../../components/BackgroundShell';
 import './Create.css';
 
@@ -22,7 +23,7 @@ export default function Create() {
     education: '',          // EDUCATION (학력)
     techStack: '',          // TECH_STACK (기술 스택)
     applicationPeriod: '',  // APPLICATION_PERIOD (접수 기간)
-    attachFile: null        // ATTACH_FILE (첨부 파일)
+    attachFile: ''        // ATTACH_FILE (첨부 파일)
   });
 
   // 2. 수정 모드일 때 기존 데이터 불러오기
@@ -42,7 +43,7 @@ export default function Create() {
         education: '대학교(4년) 졸업',
         techStack: 'AWS, Docker, Kubernetes',
         applicationPeriod: '2025-12-31까지',
-        attachFile: null
+        attachFile: ''
       });
     }
   }, [isEditMode, editId]);
@@ -53,21 +54,38 @@ export default function Create() {
   };
 
   const handleFileChange = (e) => {
-    setForm(prev => ({ ...prev, attachFile: e.target.files[0] }));
-  };
+  const file = e.target.files[0];
+  if (!file) return;
 
-  const handleSubmit = (e) => {
+  setForm(prev => ({
+    ...prev,
+    attachFile: file.name   // ⭐ 문자열만 저장
+  }));
+};
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const payload = {
+      title: form.title,
+      recruitCount: Number(form.recruitCount),
+      employmentType: form.employmentType,
+      salary: form.salary,
+      workTime: form.workTime,
+      career: form.career,
+      education: form.education,
+      techStack: form.techStack,
+      applicationPeriod: form.applicationPeriod,
+      attachFile: form.attachFile 
+};
     
-    if (isEditMode) {
-      // 수정 API 호출 (PUT /api/job-posts/${editId})
-      console.log("수정 데이터:", form);
-      alert('구인광고가 수정되었습니다!');
-    } else {
-      // 등록 API 호출 (POST /api/job-posts)
-      console.log("등록 데이터:", form);
-      alert('구인광고가 등록되었습니다!');
-    }
+   if (isEditMode) {
+    await axios.put(`/api/employment/${editId}`, payload);
+    alert('구인광고가 수정되었습니다!');
+  } else {
+    await axios.post('http://localhost:8080/api/employment/create', payload);
+    alert('구인광고가 등록되었습니다!');
+  }
     
     // 완료 후 기업용 공고 관리 리스트로 이동
     nav('/company/helpwanted'); 
@@ -235,7 +253,7 @@ export default function Create() {
                   />
                   <label htmlFor="file" className="rc-fileBtn">파일 선택</label>
                   <span className="rc-fileInfo">
-                    {form.attachFile ? form.attachFile.name : "공고문 파일 (PDF, IMG)"}
+                    {form.attachFile ? form.attachFile : "공고문 파일 (PDF, IMG)"}
                   </span>
                 </div>
               </div>
