@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../api/api";
 import BackgroundShell from "../../components/BackgroundShell";
 import "./JobSeekerDashboard.css";
 
@@ -59,37 +60,43 @@ function Ico({ name }) {
 }
 
 export default function JobSeekerDashboard() {
-  const nav = useNavigate();
-  const [gateOpen, setGateOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(0); // 0: AI매칭, 1: 추천기업
 
-  const handleLogout = () => {
+  const nav = useNavigate();
+
+  const [activeTab, setActiveTab] = useState(0); // 0: AI매칭, 1: 추천기업
+  const [gateOpen, setGateOpen] = useState(false);
+
+   const isLoggedIn = !!localStorage.getItem("token");
+
+  const handleLogout = async () => {
+  try {
+    await api.post("/api/jobseeker/logout"); // ✅ 구직자 로그아웃 엔드포인트
+  } catch (e) {
+    console.log("jobseeker logout fail(ignore):", e?.response?.status);
+  } finally {
+    localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userRole");
-    goHome();
-    window.location.reload();
-  };
+    nav("/select");
+  }
+};
 
   const goHome = () => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    const userRole = localStorage.getItem("userRole");
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("userRole");
 
-    if(isLoggedIn) {
-      if(userRole === "COMPANY") {
-        nav("/company-dashboard");
-      }
-      else if(userRole === "SEEKER") {
-        nav("/jobseeker");
-      }
-    }
-    else {
-      nav("/select");
-    }
+  if (!token) {
+    nav("/select");
+    return;
   }
+
+  if (userRole === "company") nav("/company-dashboard");
+  else if (userRole === "jobseeker") nav("/jobseeker");
+  else nav("/select"); // role 이상하면 안전하게
+};
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
   const goResume = () => nav("/resume-create");
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   return (
     <BackgroundShell>
