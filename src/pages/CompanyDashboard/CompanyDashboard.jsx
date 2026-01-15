@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../api/api";
 import BackgroundShell from "../../components/BackgroundShell";
 import "./CompanyDashboard.css";
 
@@ -103,7 +104,9 @@ function Ico({ name }) {
 
 export default function CompanyDashboard() {
   const nav = useNavigate();
-  const [gateOpen, setGateOpen] = useState(false);
+  
+   const isLoggedIn = !!localStorage.getItem("token");
+
   const [activeTab, setActiveTab] = useState(0); // 0: 인재매칭, 1: 공고관리
   const [flipped, setFlipped] = useState([false, false, false]);
 
@@ -114,34 +117,34 @@ export default function CompanyDashboard() {
   };
 
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+  try {
+    await api.post("/api/company/logout"); // ✅ 회사 로그아웃 엔드포인트
+  } catch (e) {
+    console.log("company logout fail(ignore):", e?.response?.status);
+  } finally {
+    localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userRole");
-    goHome();
-  };
-
-  const goHome = () => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    const userRole = localStorage.getItem("userRole");
-
-    if(isLoggedIn) {
-      if(userRole === "COMPANY") {
-        nav("/company-dashboard");
-      }
-      else if(userRole === "SEEKER") {
-        nav("/jobseeker");
-      }
-    }
-    else {
-      nav("/select");
-    }
+    nav("/select");
   }
+};
+    const goHome = () => {
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("userRole");
+
+  if (!token) {
+    nav("/select");
+    return;
+  }
+
+  if (userRole === "company") nav("/company-dashboard");
+  else if (userRole === "jobseeker") nav("/jobseeker");
+  else nav("/select"); // role 이상하면 안전하게
+};
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
   
-  // 로그인 여부 확인
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
   const [recommendedTalents] = useState([
     { id: 1, name: "김철수", job: "프론트엔드", score: 95, tags: ["React", "3년차"] },
     { id: 2, name: "이영희", job: "UI/UX 디자이너", score: 88, tags: ["Figma", "신입"] },
