@@ -45,7 +45,8 @@ export default function Signup() {
     if (!common.email.includes("@")) e.email = "이메일 형식을 확인해 주세요.";
     if (common.password.length < 8) e.password = "비밀번호는 8자 이상이 좋아요.";
     if (common.password !== common.password2) e.password2 = "비밀번호가 일치하지 않아요.";
-    if (!common.region) e.region = "지역을 선택해 주세요.";
+    // 구직자일 때는 region 검증 제외
+    if (role === "company" && !common.region) e.region = "지역을 선택해 주세요.";
     if (!common.agree) e.agree = "약관 동의가 필요해요.";
 
     if (role === "company") {
@@ -83,9 +84,10 @@ export default function Signup() {
         role,
         email: common.email,
         password: common.password,
-        region: common.region,
+        // 구직자일 때는 region 제외
         ...(role === "company"
           ? {
+              region: common.region,
               companyName: company.companyName,
               bizNumber: company.bizNumber,
               bizPhone: company.bizPhone,
@@ -185,14 +187,17 @@ export default function Signup() {
                 error={errors.email}
                 type="email"
               />
-              <Field
-                label="지역"
-                type="select"
-                value={common.region}
-                onChange={(v) => setCommon((p) => ({ ...p, region: v }))}
-                error={errors.region}
-                options={["", "서울", "경기", "인천", "대전", "대구", "부산", "광주", "세종", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"]}
-              />
+              {/* 기업일 때만 지역 필드 표시 */}
+              {role === "company" && (
+                <Field
+                  label="지역"
+                  type="select"
+                  value={common.region}
+                  onChange={(v) => setCommon((p) => ({ ...p, region: v }))}
+                  error={errors.region}
+                  options={["", "서울", "경기", "인천", "대전", "대구", "부산", "광주", "세종", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"]}
+                />
+              )}
               <Field
                 label="비밀번호"
                 type="password"
