@@ -28,11 +28,11 @@ export default function Signup() {
   });
 
   const [company, setCompany] = useState({
-    companyName: "",
-    bizNumber: "",
-    bizPhone: "",
-    companySize: "1~10명",
-  });
+  companyName: "",
+  companyRegistration: "",
+  companyPhone: "",
+  companySize: "1~10명",
+});
 
   // "20050501" -> "2005.05.01"
   const formatBirthDot = (v = "") => {
@@ -97,29 +97,24 @@ export default function Signup() {
 
     try {
       const payload =
-  role === "company"
-    ? {
-        // Company DTO에 맞춰서 키 이름 변경
-        companyEmail: common.email,
-        companyPassword: common.password,
-        companyRegion: common.region,
-        companyName: company.companyName,
-        companyBizNumber: company.bizNumber,
-        companyBizPhone: formatPhone(company.bizPhone),
-        companySize: company.companySize,
-      }
-    : {
-        // JobSeekerUserDTO에 맞춰서 키 이름 변경
-        jobSeekerEmail: common.email,
-        jobSeekerPassword: common.password,
-        jobSeekerName: jobseeker.name,
-        jobSeekerBirthDate: formatBirthDot(jobseeker.birthDate),
-        jobSeekerPhone: formatPhone(jobseeker.phone),
+          role === "company"
+            ? {
+                companyEmail: common.email,
+                companyPassword: common.password,
+                companyRegion: common.region,
 
-        // 구직자 region을 DB에 저장할 거면 이 줄 추가, 아니면 빼
-        // jobSeekerRegion: common.region,
-    };
-
+                companyName: company.companyName,
+                companyRegistration: company.bizNumber,          // ✅ DTO 맞춤
+                companyPhone: formatPhone(company.bizPhone),     // ✅ DTO 맞춤
+                companySize: company.companySize,
+              }
+            : {
+                jobSeekerEmail: common.email,
+                jobSeekerPassword: common.password,
+                jobSeekerName: jobseeker.name,
+                jobSeekerBirthDate: formatBirthDot(jobseeker.birthDate),
+                jobSeekerPhone: formatPhone(jobseeker.phone),
+              };
       // [변경 전] "http://localhost:8080/api/auth/signup"
       // [변경 후] role에 따라 다른 엔드포인트 사용
       // - 기업: "http://localhost:8080/api/signup/companyusersignup"
@@ -128,7 +123,8 @@ export default function Signup() {
       ? "/api/company/signup"
       : "/api/jobseeker/signup";
 
-      
+      console.log("SEND payload =", payload);
+
       const response = await api.post(
         endpoint,
         payload,

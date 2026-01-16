@@ -117,12 +117,12 @@ export default function List() {
 
           <div className="rl-list">
             {filteredPosts.map((p) => {
-              const id = p.jobPostsIdx ?? p.JOB_POSTS_IDX ?? p.id;
+              const id = p.jobPostsIdx;
               return (
                 <div
                   key={id}
                   className="rl-card"
-                  onClick={() => nav(`/helpwanted/${id}`)}
+                  onClick={() => nav(`/postdetail/${id}`)}
                 >
                   <div className="rl-cardLeft">
                     <div className="rl-company">{p.companyName ?? `회사 #${p.companyIdx ?? ""}`}</div>
