@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import BackgroundShell from '../../components/BackgroundShell';
 import './AIRecommendedCompany.css';
-import axios from 'axios';
-//import { api } from "../../api/api";
+import { api } from "../../api/api";
 
 const AIRecommendedCompany = () => {  
 
@@ -15,7 +14,7 @@ const AIRecommendedCompany = () => {
     setLoading(true);
     setEmpty(false);
 
-    axios.post("http://localhost:8080/api/ai/AIRecommendedCompany")
+    api.post("http://localhost:8080/api/ai/AIRecommendedCompany")
     .then(res => {
       console.log("들어옴2");
       const lists = Array.isArray(res.data?.lists) ? res.data.lists : [];
