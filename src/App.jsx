@@ -58,7 +58,7 @@ export default function App() {
         {/*(구직자) AI 매칭 결과*/}
         <Route path="/ai-job" element={<AiMatchingJob />} />
         
-        {/*(기업) 내 공고 목록들*/}
+        {/*(기업) 내 공고 목들*/}
         <Route path="/postlist" element={<CompanyPostList />} />
         {/*(기업) 내 공고 상세보기*/}
         <Route path="/postdetail" element={<CompanyPostDetail />} />
