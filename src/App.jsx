@@ -18,7 +18,6 @@ import AiMatchingJob from "./pages/AiMatchingJob/AiMatchingJob";
 import Management from "./pages/ApplicantManagement/ApplicantManagement";
 import CompanyPostList from "./pages/CompanyPostList/CompanyPostList";
 import CompanyPostDetail from "./pages/CompanyPostDetail/CompanyPostDetail";
-import JobDetail from "./pages/JobDetail/JobDetail";
 import TalentProfileDetail from "./pages/TalentProfileDetail/TalentProfileDetail";
 import CEdit from "./pages/MemberInformation/CompanyEdit";
 import Jedit from "./pages/MemberInformation/JobSeekerEdit";
@@ -94,7 +93,7 @@ export default function App() {
 
           {/*(기업) 내 공고 상세보기*/}
           <Route path="/postdetail/:id" element={<CompanyPostDetail />} />
-          
+
           {/*(기업) 구직자 상세 페이지*/}
           <Route path="/talent-detail/:id" element={<TalentProfileDetail />} />
 
