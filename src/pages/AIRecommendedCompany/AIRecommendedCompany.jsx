@@ -14,7 +14,7 @@ const AIRecommendedCompany = () => {
     setLoading(true);
     setEmpty(false);
 
-    api.post("http://localhost:8080/api/ai/AIRecommendedCompany")
+    api.post("/api/ai/AIRecommendedCompany")
     .then(res => {
       console.log("들어옴2");
       const lists = Array.isArray(res.data?.lists) ? res.data.lists : [];
