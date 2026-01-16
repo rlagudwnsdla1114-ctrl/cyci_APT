@@ -1,74 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
-import BackgroundShell from '../../components/BackgroundShell';
-import './Create.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { api } from "../../api/api"; // ✅ axios 대신 api 사용(토큰 자동)
+import BackgroundShell from "../../components/BackgroundShell";
+import "./Create.css";
 
 export default function Create() {
   const nav = useNavigate();
   const [searchParams] = useSearchParams();
-  
-  // 1. URL 파라미터에서 id가 있는지 확인 (수정 모드 판별)
+
+  // ✅ 수정 모드: /helpwanted/create?id=123 이런 식
   const editId = searchParams.get("id");
   const isEditMode = !!editId;
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // ✅ DB 컬럼(JOB_POSTS)에 맞춰 상태 초기화
   const [form, setForm] = useState({
-    title: '',             // TITLE (공고 제목)
-    recruitCount: '',       // RECRUIT_COUNT (모집 인원)
-    employmentType: '',     // EMPLOYMENT_TYPE (고용 형태)
-    salary: '',             // SALARY (급여)
-    workTime: '',           // WORK_TIME (근무 시간)
-    career: '',             // CAREER (경력)
-    education: '',          // EDUCATION (학력)
-    techStack: '',          // TECH_STACK (기술 스택)
-    applicationPeriod: '',  // APPLICATION_PERIOD (접수 기간)
-    attachFile: ''        // ATTACH_FILE (첨부 파일)
+    title: "",
+    recruitCount: "",
+    employmentType: "",
+    salary: "",
+    workTime: "",
+    career: "",
+    education: "",
+    techStack: "",
+    applicationPeriod: "",
+    attachFile: "",
   });
 
-  // 2. 수정 모드일 때 기존 데이터 불러오기
+  // ✅ 수정 모드일 때 기존 데이터 불러오기(진짜 API 호출)
   useEffect(() => {
-    if (isEditMode) {
-      // 실제 구현 시: axios.get(`/api/job-posts/${editId}`).then(res => setForm(res.data))
-      console.log(`${editId}번 공고 데이터를 불러와서 폼에 채웁니다.`);
-      
-      // 테스트용 예시 데이터 세팅 (실제로는 서버에서 가져온 값으로 대체)
-      setForm({
-        title: '2026년 실리콘밸리 AWS 클라우드 관리자 모집',
-        recruitCount: '5',
-        employmentType: '정규직',
-        salary: '6000만원 이상',
-        workTime: '09:00 ~ 18:00',
-        career: '경력',
-        education: '대학교(4년) 졸업',
-        techStack: 'AWS, Docker, Kubernetes',
-        applicationPeriod: '2025-12-31까지',
-        attachFile: ''
-      });
-    }
+    if (!isEditMode) return;
+
+    const fetchPost = async () => {
+      try {
+        setIsLoading(true);
+
+        // ✅ 회사 전용 상세 조회
+        const res = await api.get(`/api/company/employment/${editId}`);
+        const data = res.data?.data; // ApiResponse.success() 형태면 보통 data에 들어있음
+
+        if (!data) {
+          alert("공고 데이터를 불러오지 못했습니다.");
+          return;
+        }
+
+        setForm({
+          title: data.title ?? "",
+          recruitCount: data.recruitCount ?? "",
+          employmentType: data.employmentType ?? "",
+          salary: data.salary ?? "",
+          workTime: data.workTime ?? "",
+          career: data.career ?? "",
+          education: data.education ?? "",
+          techStack: data.techStack ?? "",
+          applicationPeriod: data.applicationPeriod ?? "",
+          attachFile: data.attachFile ?? "",
+        });
+      } catch (e) {
+        console.log(e);
+        alert("공고 데이터를 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
   }, [isEditMode, editId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ 지금은 파일 업로드가 아니라 "파일명 문자열 저장"만 하는 구조 유지
   const handleFileChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  setForm(prev => ({
-    ...prev,
-    attachFile: file.name   // ⭐ 문자열만 저장
-  }));
-};
+    setForm((prev) => ({
+      ...prev,
+      attachFile: file.name,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
 
     const payload = {
       title: form.title,
-      recruitCount: Number(form.recruitCount),
+      recruitCount: form.recruitCount === "" ? null : Number(form.recruitCount),
       employmentType: form.employmentType,
       salary: form.salary,
       workTime: form.workTime,
@@ -76,73 +98,84 @@ export default function Create() {
       education: form.education,
       techStack: form.techStack,
       applicationPeriod: form.applicationPeriod,
-      attachFile: form.attachFile 
-};
-    
-   if (isEditMode) {
-    await axios.put(`/api/employment/${editId}`, payload);
-    alert('구인광고가 수정되었습니다!');
-  } else {
-    await axios.post('http://localhost:8080/api/employment/create', payload);
-    alert('구인광고가 등록되었습니다!');
-  }
-    
-    // 완료 후 기업용 공고 관리 리스트로 이동
-    nav('/company-dashboard/helpwanted'); 
+      attachFile: form.attachFile,
+    };
+
+    try {
+      setIsLoading(true);
+
+      if (isEditMode) {
+        // ✅ 회사 전용 수정
+        await api.put(`/api/company/employment/${editId}`, payload);
+        alert("구인광고가 수정되었습니다!");
+      } else {
+        // ✅ 회사 전용 등록
+        await api.post(`/api/company/employment/create`, payload);
+        alert("구인광고가 등록되었습니다!");
+      }
+
+      // ✅ 완료 후 이동 (네 라우트에 맞춰서)
+      nav("/postlist"); // 공고관리 리스트로 보내는 게 자연스러움
+    } catch (e) {
+      console.log(e);
+      const msg =
+        e?.response?.data?.message ||
+        e?.response?.data?.error ||
+        (e?.response?.status === 401 ? "로그인이 필요합니다." : "처리 중 오류가 발생했습니다.");
+      alert(msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <BackgroundShell>
       <div className="rc-wrap">
         <div className="rc-simple-header">
-          {/* 모드에 따라 상단 라벨 변경 */}
           <span className="rc-page-label">{isEditMode ? "공고 수정" : "공고 등록"}</span>
         </div>
 
         <main className="rc-main">
           <div className="rc-panel fade-in">
-            {/* 모드에 따라 타이틀 변경 */}
-            <h2 className="rc-title">
-              {isEditMode ? "기존 공고를 수정합니다" : "새로운 인재를 찾아보세요"}
-            </h2>
+            <h2 className="rc-title">{isEditMode ? "기존 공고를 수정합니다" : "새로운 인재를 찾아보세요"}</h2>
             <p className="rc-desc">JOB_POSTS 테이블에 저장될 상세 정보를 입력해주세요.</p>
 
             <form onSubmit={handleSubmit}>
-              {/* 1. 공고 제목 (TITLE) */}
               <div className="rc-field">
                 <label>공고 제목</label>
-                <input 
-                  className="rc-input" 
+                <input
+                  className="rc-input"
                   name="title"
-                  placeholder="예: [신입/경력] 프론트엔드 개발자 모집" 
-                  value={form.title} 
-                  onChange={handleChange} 
+                  placeholder="예: [신입/경력] 프론트엔드 개발자 모집"
+                  value={form.title}
+                  onChange={handleChange}
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className="rc-row">
-                {/* 2. 모집 인원 (RECRUIT_COUNT) */}
                 <div className="rc-field half">
                   <label>모집 인원</label>
-                  <input 
+                  <input
                     type="number"
-                    className="rc-input" 
+                    className="rc-input"
                     name="recruitCount"
-                    placeholder="예: 0 (명)" 
-                    value={form.recruitCount} 
-                    onChange={handleChange} 
+                    placeholder="예: 0 (명)"
+                    value={form.recruitCount}
+                    onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
 
-                {/* 3. 고용 형태 (EMPLOYMENT_TYPE) */}
                 <div className="rc-field half">
                   <label>고용 형태</label>
-                  <select 
-                    className="rc-input" 
-                    name="employmentType" 
-                    value={form.employmentType} 
+                  <select
+                    className="rc-input"
+                    name="employmentType"
+                    value={form.employmentType}
                     onChange={handleChange}
+                    disabled={isLoading}
                   >
                     <option value="">선택하세요</option>
                     <option value="정규직">정규직</option>
@@ -154,40 +187,40 @@ export default function Create() {
               </div>
 
               <div className="rc-row">
-                 {/* 4. 급여 (SALARY) */}
                 <div className="rc-field half">
                   <label>급여</label>
-                  <input 
-                    className="rc-input" 
+                  <input
+                    className="rc-input"
                     name="salary"
-                    placeholder="예: 회사내규에 따름 or 3,500만원" 
-                    value={form.salary} 
-                    onChange={handleChange} 
+                    placeholder="예: 회사내규에 따름 or 3,500만원"
+                    value={form.salary}
+                    onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
 
-                {/* 5. 근무 시간 (WORK_TIME) */}
                 <div className="rc-field half">
                   <label>근무 시간</label>
-                  <input 
-                    className="rc-input" 
+                  <input
+                    className="rc-input"
                     name="workTime"
-                    placeholder="예: 09:00 ~ 18:00" 
-                    value={form.workTime} 
-                    onChange={handleChange} 
+                    placeholder="예: 09:00 ~ 18:00"
+                    value={form.workTime}
+                    onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
 
               <div className="rc-row">
-                {/* 6. 경력 (CAREER) */}
                 <div className="rc-field half">
                   <label>경력 요건</label>
-                  <select 
-                    className="rc-input" 
-                    name="career" 
-                    value={form.career} 
+                  <select
+                    className="rc-input"
+                    name="career"
+                    value={form.career}
                     onChange={handleChange}
+                    disabled={isLoading}
                   >
                     <option value="">선택하세요</option>
                     <option value="신입">신입</option>
@@ -196,14 +229,14 @@ export default function Create() {
                   </select>
                 </div>
 
-                {/* 7. 학력 (EDUCATION) */}
                 <div className="rc-field half">
                   <label>학력 요건</label>
-                  <select 
-                    className="rc-input" 
-                    name="education" 
-                    value={form.education} 
+                  <select
+                    className="rc-input"
+                    name="education"
+                    value={form.education}
                     onChange={handleChange}
+                    disabled={isLoading}
                   >
                     <option value="">선택하세요</option>
                     <option value="학력무관">학력무관</option>
@@ -215,54 +248,48 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* 8. 접수 기간 (APPLICATION_PERIOD) */}
               <div className="rc-field">
                 <label>접수 기간</label>
-                <input 
-                  className="rc-input" 
+                <input
+                  className="rc-input"
                   name="applicationPeriod"
-                  placeholder="예: 2024-05-01 ~ 2024-05-31" 
-                  value={form.applicationPeriod} 
-                  onChange={handleChange} 
+                  placeholder="예: 2024-05-01 ~ 2024-05-31"
+                  value={form.applicationPeriod}
+                  onChange={handleChange}
+                  disabled={isLoading}
                 />
               </div>
 
-              {/* 9. 기술 스택 (TECH_STACK) */}
               <div className="rc-field">
                 <label>기술 스택 (자격 요건 및 우대 사항)</label>
-                <textarea 
-                  className="rc-textarea" 
+                <textarea
+                  className="rc-textarea"
                   name="techStack"
-                  placeholder="예: React, Node.js, AWS 사용 가능자 우대" 
-                  value={form.techStack} 
-                  onChange={handleChange} 
+                  placeholder="예: React, Node.js, AWS 사용 가능자 우대"
+                  value={form.techStack}
+                  onChange={handleChange}
                   rows={5}
+                  disabled={isLoading}
                 />
               </div>
 
-              {/* 10. 첨부 파일 (ATTACH_FILE) */}
               <div className="rc-field">
                 <label>상세 공고 이미지 또는 파일</label>
                 <div className="rc-fileBox">
-                  <input 
-                    type="file" 
-                    id="file" 
-                    name="attachFile"
-                    onChange={handleFileChange}
-                    hidden 
-                  />
-                  <label htmlFor="file" className="rc-fileBtn">파일 선택</label>
-                  <span className="rc-fileInfo">
-                    {form.attachFile ? form.attachFile : "공고문 파일 (PDF, IMG)"}
-                  </span>
+                  <input type="file" id="file" name="attachFile" onChange={handleFileChange} hidden disabled={isLoading} />
+                  <label htmlFor="file" className="rc-fileBtn">
+                    파일 선택
+                  </label>
+                  <span className="rc-fileInfo">{form.attachFile ? form.attachFile : "공고문 파일 (PDF, IMG)"}</span>
                 </div>
               </div>
 
               <div className="rc-bottom">
-                <button type="button" className="rc-btn cancel" onClick={() => nav(-1)}>취소</button>
-                {/* 모드에 따라 버튼 텍스트 변경 */}
-                <button type="submit" className="rc-btn submit">
-                  {isEditMode ? "수정 완료" : "공고 등록하기"}
+                <button type="button" className="rc-btn cancel" onClick={() => nav(-1)} disabled={isLoading}>
+                  취소
+                </button>
+                <button type="submit" className="rc-btn submit" disabled={isLoading}>
+                  {isLoading ? "처리 중..." : isEditMode ? "수정 완료" : "공고 등록하기"}
                 </button>
               </div>
             </form>

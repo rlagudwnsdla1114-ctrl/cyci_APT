@@ -58,7 +58,7 @@ const AiMatchingSeeker = () => {
                 </td>
                 <td>{item.m_date}</td>
                 <td><span className="badge-status">{item.m_status}</span></td>
-                <td><button className="btn-detail-view" onClick={() => nav(`/job-detail/${item.m_idx}`)}>공고 보기</button></td>
+                <td><button className="btn-detail-view" onClick={() => nav(`/helpwanted/${item.m_idx}`)}>공고 보기</button></td>
               </tr>
             ))}
           </tbody>

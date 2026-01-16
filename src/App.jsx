@@ -18,7 +18,6 @@ import AiMatchingJob from "./pages/AiMatchingJob/AiMatchingJob";
 import Management from "./pages/ApplicantManagement/ApplicantManagement";
 import CompanyPostList from "./pages/CompanyPostList/CompanyPostList";
 import CompanyPostDetail from "./pages/CompanyPostDetail/CompanyPostDetail";
-import JobDetail from "./pages/JobDetail/JobDetail";
 import TalentProfileDetail from "./pages/TalentProfileDetail/TalentProfileDetail";
 import CEdit from "./pages/MemberInformation/CompanyEdit";
 import Jedit from "./pages/MemberInformation/JobSeekerEdit";
@@ -46,12 +45,18 @@ export default function App() {
         <Route element={<ProtectedRoute allow={["jobseeker"]} />}>
           <Route path="/jobseeker" element={<JobSeekerDashboard />} />
 
+          {/* 이력서 작성 */}
           <Route path="/resume-create" element={<ResumeCreate />} />
+
+          {/*채용 공고 리스트*/}
           <Route path="/helpwanted" element={<HelpWantedList />} />
+
+          {/*채용 공고 상세페이지*/}
           <Route path="/helpwanted/:id" element={<HelpWantedDetail />} />
 
           {/*구직자 AI 매칭*/}
           <Route path="/ai-match" element={<AIRecommendedCompany />} />
+
           {/*구직자 AI 면접*/}
           <Route path="/mock" element={<MockInterview />} />
 
@@ -60,9 +65,6 @@ export default function App() {
 
           {/*(구직자) AI 매칭 결과*/}
           <Route path="/ai-job" element={<AiMatchingJob />} />
-
-          {/*(구직자) 채용 공고 상세페이지*/}
-          <Route path="/job-detail/:id" element={<JobDetail />} />
 
           {/*(구직자) 회원 정보 수정*/}
           <Route path="/jedit" element={<Jedit />} />
@@ -88,8 +90,9 @@ export default function App() {
 
           {/*(기업) 내 공고 목록들*/}
           <Route path="/postlist" element={<CompanyPostList />} />
+
           {/*(기업) 내 공고 상세보기*/}
-          <Route path="/postdetail" element={<CompanyPostDetail />} />
+          <Route path="/postdetail/:id" element={<CompanyPostDetail />} />
 
           {/*(기업) 구직자 상세 페이지*/}
           <Route path="/talent-detail/:id" element={<TalentProfileDetail />} />
