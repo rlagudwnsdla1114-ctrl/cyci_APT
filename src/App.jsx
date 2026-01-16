@@ -19,64 +19,91 @@ import Management from "./pages/ApplicantManagement/ApplicantManagement";
 import CompanyPostList from "./pages/CompanyPostList/CompanyPostList";
 import CompanyPostDetail from "./pages/CompanyPostDetail/CompanyPostDetail";
 import JobDetail from "./pages/JobDetail/JobDetail";
-import TalentProfileDetail from './pages/TalentProfileDetail/TalentProfileDetail';
+import TalentProfileDetail from "./pages/TalentProfileDetail/TalentProfileDetail";
 import CEdit from "./pages/MemberInformation/CompanyEdit";
-import Jedit from './pages/MemberInformation/JobSeekerEdit';
-import MyActivity from './pages/MyActivity/MyActivity';
+import Jedit from "./pages/MemberInformation/JobSeekerEdit";
+import MyActivity from "./pages/MyActivity/MyActivity";
+
+// ✅ 보호라우트 추가
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Splash />} />
-        
+
         {/* 다시 살려낸 회원 선택 페이지 */}
         <Route path="/select" element={<MemberSelect />} />
-        
+
+        {/* ✅ 로그인/회원가입은 보호 X */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        
-        <Route path="/jobseeker" element={<JobSeekerDashboard />} />
-        <Route path="/company-dashboard" element={<CompanyDashboard />} />
 
-        <Route path="/resume-create" element={<ResumeCreate />} />
-        <Route path="/helpwanted" element={<HelpWantedList />} />
-        <Route path="/helpwanted/create" element={<HelpWantedCreate />} />
-        <Route path="/helpwanted/:id" element={<HelpWantedDetail />} />
+        {/* =========================
+           ✅ 구직자 보호 라우트 묶음
+           ========================= */}
+        <Route element={<ProtectedRoute allow={["jobseeker"]} />}>
+          <Route path="/jobseeker" element={<JobSeekerDashboard />} />
 
-        {/*기업 AI 매칭*/}
-        <Route path="/ai-talent" element={<AIRecommendedTalent />} />
-        {/*구직자 AI 매칭*/}
-        <Route path="/ai-match" element={<AIRecommendedCompany />} />
-        {/*구직자 AI 면접*/}
-        <Route path="/mock" element={<MockInterview />} />
+          {/* 이력서 작성 */}
+          <Route path="/resume-create" element={<ResumeCreate />} />
 
-        {/*면접 결과보기*/}
-        <Route path="/ai-view" element={<AiInterviewHistory />} />
-        {/*(회사) AI 매칭 결과*/}
-        <Route path="/ai-com" element={<AiMatchingCompany />} />
-        {/*(구직자) AI 매칭 결과*/}
-        <Route path="/ai-job" element={<AiMatchingJob />} />
-        
-        {/*(기업) 내 공고 목들*/}
-        <Route path="/postlist" element={<CompanyPostList />} />
-        {/*(기업) 내 공고 상세보기*/}
-        <Route path="/postdetail" element={<CompanyPostDetail />} />
+          {/*채용 공고 리스트*/}
+          <Route path="/helpwanted" element={<HelpWantedList />} />
 
-        {/*(구직자) 채용 공고 상세페이지*/}
-        <Route path="/job-detail/:id" element={<JobDetail />} />
-        {/*(기업) 구직자 상세 페이지*/}
-        <Route path="/talent-detail/:id" element={<TalentProfileDetail />} />
+          {/*채용 공고 상세페이지*/}
+          <Route path="/helpwanted/:id" element={<HelpWantedDetail />} />
 
-        {/*(기업) 회원 정보 수정*/}
-        <Route path="/cedit" element={<CEdit />} />
-        {/*(구직자) 회원 정보 수정*/}
-        <Route path="/jedit" element={<Jedit />} />
+          {/*구직자 AI 매칭*/}
+          <Route path="/ai-match" element={<AIRecommendedCompany />} />
 
-        {/*(구직자) 내 지원 현황보기*/}
-        <Route path="/myactivity" element={<MyActivity />} />
-        {/*(기업) 지원자 관리*/}
-        <Route path="/management" element={<Management />} />
+          {/*구직자 AI 면접*/}
+          <Route path="/mock" element={<MockInterview />} />
+
+          {/*면접 결과보기*/}
+          <Route path="/ai-view" element={<AiInterviewHistory />} />
+
+          {/*(구직자) AI 매칭 결과*/}
+          <Route path="/ai-job" element={<AiMatchingJob />} />
+
+          {/*(구직자) 회원 정보 수정*/}
+          <Route path="/jedit" element={<Jedit />} />
+
+          {/*(구직자) 내 지원 현황보기*/}
+          <Route path="/myactivity" element={<MyActivity />} />
+        </Route>
+
+        {/* =========================
+           ✅ 기업 보호 라우트 묶음
+           ========================= */}
+        <Route element={<ProtectedRoute allow={["company"]} />}>
+          <Route path="/company-dashboard" element={<CompanyDashboard />} />
+
+          {/* 기업 공고 작성 */}
+          <Route path="/helpwanted/create" element={<HelpWantedCreate />} />
+
+          {/*기업 AI 매칭*/}
+          <Route path="/ai-talent" element={<AIRecommendedTalent />} />
+
+          {/*(회사) AI 매칭 결과*/}
+          <Route path="/ai-com" element={<AiMatchingCompany />} />
+
+          {/*(기업) 내 공고 목록들*/}
+          <Route path="/postlist" element={<CompanyPostList />} />
+
+          {/*(기업) 내 공고 상세보기*/}
+          <Route path="/postdetail/:id" element={<CompanyPostDetail />} />
+          
+          {/*(기업) 구직자 상세 페이지*/}
+          <Route path="/talent-detail/:id" element={<TalentProfileDetail />} />
+
+          {/*(기업) 회원 정보 수정*/}
+          <Route path="/cedit" element={<CEdit />} />
+
+          {/*(기업) 지원자 관리*/}
+          <Route path="/management" element={<Management />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

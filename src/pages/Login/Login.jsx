@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios"; 
+import { api } from "../../api/api";
 import BackgroundShell from "../../components/BackgroundShell";
 import "./Login.css";
 
@@ -13,17 +13,53 @@ export default function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
-    // [테스트용] 로그인 로직 (role에 따라 분기 처리가 필요하다면 여기서 활용)
-    console.log(`로그인 시도 - 유형: ${role}, 이메일: ${email}`);
-    
-    localStorage.setItem("isLoggedIn", "true"); 
-    localStorage.setItem("userRole", role); // 역할도 저장해두면 추후 활용 가능
+    const logindata =
+  role === "company"
+    ? { companyEmail: email, companyPassword: password }
+    : { jobseekerEmail: email, jobseekerPassword: password };
 
-    // 역할에 따라 이동 경로를 다르게 설정할 수도 있습니다.
-    if (role === "company") {
-       nav("/company"); // 기업 메인 페이지 예시
-    } else {
-       nav("/jobseeker");
+    // [핵심 1] 역할에 따라 요청 보낼 주소 결정
+    const loginUrl = role === "company" 
+      ? "/api/company/login" 
+      : "/api/jobseeker/login";
+
+    try {
+      // 결정된 주소(loginUrl)로 요청 전송
+      const response = await api.post(loginUrl, logindata);
+
+      if(response.status === 200) {
+        console.log("로그인 성공");
+        
+        // [핵심 2] 백엔드에서 객체({token: "..."})가 아니라 문자열("apple_...")을 바로 줌
+        // response.data.token이 아니라 response.data를 저장해야 함
+      const token = response.data?.data;
+
+        // 토큰이 비어있으면 로그인 실패 처리 (백엔드에서 null 리턴 시)
+        if (!token) {
+            alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userRole", role); 
+        localStorage.setItem("token", token); // 문자열 토큰 저장
+
+        alert("로그인에 성공!");
+        
+        // 페이지 이동
+        if (role === "company") {
+          nav("/company-dashboard");
+        } else { 
+          nav("/jobseeker");
+        }
+      }
+    }  catch (error) {
+      if (error.response?.status === 401) {
+        alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+        return;
+      }
+      console.error(error);
+      alert("로그인 처리 중 오류가 발생했습니다."); 
     }
   };
 
@@ -47,7 +83,7 @@ export default function Login() {
             </button>
             <button
               type="button"
-              className={role === "company" ? "active" : ""}
+              className={role === "company" ? "active" : ""}   
               onClick={() => setRole("company")}
             >
               기업
