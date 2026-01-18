@@ -2,116 +2,110 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackgroundShell from '../../components/BackgroundShell';
 import './MockInterview.css';
+import { api } from "../../api/api";
 
 const MockInterview = () => {
   const navigate = useNavigate();
 
-
   const [step, setStep] = useState('intro'); 
   
-  const [questions, setQuestions] = useState([]);
+  const [interviewId, setinterviewId] = useState(null);
+  const [questions, setQusetions] = useState([]);
   const [currentQIndex, setCurrentQIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState([]);
-  const [isListening, setIsListening] = useState(false);
 
-  const [finalResult, setFinalResult] = useState({ score: 0, reason: '' });
+  const [isListening, setisListening] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
-  const startInterview = () => {
+  const [finalResult, setFinalResult] = useState({score: 0, reason: ''});
+
+  const startInterview = async () => {
     setStep('ai_generating');
 
-    setTimeout(() => {
-      const aiGeneratedQuestions = [
-        "지원하신 직무와 관련하여 본인의 핵심 역량은 무엇이라고 생각하시나요?",
-        "자소서에 언급하신 프로젝트에서 발생한 문제를 구체적으로 어떻게 해결하셨나요?",
-        "입사 후 우리 회사에서 이루고 싶은 단기적인 목표는 무엇인가요?",
-        "팀 활동 중 의견 충돌이 있었던 경험과 그 해결 과정을 말씀해 주세요.",
-        "지원자님께서 생각하시는 '좋은 개발자'란 무엇인가요?",
-        "마지막으로, 본인을 채용해야 하는 이유를 한 문장으로 말씀해 주세요."
-      ];
-      
-      setQuestions(aiGeneratedQuestions);
-      setStep('question');
-    }, 3000);
+    const response = await api.post("/api/ai/InterviewQues");
+
+    const {interviewId, questions} = response.data;
+
+    setinterviewId(interviewId);
+    setQusetions(questions);
+    setStep("question");
+
   };
 
-  // --- 면접 진행 (녹음) ---
-  const toggleRecording = () => {
-    if (isListening) {
-      // 답변 완료 -> 다음으로
+  const toggleRecording = async () => {
+    if(isListening) {
       stopRecordingAndNext();
-    } else {
-      // 답변 시작
-      setIsListening(true);
-      setStep('listening');
+    }
+    else {
+      startRecording();
     }
   };
 
-  // 답변 저장 및 다음 질문으로 이동
+  const startRecording = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    mediaRecorderRef.current = new MediaRecorder(stream);
+    audioChunksRef.current = [];
+
+    mediaRecorderRef.current.ondataavailable = (e) => {
+      if(e.data.size > 0) audioChunksRef.current.push(e.data);
+    };
+
+    mediaRecorderRef.current.onstop = () => {
+      const audioBlob = new Blob(audioChunksRef.current,{type: 'audio/mp3'});
+      submitAnswerToBackend(audioBlob);
+    };
+
+    mediaRecorderRef.current.start();
+    setisListening(true);
+    setStep('listening');
+  }
+
   const stopRecordingAndNext = () => {
-    setIsListening(false);
-    setStep('processing'); // "잠시만요..."
+    if(mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setisListening(false);
+      setStep('processing')
+    }
+  };
 
-    // 녹음된 음성을 텍스트로 변환(STT)했다고 가정
-    const currentAnswer = "네, 저는 과거 프로젝트 경험을 통해..."; 
-    
-    // 답변 저장
-    const newAnswers = [...userAnswers, { 
-      question: questions[currentQIndex], 
-      answer: currentAnswer 
-    }];
-    setUserAnswers(newAnswers);
+  const submitAnswerToBackend = async (audioBlob) => {
+    const formData = new FormData();
+    formData.append('interviewId',interviewId);
 
+    const qId = questions[currentQIndex]?.id || questions[currentQIndex];
+    formData.append('questionId', qId);
+
+    formData.append('audioFile', audioBlob, 'answer.mp3');
+
+    const response = await api.post("/api/ai/InterviewProcess", formData, {
+      headers: {'Content-Type': 'multipart/form-data'}
+    });
+    handleVisualSteps(response.data);
+  };
+
+
+  const handleVisualSteps = (feedbackData) => {
     setTimeout(() => {
-      if (currentQIndex < questions.length - 1) {
-        // 다음 질문이 남았으면 이동
+      setStep('ai_evaluating');
+    }, 1000);
+    setTimeout(() => {
+      if(currentQIndex < questions.length -1) {
         setCurrentQIndex(prev => prev + 1);
         setStep('question');
       } else {
-        // 질문 끝! AI 평가 받으러 가기
-        evaluateWithAI(newAnswers);
+        setFinalResult({
+          score: feedbackData.totalScore||80,
+          reason: feedbackData.feedback || "결과를 불러올 수 없습니다"
+        });
+        setStep('saving');
+
+        setTimeout(() => {
+          setStep('result');
+        }, 1500);
       }
-    }, 1500);
-  };
+    }, 3500);
+  }
 
-  // --- [단계 3] AI에게 답변 보내고 평가 받기 ---
-  const evaluateWithAI = (answers) => {
-    setStep('ai_evaluating');
-
-    // (가상) API 호출: AI야, 내 답변들(answers) 평가해서 점수랑 이유 알려줘.
-    // axios.post('/api/ai/evaluate', { answers }).then(...)
-    setTimeout(() => {
-      // AI가 내려준 평가 결과라고 가정
-      const aiResult = {
-        score: Math.floor(Math.random() * (98 - 70 + 1)) + 70, // 70~98점 랜덤
-        reason: `[AI 종합 분석]\n총 ${answers.length}개의 질문에 대해 답변을 분석했습니다.\n\n` +
-                `1. 직무 적합성: 자소서 내용과 일치하는 구체적인 경험을 제시하여 신뢰도가 높습니다.\n` +
-                `2. 논리성: 답변의 기승전결이 뚜렷하나, 일부 질문에서는 결론이 다소 늦게 나오는 경향이 있습니다.\n` +
-                `3. 태도: 자신감 있는 어조가 인상적입니다.\n\n` +
-                `종합적으로 우리 회사의 인재상에 부합하는 지원자로 판단됩니다.`
-      };
-
-      setFinalResult(aiResult);
-      saveToDatabase(aiResult); // DB 저장 함수 호출
-    }, 4000); // 4초 동안 "AI가 채점 중..." 표시
-  };
-
-  // --- [단계 4] DB에 결과 저장 (INTERVIEW_RESULT 테이블) ---
-  const saveToDatabase = (result) => {
-    setStep('saving');
-
-    const payload = {
-      INTERVIEW_SCORE: String(result.score),
-      INTERVIEW_REASON: result.reason,
-      COVER_POSTS_COVER_POSTS_IDX: coverId
-    };
-
-    console.log("💾 DB 저장 데이터:", payload);
-
-    // 저장 API 호출
-    setTimeout(() => {
-      setStep('result'); // 최종 결과 화면
-    }, 1500);
-  };
 
   return (
     <BackgroundShell>
