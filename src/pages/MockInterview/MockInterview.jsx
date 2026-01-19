@@ -111,7 +111,10 @@ const MockInterview = () => {
         setStep('question');
       } else {
         setFinalResult({
-          score: feedbackData.totalScore||80,
+          score:
+            typeof feedbackData.totalScore === "number"
+              ? feedbackData.totalScore
+              : 80,
           reason: feedbackData.feedback || "결과를 불러올 수 없습니다"
         });
         setStep('saving');
