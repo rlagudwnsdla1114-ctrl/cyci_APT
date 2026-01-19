@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AiMatching.css';
+import { api } from '../../api/api';
 
 const AiMatchingSeeker = () => {
   const [matches, setMatches] = useState([]);
@@ -10,17 +11,17 @@ const AiMatchingSeeker = () => {
   const nav = useNavigate();
 
   useEffect(() => {
-    const dummyData = Array.from({ length: 20 }, (_, i) => ({
-      m_idx: 200 - i, // DB 인덱스
-      c_name: `(주)혁신테크 ${i + 1}`, // 기업명
-      job_pos: '백엔드 신입 개발자', // 지원 직무
-      m_rate: 95 - i, // 매칭률
-      m_date: '2026-01-10', // 분석일자
-      m_status: '확인완료'
-    }));
-    setMatches(dummyData);
-  }, []);
+    api.get('/api/ai/selectJobMatch')
+    .then(res => {
+      const list = Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
+      const cleaned = list.filter(x => x != null);
+      console.log("raw:", list);
+      console.log("cleaned:", cleaned);
 
+      setMatches(cleaned);
+      setCurrentPage(1);
+    });
+  },[]);
   // 10개씩 페이징 로직
   const currentItems = matches.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -45,20 +46,22 @@ const AiMatchingSeeker = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item, idx) => (
-              <tr key={item.m_idx}>
+            {currentItems.
+            filter((item) => item != null)
+            .map((item, idx) => (
+              <tr key={item.mIdx ?? `${currentPage}-${idx}`}>
                 <td>{matches.length - ((currentPage - 1) * 10 + idx)}</td>
-                <td className="bold-blue">{item.c_name}</td>
-                <td>{item.job_pos}</td>
+                <td className="bold-blue">{item?.cName ?? "-"}</td>
+                <td>{item.jobPos}</td>
                 <td>
                   <div className="rate-container">
-                    <span className="rate-val">{item.m_rate}%</span>
-                    <div className="rate-bar-bg"><div className="rate-bar-fill" style={{ width: `${item.m_rate}%` }}></div></div>
+                    <span className="rate-val">{item.mRate}%</span>
+                    <div className="rate-bar-bg"><div className="rate-bar-fill" style={{ width: `${item.mRate}%` }}></div></div>
                   </div>
                 </td>
                 <td>{item.m_date}</td>
-                <td><span className="badge-status">{item.m_status}</span></td>
-                <td><button className="btn-detail-view" onClick={() => nav(`/helpwanted/${item.m_idx}`)}>공고 보기</button></td>
+                <td><span className="badge-status">{item.mStatus }</span></td>
+                <td><button className="btn-detail-view" onClick={() => nav(`/helpwanted/${item.mIdx}`)}>공고 보기</button></td>
               </tr>
             ))}
           </tbody>
