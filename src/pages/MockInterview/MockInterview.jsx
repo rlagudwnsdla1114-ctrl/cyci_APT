@@ -17,24 +17,31 @@ const MockInterview = () => {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
+  const recordStartedAtRef = useRef(null);
+
   const [finalResult, setFinalResult] = useState({score: 0, reason: ''});
 
   const startInterview = async () => {
-    setStep('ai_generating');
+  setStep('ai_generating');
 
-    const response = await api.post("/api/ai/InterviewQues");
+  const response = await api.post("/api/ai/InterviewQues");
+    const { interviewId, questions } = response.data;
 
-    const {interviewId, questions} = response.data;
-
-    const normalized = (questions ?? []).map((q, idx) => ({
-      id: idx + 1,                              // ✅ 숫자
-      text: typeof q === "string" ? q : String(q?.text ?? q),
-    }));
+    const normalized = (questions || []).map((q, idx) => {
+      if (typeof q === "string") return { id: idx + 1, text: q };
+      if (q && typeof q === "object") {
+        return {
+          id: Number.isInteger(q.id) ? q.id : (idx + 1),
+          text: String(q.text ?? q.question ?? q.q ?? ""),
+        };
+      }
+      return { id: idx + 1, text: String(q ?? "") };
+    });
 
     setinterviewId(interviewId);
-    setQusetions(questions);
+    setQusetions(normalized);
+    setCurrentQIndex(0);
     setStep("question");
-
   };
 
   const toggleRecording = async () => {
@@ -50,6 +57,8 @@ const MockInterview = () => {
     const stream = await navigator.mediaDevices.getUserMedia({audio: true});
     mediaRecorderRef.current = new MediaRecorder(stream);
     audioChunksRef.current = [];
+
+    recordStartedAtRef.current = Date.now();
 
     mediaRecorderRef.current.ondataavailable = (e) => {
       if(e.data.size > 0) audioChunksRef.current.push(e.data);
@@ -158,7 +167,7 @@ const MockInterview = () => {
 
             <div className="mi-question-box">
               <span className="mi-badge">AI 생성 질문 {currentQIndex + 1}</span>
-              <h2 className="mi-q-text">"{questions[currentQIndex] ?? ""}"</h2>
+              <h2 className="mi-q-text">"{questions[currentQIndex]?.text || ""}"</h2>
             </div>
 
             <div className={`mi-audio-visualizer ${step === 'listening' ? 'active' : ''}`}>
