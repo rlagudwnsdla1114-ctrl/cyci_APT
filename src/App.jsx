@@ -22,6 +22,8 @@ import TalentProfileDetail from "./pages/TalentProfileDetail/TalentProfileDetail
 import CEdit from "./pages/MemberInformation/CompanyEdit";
 import Jedit from "./pages/MemberInformation/JobSeekerEdit";
 import MyActivity from "./pages/MyActivity/MyActivity";
+import ApplicantResumeDetail from "./pages/ApplicantManagement/ApplicantResumeDetail";
+
 
 // ✅ 보호라우트 추가
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -102,6 +104,8 @@ export default function App() {
 
           {/*(기업) 지원자 관리*/}
           <Route path="/management" element={<Management />} />
+
+          <Route path="/company/management/applicants/:jobseekerApplicantIdx/resume" element={<ApplicantResumeDetail />} />
         </Route>
       </Routes>
     </BrowserRouter>

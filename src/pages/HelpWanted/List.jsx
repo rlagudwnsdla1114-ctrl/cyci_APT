@@ -15,6 +15,8 @@ export default function List() {
 
   // ✅ 구직자용 목록 API로 변경: /api/job/employment
   useEffect(() => {
+
+
     (async () => {
       try {
         setLoading(true);

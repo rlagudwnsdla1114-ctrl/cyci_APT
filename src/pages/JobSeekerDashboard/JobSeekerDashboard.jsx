@@ -68,11 +68,11 @@ export default function JobSeekerDashboard() {
 
    const isLoggedIn = !!localStorage.getItem("token");
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
   try {
-    await api.post("/api/jobseeker/logout"); // ✅ 구직자 로그아웃 엔드포인트
+    await api.post("/api/auth/logout"); // ✅ 통합 로그아웃
   } catch (e) {
-    console.log("jobseeker logout fail(ignore):", e?.response?.status);
+    console.log("logout fail(ignore):", e?.response?.status);
   } finally {
     localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
