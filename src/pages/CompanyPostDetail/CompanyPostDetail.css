@@ -1,40 +1,169 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+/* 기존 rd-*와 충돌 피하려고 job-* 네임스페이스로 구성 */
 
-/* 기존 Detail.css의 구조를 따름 */
-.rd-wrap { min-height: 100vh; font-family: "Pretendard Variable", sans-serif; padding-top: 80px; background: #f8fafc; }
+.job-wrap { min-height: 100vh; }
 
-.rd-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 50; backdrop-filter: blur(12px); background: rgba(255,255,255,0.8); border-bottom: 1px solid #e2e8f0; }
-.rd-headerInner { max-width: 1000px; margin: 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-
-.rd-paper {
-  width: 100%; max-width: 800px; margin: 40px auto;
-  background: #fff; border-radius: 32px;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.05);
-  padding: 60px;
+.job-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(10px);
 }
 
-/* 관리중 뱃지 - 파란색 */
-.rd-badge { background: #3b82f6; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 13px; margin-bottom: 16px; display: inline-block; }
-
-.rd-title { font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 16px; }
-
-.rd-divider { height: 1px; background: #f1f5f9; margin: 40px 0; }
-
-.rd-body { font-size: 17px; line-height: 1.8; color: #334155; white-space: pre-wrap; margin-bottom: 60px; }
-
-/* 기업용 수정하기 버튼 강조 */
-.rd-actions { display: flex; justify-content: center; gap: 16px; }
-.rd-btn { padding: 18px 48px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
-
-.rd-btn.primary { 
-  background: #1e293b; /* 수정 버튼은 조금 더 무게감 있는 색상 */
-  color: #fff; 
-  box-shadow: 0 10px 30px rgba(30, 41, 59, 0.2); 
+.job-headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
 }
 
-.rd-btn.primary:hover { transform: translateY(-2px); background: #0f172a; }
+.job-back {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+}
 
-.rd-btn.secondary { background: #f1f5f9; color: #64748b; }
+.job-brand { font-weight: 800; }
 
-.fade-in { animation: fadeInUp 0.5s ease forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.job-mainArea { padding: 22px 14px; }
+
+.job-shell { max-width: 1100px; margin: 0 auto; }
+
+.job-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .job-layout { grid-template-columns: 1fr; }
+}
+
+.job-paper, .job-card {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.job-paper { padding: 18px; }
+
+.job-topRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.job-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(0,0,0,0.06);
+}
+
+.job-subtle { font-size: 12px; opacity: 0.7; }
+.job-dot { opacity: 0.35; }
+
+.job-title {
+  margin: 10px 0 6px;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+}
+
+.job-companyLine { display: flex; align-items: center; gap: 10px; }
+.job-companyName { font-weight: 700; font-size: 14px; opacity: 0.85; }
+
+.job-chipRow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+.job-chip {
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(0,0,0,0.03);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.job-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.08);
+  margin: 16px 0;
+}
+
+.job-section { margin-top: 18px; }
+.job-sectionTitle { font-weight: 900; margin-bottom: 10px; }
+
+.job-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .job-grid { grid-template-columns: 1fr; }
+}
+
+.job-info {
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(0,0,0,0.02);
+}
+
+.job-infoLabel { font-size: 12px; opacity: 0.7; margin-bottom: 6px; }
+.job-infoValue { font-weight: 800; }
+
+.job-link { font-weight: 800; text-decoration: underline; }
+
+.job-card { padding: 16px; }
+.job-cardTitle { font-weight: 900; margin-bottom: 12px; }
+
+.job-kv { padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.03); }
+.job-k { font-size: 12px; opacity: 0.75; font-weight: 800; }
+.job-v { margin-top: 6px; font-size: 14px; font-weight: 900; }
+
+.job-miniList { margin-top: 12px; display: grid; gap: 10px; }
+.job-miniRow { display: flex; justify-content: space-between; gap: 10px; }
+.job-miniLabel { font-size: 12px; opacity: 0.75; font-weight: 700; }
+.job-miniValue { font-size: 12px; font-weight: 900; }
+
+.job-actions { margin-top: 14px; display: grid; gap: 10px; }
+
+.job-btn {
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.job-btn.primary {
+  border: none;
+  color: #fff;
+  background: #111;
+}
+
+.job-btn.danger {
+  border-color: rgba(255,77,79,0.45);
+  color: #ff4d4f;
+  background: rgba(255,77,79,0.06);
+}
+
+.job-btn.ghost {
+  background: rgba(0,0,0,0.03);
+}
+
+.job-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.sticky {
+  position: sticky;
+  top: 86px; /* 헤더 높이에 맞춰 조정 */
+}

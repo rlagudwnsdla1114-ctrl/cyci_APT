@@ -7,7 +7,6 @@ import "./Create.css";
 function toDateInput(v) {
   if (!v) return "";
   const s = String(v).trim();
-  // "2026-01-15 17:58:52" 같은 경우 앞 10글자
   if (s.length >= 10) return s.slice(0, 10);
   return s;
 }
@@ -15,23 +14,20 @@ function toDateInput(v) {
 function toTimeInput(v) {
   if (!v) return "";
   const s = String(v).trim();
-  // "09:00:00" / "09:00" -> "09:00"
   if (s.length >= 5) return s.slice(0, 5);
   return s;
 }
 
 function splitRange(raw) {
-  // "A ~ B", "A~B", "A - B" 등 대응
   if (!raw) return ["", ""];
   const s = String(raw).trim();
   const normalized = s.replace("–", "-").replace("—", "-");
+
   if (normalized.includes("~")) {
     const [a, b] = normalized.split("~").map((x) => x.trim());
     return [a ?? "", b ?? ""];
   }
   if (normalized.includes("-")) {
-    // 날짜가 "2026-01-01 - 2026-01-31" 이런 식이면 split이 과하게 되므로
-    // " - "가 있을 때만 범위로 간주
     if (normalized.includes(" - ")) {
       const [a, b] = normalized.split(" - ").map((x) => x.trim());
       return [a ?? "", b ?? ""];
@@ -41,18 +37,11 @@ function splitRange(raw) {
 }
 
 function parseSalary(raw) {
-  // 기대 포맷 예:
-  // "협의"
-  // "연봉 3500"
-  // "월급 300"
-  // "시급 12000"
-  // 또는 "회사내규", "면접 후 결정" 등 자유 텍스트
   const s = String(raw ?? "").trim();
   if (!s) return { salaryType: "협의", salaryAmount: "", salaryNote: "" };
 
   const lower = s.toLowerCase();
 
-  // 협의/내규/면접 등은 note로 보관
   if (
     lower.includes("협의") ||
     lower.includes("내규") ||
@@ -65,26 +54,26 @@ function parseSalary(raw) {
   const types = ["연봉", "월급", "시급"];
   const found = types.find((t) => s.includes(t));
   if (!found) {
-    // 못 맞추면 협의 + note로
     return { salaryType: "협의", salaryAmount: "", salaryNote: s };
   }
 
-  // 숫자만 뽑기 (쉼표/원/만원 등 섞여도)
   const num = s.replace(/[^0-9]/g, "");
-  return { salaryType: found, salaryAmount: num ? String(Number(num)) : "", salaryNote: "" };
+  return {
+    salaryType: found,
+    salaryAmount: num ? String(Number(num)) : "",
+    salaryNote: "",
+  };
 }
 
 export default function Create() {
   const nav = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // 수정 모드: /helpwanted/create?id=123
   const editId = searchParams.get("id");
   const isEditMode = !!editId;
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ 입력을 더 편하게: 날짜/시간/급여를 분리 입력
   const [form, setForm] = useState({
     title: "",
     recruitCount: "",
@@ -93,22 +82,21 @@ export default function Create() {
     education: "",
     techStack: "",
 
-    // 급여
-    salaryType: "협의", // 협의 | 연봉 | 월급 | 시급
-    salaryAmount: "",  // 숫자(문자열로 관리)
-    salaryNote: "",    // 협의/내규 등 텍스트
+    salaryType: "협의",
+    salaryAmount: "",
+    salaryNote: "",
 
-    // 근무시간
     workStart: "",
     workEnd: "",
-    workTimeNote: "", // 시간이 아니라 텍스트로 쓰고 싶을 때
+    workTimeNote: "",
 
-    // 접수기간
     applicationStart: "",
     applicationEnd: "",
-    applicationNote: "", // 날짜 대신 텍스트로 쓰고 싶을 때
+    applicationNote: "",
 
-    attachFile: "",
+    // ✅ 파일 저장명/원본명 분리
+    attachFile: "",        // 서버 저장명(UUID...)
+    attachFileOrigin: "",  // 원본 파일명
   });
 
   const canUseWorkTimeRange = !!(form.workStart && form.workEnd);
@@ -129,17 +117,14 @@ export default function Create() {
           return;
         }
 
-        // 접수기간 파싱
         const [appA, appB] = splitRange(data.applicationPeriod);
         const appStart = toDateInput(appA);
         const appEnd = toDateInput(appB);
 
-        // 근무시간 파싱
         const [wtA, wtB] = splitRange(data.workTime);
         const workStart = toTimeInput(wtA);
         const workEnd = toTimeInput(wtB);
 
-        // 급여 파싱
         const salaryParsed = parseSalary(data.salary);
 
         setForm({
@@ -165,7 +150,9 @@ export default function Create() {
           applicationEnd: appEnd,
           applicationNote: !appStart && !appEnd ? (data.applicationPeriod ?? "") : "",
 
+          // ✅ 기존 파일 정보도 유지
           attachFile: data.attachFile ?? "",
+          attachFileOrigin: data.attachFileOrigin ?? "",
         });
       } catch (e) {
         console.log(e);
@@ -182,10 +169,14 @@ export default function Create() {
     const { name, value } = e.target;
 
     setForm((prev) => {
-      // 급여 타입을 협의로 바꾸면 amount 비우고 note 활성화
       if (name === "salaryType") {
         if (value === "협의") {
-          return { ...prev, salaryType: value, salaryAmount: "", salaryNote: prev.salaryNote || "협의" };
+          return {
+            ...prev,
+            salaryType: value,
+            salaryAmount: "",
+            salaryNote: prev.salaryNote || "협의",
+          };
         }
         return { ...prev, salaryType: value, salaryNote: "" };
       }
@@ -193,17 +184,36 @@ export default function Create() {
     });
   };
 
-  // 파일 업로드가 아니라 "파일명 문자열 저장" 유지
-  const handleFileChange = (e) => {
+  // ✅ 파일 선택 -> 서버 업로드 -> attachFile/attachFileOrigin 세팅
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setForm((prev) => ({ ...prev, attachFile: file.name }));
+
+    try {
+      setIsLoading(true);
+
+      const fd = new FormData();
+      fd.append("file", file);
+
+      const res = await api.post(`/api/company/employment/upload`, fd);
+      const info = res.data?.data;
+
+      setForm((prev) => ({
+        ...prev,
+        attachFile: info?.attachFile ?? "",
+        attachFileOrigin: info?.attachFileOrigin ?? file.name,
+      }));
+    } catch (err) {
+      console.log(err);
+      alert("파일 업로드 실패");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // payload 생성(서버 컬럼은 문자열이므로 다시 합쳐서 보냄)
+  // payload 생성
   const payload = useMemo(() => {
-    const recruitCount =
-      form.recruitCount === "" ? null : Number(form.recruitCount);
+    const recruitCount = form.recruitCount === "" ? null : Number(form.recruitCount);
 
     const salary =
       form.salaryType === "협의"
@@ -232,7 +242,10 @@ export default function Create() {
       education: form.education,
       techStack: form.techStack,
       applicationPeriod,
-      attachFile: form.attachFile,
+
+      // ✅ DB에 둘 다 저장
+      attachFile: form.attachFile,               // 저장명(UUID...)
+      attachFileOrigin: form.attachFileOrigin,   // 원본명
     };
   }, [form]);
 
@@ -242,7 +255,6 @@ export default function Create() {
       return false;
     }
 
-    // 접수기간: 하나만 입력되면 경고
     if ((form.applicationStart && !form.applicationEnd) || (!form.applicationStart && form.applicationEnd)) {
       alert("접수기간은 시작/마감을 둘 다 입력하거나, 아래 텍스트로만 입력하세요.");
       return false;
@@ -252,13 +264,11 @@ export default function Create() {
       return false;
     }
 
-    // 근무시간: 하나만 입력되면 경고
     if ((form.workStart && !form.workEnd) || (!form.workStart && form.workEnd)) {
       alert("근무시간은 시작/종료를 둘 다 입력하거나, 아래 텍스트로만 입력하세요.");
       return false;
     }
 
-    // 급여: 협의가 아닌데 금액이 비면 경고(원하면 완화 가능)
     if (form.salaryType !== "협의" && !form.salaryAmount.trim()) {
       alert("급여 유형이 협의가 아니면 금액을 입력하세요.");
       return false;
@@ -358,7 +368,7 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* 급여(편하게) */}
+              {/* 급여 */}
               <div className="rc-row">
                 <div className="rc-field half">
                   <label>급여 유형</label>
@@ -402,7 +412,7 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* 근무시간(편하게) */}
+              {/* 근무시간 */}
               <div className="rc-row">
                 <div className="rc-field half">
                   <label>근무 시작</label>
@@ -429,7 +439,6 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* 근무시간 텍스트(시간 입력 안 할 때만) */}
               <div className="rc-field">
                 <label>근무 시간 설명(선택)</label>
                 <input
@@ -479,7 +488,7 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* 접수기간(편하게) */}
+              {/* 접수기간 */}
               <div className="rc-row">
                 <div className="rc-field half">
                   <label>접수 시작</label>
@@ -507,7 +516,6 @@ export default function Create() {
                 </div>
               </div>
 
-              {/* 접수기간 텍스트(날짜 입력 안 할 때만) */}
               <div className="rc-field">
                 <label>접수 기간 설명(선택)</label>
                 <input
@@ -545,12 +553,13 @@ export default function Create() {
                     onChange={handleFileChange}
                     hidden
                     disabled={isLoading}
+                    accept=".pdf,.png,.jpg,.jpeg,.webp"
                   />
                   <label htmlFor="file" className="rc-fileBtn">
                     파일 선택
                   </label>
                   <span className="rc-fileInfo">
-                    {form.attachFile ? form.attachFile : "공고문 파일 (PDF, IMG)"}
+                    {form.attachFileOrigin ? form.attachFileOrigin : "공고문 파일 (PDF, IMG)"}
                   </span>
                 </div>
               </div>
@@ -569,9 +578,6 @@ export default function Create() {
                   {isLoading ? "처리 중..." : isEditMode ? "수정 완료" : "공고 등록하기"}
                 </button>
               </div>
-
-              {/* 디버그용(원하면 지워) */}
-              {/* <pre>{JSON.stringify(payload, null, 2)}</pre> */}
             </form>
           </div>
         </main>
