@@ -205,14 +205,42 @@ export default function Detail() {
             <div className="rd-actions">
               <button
                 className="rd-btn primary"
-                onClick={() => alert("지원 기능은 준비중입니다.")}
+                onClick={async () => {
+                  try {
+                    await api.post(`/api/jobseeker/activity/apply/${id}`);
+                    alert("지원이 완료되었습니다!");
+                    nav("/myactivity", { state: { tab: "applied" } });
+                  } catch (e) {
+                    console.log(e);
+                    if (e?.response?.status === 409) {
+                      alert("이미 지원한 공고입니다.");
+                      nav("/myactivity", { state: { tab: "applied" } });
+                      return;
+                    }
+                    alert("지원 처리 실패");
+                  }
+                }}
               >
                 지원하기
               </button>
+
               <button
                 className="rd-btn secondary"
                 type="button"
-                onClick={() => alert("관심공고 기능은 준비중입니다.")}
+                onClick={async () => {
+                  try {
+                    await api.post(`/api/jobseeker/activity/scrap/${id}`);
+                    alert("관심공고에 등록했습니다!");
+                    nav("/myactivity", { state: { tab: "scrapped" } });
+                  } catch (e) {
+                    console.log(e);
+                    if (e?.response?.status === 409) {
+                      alert("이미 지원한 공고라 관심등록이 불가합니다.");
+                      return;
+                    }
+                    alert("관심공고 등록 실패");
+                  }
+                }}
               >
                 관심공고 등록
               </button>

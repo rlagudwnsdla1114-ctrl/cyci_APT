@@ -1,160 +1,120 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { api } from '../../api/api';
 import BackgroundShell from '../../components/BackgroundShell';
 import './ApplicantManagement.css';
 
 export default function ApplicantManagement() {
   const nav = useNavigate();
+  const location = useLocation();
+
+  const [myJobPosts, setMyJobPosts] = useState([]);
   const [selectedJobPost, setSelectedJobPost] = useState(null);
 
-  const myJobPosts = [
-    {
-      id: 101,
-      title: '[신입/경력] 프론트엔드 개발자 모집',
-      recruitCount: 2,
-      applicants: 14,
-      status: '진행중'
-    },
-    {
-      id: 102,
-      title: '[경력] 백엔드 개발자 채용',
-      recruitCount: 1,
-      applicants: 8,
-      status: '진행중'
-    },
-    {
-      id: 103,
-      title: '[인턴] UI/UX 디자이너 모집',
-      recruitCount: 3,
-      applicants: 23,
-      status: '마감'
-    }
-  ];
-
-  const applicantsByJob = {
-    101: [
-      {
-        id: 1,
-        name: '김철수',
-        email: 'kim@example.com',
-        phone: '010-1234-5678',
-        appliedDate: '2025.01.20',
-        status: '신규',
-        matchScore: 95,
-        skills: ['React', 'TypeScript', 'Next.js'],
-        career: '3년',
-        education: '대학교(4년) 졸업',
-        resumeUrl: '/resume/1'
-      },
-      {
-        id: 2,
-        name: '이영희',
-        email: 'lee@example.com',
-        phone: '010-2345-6789',
-        appliedDate: '2025.01.19',
-        status: '검토중',
-        matchScore: 88,
-        skills: ['React', 'Vue.js', 'JavaScript'],
-        career: '2년',
-        education: '대학교(4년) 졸업',
-        resumeUrl: '/resume/2'
-      },
-      {
-        id: 3,
-        name: '박민수',
-        email: 'park@example.com',
-        phone: '010-3456-7890',
-        appliedDate: '2025.01.18',
-        status: '검토중',
-        matchScore: 82,
-        skills: ['React', 'Redux', 'Node.js'],
-        career: '1년',
-        education: '대학교(4년) 졸업',
-        resumeUrl: '/resume/3'
-      },
-      {
-        id: 4,
-        name: '최지영',
-        email: 'choi@example.com',
-        phone: '010-4567-8901',
-        appliedDate: '2025.01.17',
-        status: '최종',
-        matchScore: 90,
-        skills: ['React', 'TypeScript', 'GraphQL'],
-        career: '4년',
-        education: '대학교(4년) 졸업',
-        resumeUrl: '/resume/4'
-      }
-    ],
-    102: [
-      {
-        id: 5,
-        name: '정대현',
-        email: 'jung@example.com',
-        phone: '010-5678-9012',
-        appliedDate: '2025.01.21',
-        status: '신규',
-        matchScore: 92,
-        skills: ['Java', 'Spring Boot', 'MySQL'],
-        career: '5년',
-        education: '대학교(4년) 졸업',
-        resumeUrl: '/resume/5'
-      },
-      {
-        id: 6,
-        name: '강수진',
-        email: 'kang@example.com',
-        phone: '010-6789-0123',
-        appliedDate: '2025.01.20',
-        status: '검토중',
-        matchScore: 85,
-        skills: ['Java', 'Spring', 'PostgreSQL'],
-        career: '3년',
-        education: '대학교(4년) 졸업',
-        resumeUrl: '/resume/6'
-      }
-    ],
-    103: [
-      {
-        id: 7,
-        name: '윤서연',
-        email: 'yoon@example.com',
-        phone: '010-7890-1234',
-        appliedDate: '2025.01.05',
-        status: '최종',
-        matchScore: 88,
-        skills: ['Figma', 'Sketch', 'Adobe XD'],
-        career: '신입',
-        education: '대학교(4년) 졸업',
-        resumeUrl: '/resume/7'
-      }
-    ]
-  };
-
   const [statusFilter, setStatusFilter] = useState('전체');
+  const [applicants, setApplicants] = useState([]);
 
-  // 선택된 공고의 지원자 목록
-  const currentApplicants = selectedJobPost ? (applicantsByJob[selectedJobPost.id] || []) : [];
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [loadingApplicants, setLoadingApplicants] = useState(false);
 
-  // 상태별 필터링
-  const filteredApplicants = statusFilter === '전체' 
-    ? currentApplicants 
-    : currentApplicants.filter(applicant => applicant.status === statusFilter);
+  // 공고 상세 보기(구직자 상세 라우트와 동일하면 그대로)
+  const handleViewJobPost = (jobPostsIdx) => {
+    console.log("view job post:", jobPostsIdx);
+    nav(`/postdetail/${jobPostsIdx}`);
+  };
 
-  const handleJobPostSelect = (jobPost) => {
+  const loadJobPosts = async () => {
+    try {
+      setLoadingPosts(true);
+      const res = await api.get('/api/company/management/jobposts');
+      const list = res.data?.data ?? res.data ?? [];
+      setMyJobPosts(Array.isArray(list) ? list : []);
+      return Array.isArray(list) ? list : [];
+    } catch (e) {
+      console.log(e);
+      alert('공고 목록 불러오기 실패');
+      return [];
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+
+  const loadApplicants = async (jobPostsIdx, filter) => {
+    if (!jobPostsIdx) return;
+    try {
+      setLoadingApplicants(true);
+      const params = {};
+      if (filter && filter !== '전체') params.status = filter;
+
+      const res = await api.get(`/api/company/management/jobposts/${jobPostsIdx}/applicants`, { params });
+      const list = res.data?.data ?? res.data ?? [];
+      setApplicants(Array.isArray(list) ? list : []);
+    } catch (e) {
+      console.log(e);
+      alert('지원자 목록 불러오기 실패');
+      setApplicants([]);
+    } finally {
+      setLoadingApplicants(false);
+    }
+  };
+
+  // 최초 로드: 내 공고 불러오고, (state로 넘어온 jobPostsIdx 있으면) 그거 선택
+  useEffect(() => {
+    (async () => {
+      const list = await loadJobPosts();
+
+      const goJobPostsIdx = location.state?.jobPostsIdx; // 다른 페이지에서 nav('/management', {state:{jobPostsIdx:3}}) 가능
+      let initial = null;
+
+      if (goJobPostsIdx) {
+        initial = list.find((p) => p.jobPostsIdx === goJobPostsIdx) ?? null;
+      }
+      if (!initial && list.length > 0) initial = list[0];
+
+      if (initial) {
+        setSelectedJobPost(initial);
+        setStatusFilter('전체');
+        await loadApplicants(initial.jobPostsIdx, '전체');
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleJobPostSelect = async (jobPost) => {
     setSelectedJobPost(jobPost);
-    setStatusFilter('전체'); // 공고 변경 시 필터 초기화
+    setStatusFilter('전체');
+    await loadApplicants(jobPost.jobPostsIdx, '전체');
   };
 
-  const handleViewResume = (resumeUrl) => {
-    // 이력서 상세 보기
-    alert(`이력서 상세 페이지: ${resumeUrl}\n(추후 구현 예정)`);
+  const handleFilterClick = async (filter) => {
+    setStatusFilter(filter);
+    if (!selectedJobPost) return;
+    await loadApplicants(selectedJobPost.jobPostsIdx, filter);
   };
 
-  const handleStatusChange = (applicantId, newStatus) => {
-    // 지원자 상태 변경
-    console.log(`지원자 ${applicantId}의 상태를 ${newStatus}로 변경`);
-    alert(`지원자 상태가 "${newStatus}"로 변경되었습니다.`);
+  const handleStatusChange = async (jobseekerApplicantIdx, newStatus) => {
+    try {
+      await api.patch(`/api/company/management/applicants/${jobseekerApplicantIdx}/status`, { status: newStatus });
+      if (selectedJobPost) await loadApplicants(selectedJobPost.jobPostsIdx, statusFilter);
+      // 지원자 수는 SCRAP 제외 count라 상태 변경만으로는 변동 없지만, 필요하면 공고 목록도 갱신 가능
+      // await loadJobPosts();
+    } catch (e) {
+      console.log(e);
+      alert('상태 변경 실패');
+    }
+  };
+
+const handleViewResume = (jobseekerApplicantIdx) => {
+  nav(`/company/management/applicants/${jobseekerApplicantIdx}/resume`, {
+    state: { jobPostsIdx: selectedJobPost?.jobPostsIdx }
+  });
+};
+
+  const handleContact = (email, phone) => {
+    // 간단 연락(원하면 모달/쪽지 기능으로 바꾸기)
+    const choice = window.confirm('메일로 연락할까요?\n취소를 누르면 전화로 이동합니다.');
+    if (choice) window.location.href = `mailto:${email}`;
+    else window.location.href = `tel:${phone}`;
   };
 
   return (
@@ -182,31 +142,50 @@ export default function ApplicantManagement() {
 
         <main className="am-main">
           <div className="am-container">
+
             <aside className="am-sidebar">
               <h2 className="am-sidebarTitle">내 채용공고</h2>
+
+              {loadingPosts && <div style={{ padding: 12 }}>불러오는 중...</div>}
+
               <div className="am-jobPostList">
                 {myJobPosts.map(jobPost => (
                   <div
-                    key={jobPost.id}
-                    className={`am-jobPostCard ${selectedJobPost?.id === jobPost.id ? 'active' : ''}`}
+                    key={jobPost.jobPostsIdx}
+                    className={`am-jobPostCard ${selectedJobPost?.jobPostsIdx === jobPost.jobPostsIdx ? 'active' : ''}`}
                     onClick={() => handleJobPostSelect(jobPost)}
                   >
                     <div className="am-jobPostHeader">
                       <span className={`am-statusBadge ${jobPost.status === '진행중' ? 'active' : 'closed'}`}>
                         {jobPost.status}
                       </span>
-                      <span className="am-applicantCount">{jobPost.applicants}명 지원</span>
+                      <span className="am-applicantCount">{jobPost.applicants ?? 0}명 지원</span>
                     </div>
+
                     <h3 className="am-jobPostTitle">{jobPost.title}</h3>
-                    <div className="am-jobPostMeta">
-                      모집인원: {jobPost.recruitCount}명
+                    <div className="am-jobPostMeta">모집인원: {jobPost.recruitCount ?? 0}명</div>
+
+                    {/* 옵션: 공고보기 버튼 (카드 클릭과 분리) */}
+                    <div className="am-jobPostActions">
+                      <button
+                        className="am-miniBtn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewJobPost(jobPost.jobPostsIdx);
+                        }}
+                      >
+                        공고 보기
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
+
+              {!loadingPosts && myJobPosts.length === 0 && (
+                <div style={{ padding: 16, opacity: 0.7 }}>등록된 공고가 없습니다.</div>
+              )}
             </aside>
 
-            {/* 우측: 지원자 목록 */}
             <section className="am-content">
               {!selectedJobPost ? (
                 <div className="am-empty">
@@ -219,53 +198,54 @@ export default function ApplicantManagement() {
                   <div className="am-contentHeader">
                     <div>
                       <h1 className="am-title">{selectedJobPost.title}</h1>
-                      <p className="am-subtitle">총 {currentApplicants.length}명의 지원자가 있습니다.</p>
+                      <p className="am-subtitle">총 {applicants.length}명의 지원자가 있습니다.</p>
                     </div>
-                    <div className="am-filters">
-                      {['전체', '신규', '검토중', '최종'].map(status => (
-                        <button
-                          key={status}
-                          className={`am-filterBtn ${statusFilter === status ? 'active' : ''}`}
-                          onClick={() => setStatusFilter(status)}
-                        >
-                          {status}
-                        </button>
-                      ))}
+
+                    <div className="am-headerRight">
+                      <button className="am-pillBtn" onClick={() => handleViewJobPost(selectedJobPost.jobPostsIdx)}>
+                        공고 보기
+                      </button>
+
+                      <div className="am-filters">
+                        {['전체', '신규', '검토중', '최종'].map(status => (
+                          <button
+                            key={status}
+                            className={`am-filterBtn ${statusFilter === status ? 'active' : ''}`}
+                            onClick={() => handleFilterClick(status)}
+                          >
+                            {status}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
-                  {filteredApplicants.length === 0 ? (
+                  {loadingApplicants && <div style={{ padding: 12 }}>불러오는 중...</div>}
+
+                  {!loadingApplicants && applicants.length === 0 ? (
                     <div className="am-empty">
                       <div className="am-emptyIcon">📋</div>
                       <p className="am-emptyText">해당 상태의 지원자가 없습니다.</p>
                     </div>
                   ) : (
                     <div className="am-applicantList">
-                      {filteredApplicants.map(applicant => (
-                        <div key={applicant.id} className="am-applicantCard">
+                      {applicants.map(applicant => (
+                        <div key={applicant.jobseekerApplicantIdx} className="am-applicantCard">
                           <div className="am-applicantHeader">
                             <div className="am-applicantInfo">
                               <h3 className="am-applicantName">{applicant.name}</h3>
                               <div className="am-applicantMeta">
-                                <span>경력: {applicant.career}</span>
-                                <span>•</span>
-                                <span>학력: {applicant.education}</span>
-                                <span>•</span>
                                 <span>지원일: {applicant.appliedDate}</span>
                               </div>
                             </div>
-                            <div className="am-applicantScore">
+
+                            {/* matchScore/skills/career/education은 지금 DB조회에 없어서 일단 비움(원하면 join해서 내려주면 됨) */}
+                            <div className="am-applicantScore" style={{ opacity: 0.5 }}>
                               <div className="am-scoreCircle">
-                                <span className="am-scoreValue">{applicant.matchScore}</span>
+                                <span className="am-scoreValue">-</span>
                                 <span className="am-scoreLabel">점</span>
                               </div>
                             </div>
-                          </div>
-
-                          <div className="am-applicantSkills">
-                            {applicant.skills.map((skill, idx) => (
-                              <span key={idx} className="am-skillTag">{skill}</span>
-                            ))}
                           </div>
 
                           <div className="am-applicantContact">
@@ -273,10 +253,11 @@ export default function ApplicantManagement() {
                               <span>📧 {applicant.email}</span>
                               <span>📱 {applicant.phone}</span>
                             </div>
+
                             <div className="am-statusSelect">
                               <select
-                                value={applicant.status}
-                                onChange={(e) => handleStatusChange(applicant.id, e.target.value)}
+                                value={applicant.status ?? '신규'}
+                                onChange={(e) => handleStatusChange(applicant.jobseekerApplicantIdx, e.target.value)}
                                 className={`am-statusSelectInput am-status-${applicant.status}`}
                               >
                                 <option value="신규">신규</option>
@@ -288,13 +269,17 @@ export default function ApplicantManagement() {
                           </div>
 
                           <div className="am-applicantActions">
-                            <button 
+                            <button
                               className="am-actionBtn primary"
-                              onClick={() => handleViewResume(applicant.resumeUrl)}
+                              onClick={() => handleViewResume(applicant.jobseekerApplicantIdx)}
                             >
                               이력서 상세 보기
                             </button>
-                            <button className="am-actionBtn secondary">
+
+                            <button
+                              className="am-actionBtn secondary"
+                              onClick={() => handleContact(applicant.email, applicant.phone)}
+                            >
                               연락하기
                             </button>
                           </div>
@@ -305,6 +290,7 @@ export default function ApplicantManagement() {
                 </>
               )}
             </section>
+
           </div>
         </main>
       </div>

@@ -117,11 +117,11 @@ export default function CompanyDashboard() {
   };
 
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
   try {
-    await api.post("/api/company/logout"); // ✅ 회사 로그아웃 엔드포인트
+    await api.post("/api/auth/logout"); // ✅ 통합 로그아웃
   } catch (e) {
-    console.log("company logout fail(ignore):", e?.response?.status);
+    console.log("logout fail(ignore):", e?.response?.status);
   } finally {
     localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");

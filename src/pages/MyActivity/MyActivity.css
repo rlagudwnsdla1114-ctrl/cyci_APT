@@ -197,3 +197,7 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+.btn-detail-view{
+  margin-left: 12px; /* 원하는 만큼: 8~24px */
+}
