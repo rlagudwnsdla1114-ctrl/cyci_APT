@@ -26,6 +26,11 @@ const MockInterview = () => {
 
     const {interviewId, questions} = response.data;
 
+    const normalized = (questions ?? []).map((q, idx) => ({
+      id: idx + 1,                              // ✅ 숫자
+      text: typeof q === "string" ? q : String(q?.text ?? q),
+    }));
+
     setinterviewId(interviewId);
     setQusetions(questions);
     setStep("question");
@@ -72,8 +77,11 @@ const MockInterview = () => {
     const formData = new FormData();
     formData.append('interviewId',interviewId);
 
-    const qId = questions[currentQIndex]?.id || questions[currentQIndex];
-    formData.append('questionId', qId);
+    const qId = currentQIndex + 1;
+    formData.append("questionId", String(qId));
+
+    formData.append('silenceDuration', String(0));
+    formData.append('speakingDuration', String(0));
 
     formData.append('audioFile', audioBlob, 'answer.mp3');
 
@@ -150,7 +158,7 @@ const MockInterview = () => {
 
             <div className="mi-question-box">
               <span className="mi-badge">AI 생성 질문 {currentQIndex + 1}</span>
-              <h2 className="mi-q-text">"{questions[currentQIndex]}"</h2>
+              <h2 className="mi-q-text">"{questions[currentQIndex] ?? ""}"</h2>
             </div>
 
             <div className={`mi-audio-visualizer ${step === 'listening' ? 'active' : ''}`}>
