@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BackgroundShell from '../../components/BackgroundShell';
 import './AIRecommendedTalent.css';
+import { api } from "../../api/api";
 
 // 아이콘 컴포넌트
 function Ico({ name }) {
@@ -13,13 +14,22 @@ function Ico({ name }) {
 const AIRecommendedTalent = () => {
   // 1. 현재 선택된 공고 상태
   const [selectedJob, setSelectedJob] = useState(null);
+  const [myPostings, setMyPostings] = useState([]);
 
   // 2. 내 공고 목록 (DB: HELP_WANTED 테이블 데이터 예시)
-  const myPostings = [
-    { id: 101, title: "프론트엔드 시니어 개발자 채용", department: "개발팀", date: "2024-03-20" },
-    { id: 102, title: "UI/UX 디자이너 경력직", department: "디자인팀", date: "2024-03-15" },
-    { id: 103, title: "백엔드 자바 개발자 (Spring)", department: "개발팀", date: "2024-03-10" },
-  ];
+  useEffect(() => {
+    api.post("/api/ai/JobPostsList")
+      .then(res => {
+        const list = Array.isArray(res.data)? res.data : (res.data?.data ?? []);
+
+        const cleaned = list.filter(x => x != null);
+
+        console.log("raw:", list);
+        console.log("cleaned:", cleaned);
+
+        setMyPostings(cleaned);
+      });
+  },[]);
 
   // 3. 공고별 추천 인재 데이터
   const talentData = {
@@ -62,9 +72,9 @@ const AIRecommendedTalent = () => {
               {myPostings.map(post => (
                 <div key={post.id} className="ait-job-card" onClick={() => setSelectedJob(post)}>
                   <div className="ait-job-info">
-                    <span className="ait-job-dept">{post.department}</span>
+                    <span className="ait-job-dept">{post.techStack}</span> 
                     <h3 className="ait-job-title">{post.title}</h3>
-                    <span className="ait-job-date">등록일: {post.date}</span>
+                    <span className="ait-job-date">등록일: {post.postsCreateAt}</span>
                   </div>
                   <button className="ait-job-select-btn">인재 추천 보기</button>
                 </div>
