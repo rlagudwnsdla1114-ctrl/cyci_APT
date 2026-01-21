@@ -14,17 +14,13 @@ const AIRecommendedCompany = () => {
 
 
   useEffect(() => {
-    console.log("들어옴1");
     setLoading(true);
     setEmpty(false);
 
     api.post("/api/ai/AIRecommendedCompany")
     .then(res => {
-      console.log(res);
-      console.log("들어옴2");
       const lists = Array.isArray(res.data?.lists) ? res.data.lists : [];
       setRecommendedJobs(lists);
-      console.log("lists:", lists);
       setEmpty(lists.length === 0);
     })
     .catch(() => setEmpty(true))

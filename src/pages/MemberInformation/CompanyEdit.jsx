@@ -32,7 +32,6 @@ export default function CompanyEdit() {
 
       try {
         const res = await api.post("/api/user/getCompanyInfo"); // body 없음
-        console.log(res);
         // res.data = MemberDTO (cIdx, cEmail, cName ...)
         if (!alive) return;
 

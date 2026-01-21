@@ -19,12 +19,10 @@ export default function List() {
       try {
         setLoading(true);
         const res = await api.get("/api/company/employment");
-        console.log("res.data =", res.data);
-        console.log("first item =", (res.data?.data ?? [])[0]);
+
         const list = res.data?.data ?? res.data ?? [];
         setPosts(Array.isArray(list) ? list : []);
       } catch (e) {
-        console.log(e);
         alert("채용공고 불러오기 실패");
       } finally {
         setLoading(false);

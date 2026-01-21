@@ -155,7 +155,6 @@ export default function Create() {
           attachFileOrigin: data.attachFileOrigin ?? "",
         });
       } catch (e) {
-        console.log(e);
         alert("공고 데이터를 불러오는 중 오류가 발생했습니다.");
       } finally {
         setIsLoading(false);
@@ -204,7 +203,6 @@ export default function Create() {
         attachFileOrigin: info?.attachFileOrigin ?? file.name,
       }));
     } catch (err) {
-      console.log(err);
       alert("파일 업로드 실패");
     } finally {
       setIsLoading(false);
@@ -295,7 +293,7 @@ export default function Create() {
 
       nav("/postlist");
     } catch (e2) {
-      console.log(e2);
+      alert("구인광고 처리 중 오류가 발생했습니다.");
       const msg =
         e2?.response?.data?.message ||
         e2?.response?.data?.error ||

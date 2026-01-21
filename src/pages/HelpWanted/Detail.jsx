@@ -27,7 +27,6 @@ export default function Detail() {
         const data = res.data?.data ?? res.data;
         setPost(data);
       } catch (e) {
-        console.log(e);
         alert("상세 불러오기 실패");
         nav("/helpwanted");
       } finally {
@@ -85,7 +84,7 @@ export default function Detail() {
 
       window.URL.revokeObjectURL(url);
     } catch (e) {
-      console.log(e);
+      alert("파일 다운로드에 실패했습니다.");
       const msg =
         e?.response?.status === 404
           ? "파일이 없거나 권한이 없습니다."
@@ -211,7 +210,7 @@ export default function Detail() {
                     alert("지원이 완료되었습니다!");
                     nav("/myactivity", { state: { tab: "applied" } });
                   } catch (e) {
-                    console.log(e);
+                    alert("지원 처리 중 오류가 발생했습니다.");
                     if (e?.response?.status === 409) {
                       alert("이미 지원한 공고입니다.");
                       nav("/myactivity", { state: { tab: "applied" } });
@@ -233,7 +232,7 @@ export default function Detail() {
                     alert("관심공고에 등록했습니다!");
                     nav("/myactivity", { state: { tab: "scrapped" } });
                   } catch (e) {
-                    console.log(e);
+                    alert("관심공고 등록 처리 중 오류가 발생했습니다.");
                     if (e?.response?.status === 409) {
                       alert("이미 지원한 공고라 관심등록이 불가합니다.");
                       return;

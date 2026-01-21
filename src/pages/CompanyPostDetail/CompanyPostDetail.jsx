@@ -76,7 +76,6 @@ export default function CompanyPostDetail() {
         setPost(normalized);
         setCompanyName(normalized?.companyName || "");
       } catch (e) {
-        console.log(e);
         alert("공고 상세 불러오기 실패(로그인/권한 확인)");
       } finally {
         setLoading(false);
@@ -152,7 +151,7 @@ export default function CompanyPostDetail() {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (e) {
-      console.log(e);
+      alert("파일 다운로드에 실패했습니다.");
       const msg =
         e?.response?.status === 404
           ? "파일이 없거나 권한이 없습니다."
@@ -175,7 +174,6 @@ export default function CompanyPostDetail() {
       alert("삭제되었습니다.");
       nav("/postlist");
     } catch (e) {
-      console.log(e);
       const msg =
         e?.response?.data?.message ||
         e?.response?.data?.error ||

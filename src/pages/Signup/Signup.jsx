@@ -84,7 +84,6 @@ export default function Signup() {
   //   e.preventDefault();
   //   if (!canSubmit) return;
   //
-  //   console.log("SIGNUP PAYLOAD:", { role, ...fields });
   //   alert(role === "company" ? "기업 회원가입 완료" : "구직자 회원가입 완료");
   // };
 
@@ -123,7 +122,6 @@ export default function Signup() {
       ? "/api/company/signup"
       : "/api/jobseeker/signup";
 
-      console.log("SEND payload =", payload);
 
       const response = await api.post(
         endpoint,
@@ -136,12 +134,11 @@ export default function Signup() {
         }
       );
 
-      console.log("회원가입 성공:", response.data);
       alert(role === "company" ? "기업 회원가입이 완료되었습니다." : "구직자 회원가입이 완료되었습니다.");
       nav("/login");
       // [추가] 회원가입 성공 시 로그인 페이지로 이동
     } catch (error) {
-      console.error("회원가입 실패:", error);
+      alert("회원가입에 실패했습니다.");
       // [추가] 에러 처리 로직 추가
       if (error.response) {
         // 서버에서 에러 응답이 온 경우

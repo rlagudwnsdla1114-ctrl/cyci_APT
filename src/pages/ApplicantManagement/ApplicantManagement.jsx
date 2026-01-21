@@ -19,7 +19,6 @@ export default function ApplicantManagement() {
 
   // 공고 상세 보기(구직자 상세 라우트와 동일하면 그대로)
   const handleViewJobPost = (jobPostsIdx) => {
-    console.log("view job post:", jobPostsIdx);
     nav(`/postdetail/${jobPostsIdx}`);
   };
 
@@ -31,7 +30,6 @@ export default function ApplicantManagement() {
       setMyJobPosts(Array.isArray(list) ? list : []);
       return Array.isArray(list) ? list : [];
     } catch (e) {
-      console.log(e);
       alert('공고 목록 불러오기 실패');
       return [];
     } finally {
@@ -50,7 +48,6 @@ export default function ApplicantManagement() {
       const list = res.data?.data ?? res.data ?? [];
       setApplicants(Array.isArray(list) ? list : []);
     } catch (e) {
-      console.log(e);
       alert('지원자 목록 불러오기 실패');
       setApplicants([]);
     } finally {
@@ -99,7 +96,6 @@ export default function ApplicantManagement() {
       // 지원자 수는 SCRAP 제외 count라 상태 변경만으로는 변동 없지만, 필요하면 공고 목록도 갱신 가능
       // await loadJobPosts();
     } catch (e) {
-      console.log(e);
       alert('상태 변경 실패');
     }
   };

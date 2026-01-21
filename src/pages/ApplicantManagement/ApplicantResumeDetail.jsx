@@ -88,7 +88,6 @@ export default function ApplicantResumeDetail() {
       const d = res.data?.data ?? res.data ?? null;
       setData(d);
     } catch (e) {
-      console.log(e);
       alert("이력서 불러오기 실패");
       setData(null);
     } finally {
