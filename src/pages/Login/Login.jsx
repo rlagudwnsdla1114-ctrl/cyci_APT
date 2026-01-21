@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import BackgroundShell from "../../components/BackgroundShell";
@@ -9,6 +9,12 @@ export default function Login() {
   const [role, setRole] = useState("jobseeker"); // 'jobseeker' | 'company'
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userRole");
+  }, []);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -48,9 +54,9 @@ export default function Login() {
         
         // 페이지 이동
         if (role === "company") {
-          nav("/company-dashboard");
+          nav("/company-dashboard", { replace: true });
         } else { 
-          nav("/jobseeker");
+          nav("/jobseeker", { replace: true });
         }
       }
     }  catch (error) {

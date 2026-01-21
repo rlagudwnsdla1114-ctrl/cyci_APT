@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BackgroundShell from '../../components/BackgroundShell';
 import './AIRecommendedCompany.css';
 import { api } from "../../api/api";
@@ -9,6 +10,9 @@ const AIRecommendedCompany = () => {
   const [empty, setEmpty] = useState(false);       // true → 추천 공고 없음
   const [recommendedJobs, setRecommendedJobs] = useState([]);
 
+    const nav = useNavigate();
+
+
   useEffect(() => {
     console.log("들어옴1");
     setLoading(true);
@@ -16,9 +20,11 @@ const AIRecommendedCompany = () => {
 
     api.post("/api/ai/AIRecommendedCompany")
     .then(res => {
+      console.log(res);
       console.log("들어옴2");
       const lists = Array.isArray(res.data?.lists) ? res.data.lists : [];
       setRecommendedJobs(lists);
+      console.log("lists:", lists);
       setEmpty(lists.length === 0);
     })
     .catch(() => setEmpty(true))
@@ -63,7 +69,7 @@ const AIRecommendedCompany = () => {
         {!loading && !empty && (
           <div className="aic-list-wrap">
             {recommendedJobs.map(job => (
-              <div key={job.id} className="aic-card">
+              <div key={job.idx} className="aic-card">
                 <div className="aic-match-ring">
                   <svg viewBox="0 0 36 36" className="circular-chart">
                     <path
@@ -98,7 +104,7 @@ const AIRecommendedCompany = () => {
                   </div>
                 </div>
 
-                <button className="aic-apply-btn">지원하기</button>
+                <button className="aic-apply-btn" onClick={() => nav(`/helpwanted/${job.jpIdx}`)}>공고 보기</button>
               </div>
             ))}
           </div>
