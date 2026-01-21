@@ -10,15 +10,22 @@ function Ico({ name }) {
   if (name === "arrow-left") return <svg {...common} viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>;
   return null;
 }
+const token = localStorage.getItem("token");
 
 const AIRecommendedTalent = () => {
   // 1. 현재 선택된 공고 상태
   const [selectedJob, setSelectedJob] = useState(null);
   const [myPostings, setMyPostings] = useState([]);
 
+
+  const [talents, setTalents] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   // 2. 내 공고 목록 (DB: HELP_WANTED 테이블 데이터 예시)
   useEffect(() => {
-    api.post("/api/ai/JobPostsList")
+    api.post("/api/ai/JobPostsList", null, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => {
         const list = Array.isArray(res.data)? res.data : (res.data?.data ?? []);
 
@@ -29,18 +36,31 @@ const AIRecommendedTalent = () => {
   },[]);
 
   // 3. 공고별 추천 인재 데이터
-  const talentData = {
-    101: [
-      { id: 1, name: "김철수", job: "프론트엔드 개발자", score: 95, reason: "React 숙련도가 매우 높으며 공고의 기술 스택과 일치합니다.", tags: ["React", "3년차"] },
-      { id: 3, name: "박지성", job: "프론트엔드 개발자", score: 82, reason: "컴포넌트 설계 능력이 우수합니다.", tags: ["Vue", "5년차"] },
-    ],
-    102: [
-      { id: 2, name: "이영희", job: "UI/UX 디자이너", score: 88, reason: "포트폴리오 스타일이 우리 브랜드와 일치합니다.", tags: ["Figma", "신입"] },
-    ],
-    103: [
-      { id: 4, name: "최배달", job: "백엔드 개발자", score: 91, reason: "대규모 트래픽 처리 경험이 공고 요건에 부합합니다.", tags: ["Java", "7년차"] },
-    ]
+  const handleSelectJob = (post) => {
+    setSelectedJob(post);
+    setTalents([]);
+    setLoading(true);
+
+    const jobPostsIdx = post.jobPostsIdx ?? post.JobPostsIdx ?? post.id;
+
+    api.post("/api/ai/AIComapnyMatch", {
+      jobPostsIdx,
+      topN: 20
+    },{
+    headers: token ? { Authorization: `Bearer ${token}` } : {}
+    }).then(res => {
+      const list = Array.isArray(res.data)? res.data : (res.data?.data ?? []);
+      const cleaned = list.filter(x => x != null);
+      setTalents(cleaned);
+      setLoading(false);
+    });
   };
+
+  const handleBack = () => {
+    setSelectedJob(null);
+    setTalents([]);
+    setLoading(false);
+  }
 
   return (
     <BackgroundShell>
@@ -67,35 +87,38 @@ const AIRecommendedTalent = () => {
           {!selectedJob ? (
             <div className="ait-job-list">
               {myPostings.map(post => (
-                <div key={post.id} className="ait-job-card" onClick={() => setSelectedJob(post)}>
+                <div key={post.jobPostsIdx ?? post.JobPostsIdx ?? post.id} className="ait-job-card" onClick={() => setSelectedJob(post)}>
                   <div className="ait-job-info">
                     <span className="ait-job-dept">{post.techStack}</span> 
                     <h3 className="ait-job-title">{post.title}</h3>
                     <span className="ait-job-date">등록일: {post.postsCreateAt}</span>
                   </div>
-                  <button className="ait-job-select-btn">인재 추천 보기</button>
+                  <button className="ait-job-select-btn"type="button"onClick={(e) => { e.stopPropagation(); handleSelectJob(post); }}>
+                  인재 추천 보기
+                </button>
                 </div>
               ))}
             </div>
           ) : (
             <div className="ait-grid">
-              {(talentData[selectedJob.id] || []).map(talent => (
-                <article key={talent.id} className="ait-card">
+              {talents.map((talent, idx) => (
+                <article key={talent.jobseekerIdx ?? talent.jobseekersIdx ?? idx} className="ait-card">
                   <div className="ait-card-header">
                     <div className="ait-score-badge">
                       <Ico name="star" />
-                      <span>적합도 {talent.score}%</span>
+                      <span>적합도 {talent.matchRate}%</span>
                     </div>
-                    <span className="ait-job">{talent.job}</span>
                   </div>
-                  <h3 className="ait-name">{talent.name}</h3>
-                  <div className="ait-tags">
-                    {talent.tags.map((tag, idx) => <span key={idx} className="ait-tag">{tag}</span>)}
-                  </div>
+
+                  <h3 className="ait-name">
+                    {talent.name ?? talent.jobseekerName}
+                  </h3>
+
                   <div className="ait-reason-box">
                     <strong className="ait-reason-title">✨ AI 분석 리포트</strong>
                     <p className="ait-reason-text">{talent.reason}</p>
                   </div>
+
                   <button className="ait-btn">이력서 상세 보기</button>
                 </article>
               ))}
