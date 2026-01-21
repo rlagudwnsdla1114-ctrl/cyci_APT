@@ -24,9 +24,6 @@ const AIRecommendedTalent = () => {
 
         const cleaned = list.filter(x => x != null);
 
-        console.log("raw:", list);
-        console.log("cleaned:", cleaned);
-
         setMyPostings(cleaned);
       });
   },[]);

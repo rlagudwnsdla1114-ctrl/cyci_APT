@@ -33,7 +33,6 @@ export default function MyActivity() {
       setAppliedList(Array.isArray(a) ? a : []);
       setScrappedList(Array.isArray(s) ? s : []);
     } catch (e) {
-      console.log(e);
       alert("활동 내역 불러오기 실패");
     } finally {
       setLoading(false);
@@ -54,7 +53,7 @@ export default function MyActivity() {
       await loadAll();
       setActiveTab("applied");
     } catch (e) {
-      console.log(e);
+      alert("지원 처리 중 오류가 발생했습니다.");
       if (e?.response?.status === 409) {
         alert("이미 지원한 공고입니다.");
         setActiveTab("applied");
@@ -72,7 +71,6 @@ export default function MyActivity() {
       await api.delete(`/api/jobseeker/activity/scrap/${jobPostsIdx}`);
       await loadAll();
     } catch (e) {
-      console.log(e);
       alert("관심공고 해제 실패");
     }
   };

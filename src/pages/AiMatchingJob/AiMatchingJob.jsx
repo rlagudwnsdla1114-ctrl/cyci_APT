@@ -15,9 +15,6 @@ const AiMatchingSeeker = () => {
     .then(res => {
       const list = Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
       const cleaned = list.filter(x => x != null);
-      console.log("raw:", list);
-      console.log("cleaned:", cleaned);
-
       setMatches(cleaned);
       setCurrentPage(1);
     });

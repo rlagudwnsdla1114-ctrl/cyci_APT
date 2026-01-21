@@ -34,7 +34,6 @@ export default function Login() {
       const response = await api.post(loginUrl, logindata);
 
       if(response.status === 200) {
-        console.log("로그인 성공");
         
         // [핵심 2] 백엔드에서 객체({token: "..."})가 아니라 문자열("apple_...")을 바로 줌
         // response.data.token이 아니라 response.data를 저장해야 함
@@ -64,7 +63,6 @@ export default function Login() {
         alert("아이디 또는 비밀번호가 일치하지 않습니다.");
         return;
       }
-      console.error(error);
       alert("로그인 처리 중 오류가 발생했습니다."); 
     }
   };

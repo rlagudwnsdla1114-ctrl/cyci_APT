@@ -121,7 +121,7 @@ const handleLogout = async () => {
   try {
     await api.post("/api/auth/logout"); // ✅ 통합 로그아웃
   } catch (e) {
-    console.log("logout fail(ignore):", e?.response?.status);
+    alert("로그아웃 중 오류가 발생했습니다.");
   } finally {
     localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
