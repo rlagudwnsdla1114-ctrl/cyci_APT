@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import BackgroundShell from "../../components/BackgroundShell";
@@ -36,67 +36,88 @@ function Ico({ name }) {
           <path d="M12 18v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
-      case "lock-solid":
-        return (
-          <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 0 0-8 0v2Z"
-              fill="currentColor"
-            />
-          </svg>
-        );
-        case "file-text-solid":
-          return (
-            <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm2 16H8v-2h8v2Zm0-4H8v-2h8v2Zm-3-5V3.5L18.5 9H13Z"
-                fill="currentColor"
-              />
-            </svg>
-          );
+    case "lock-solid":
+      return (
+        <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 0 0-8 0v2Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
+    case "file-text-solid":
+      return (
+        <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm2 16H8v-2h8v2Zm0-4H8v-2h8v2Zm-3-5V3.5L18.5 9H13Z"
+            fill="currentColor"
+          />
+        </svg>
+      );
     default:
       return null;
   }
 }
 
 export default function JobSeekerDashboard() {
-
   const nav = useNavigate();
 
-  const [activeTab, setActiveTab] = useState(0); // 0: AI매칭, 1: 추천기업
+  const [activeTab, setActiveTab] = useState(0);
   const [gateOpen, setGateOpen] = useState(false);
 
-   const isLoggedIn = !!localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("token");
 
-const handleLogout = async () => {
-  try {
-    await api.post("/api/auth/logout"); // ✅ 통합 로그아웃
-  } catch (e) {
-    alert("로그아웃 중 오류가 발생했습니다.");
-  } finally {
-    localStorage.removeItem("token");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userRole");
-    nav("/select");
-  }
-};
+  const [topCompanies, setTopCompanies] = useState([]);
+  const [topLoading, setTopLoading] = useState(false);
+
+  const handleLogout = async () => {
+    await api.post("/api/auth/logout").finally(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userRole");
+      nav("/select");
+    });
+  };
 
   const goHome = () => {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
+    const token = localStorage.getItem("token");
+    const userRole = localStorage.getItem("userRole");
 
-  if (!token) {
-    nav("/select");
-    return;
-  }
+    if (!token) {
+      nav("/select");
+      return;
+    }
 
-  if (userRole === "company") nav("/company-dashboard");
-  else if (userRole === "jobseeker") nav("/jobseeker");
-  else nav("/select"); // role 이상하면 안전하게
-};
+    if (userRole === "company") nav("/company-dashboard");
+    else if (userRole === "jobseeker") nav("/jobseeker");
+    else nav("/select");
+  };
+
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
   const goResume = () => nav("/resume-create");
+
+  useEffect(() => {
+    if (activeTab !== 1) return;
+
+    if (!isLoggedIn) {
+      setGateOpen(true);
+      return;
+    }
+
+    setTopLoading(true);
+
+    api
+      .get("/api/ai/selectJobMatchTop3")
+      .then((res) => {
+        const list = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
+        const cleaned = (list || []).filter(Boolean);
+        setTopCompanies(cleaned.slice(0, 3));
+      })
+      .finally(() => {
+        setTopLoading(false);
+      });
+  }, [activeTab, isLoggedIn]);
 
   return (
     <BackgroundShell>
@@ -118,20 +139,32 @@ const handleLogout = async () => {
             </div>
 
             <nav className="jsd-nav" aria-label="메인 메뉴">
-              <button className="jsd-navBtn" type="button" onClick={() => nav('/helpwanted')}>채용정보</button>
-              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-match")}>AI 매칭</button>
-              <button className="jsd-navBtn" type="button" onClick={() => nav("/mock")}>AI 모의 면접</button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/helpwanted")}>
+                채용정보
+              </button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-match")}>
+                AI 매칭
+              </button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/mock")}>
+                AI 모의 면접
+              </button>
             </nav>
 
             <div className="jsd-actions">
               {!isLoggedIn ? (
                 <>
-                  <button className="jsd-pillBtn" type="button" onClick={goLogin}>로그인</button>
-                  <button className="jsd-pillBtn" type="button" onClick={goSignup}>회원가입</button>
+                  <button className="jsd-pillBtn" type="button" onClick={goLogin}>
+                    로그인
+                  </button>
+                  <button className="jsd-pillBtn" type="button" onClick={goSignup}>
+                    회원가입
+                  </button>
                 </>
               ) : (
                 <>
-                  <button className="jsd-pillBtn" type="button" onClick={handleLogout}>로그아웃</button>
+                  <button className="jsd-pillBtn" type="button" onClick={handleLogout}>
+                    로그아웃
+                  </button>
                 </>
               )}
             </div>
@@ -146,17 +179,20 @@ const handleLogout = async () => {
               </div>
               <h1 className="jsd-title">나만을 위한 채용 매칭</h1>
               <p className="jsd-desc">
-                자소서와 희망 조건을 기반으로 AI가 기업을 추천해요.<br/>
+                자소서와 희망 조건을 기반으로 AI가 기업을 추천해요.<br />
                 메인에서 핵심 기능을 빠르게 실행하세요.
               </p>
 
               <div className="jsd-cta">
-                <button className={`jsd-tabBtn ${activeTab === 0 ? 'active' : ''}`} type="button" onClick={() => setActiveTab(0)}>AI 매칭 보기</button>
-                <button className={`jsd-tabBtn ${activeTab === 1 ? 'active' : ''}`} type="button" onClick={() => setActiveTab(1)}>추천 기업</button>
+                <button className={`jsd-tabBtn ${activeTab === 0 ? "active" : ""}`} type="button" onClick={() => setActiveTab(0)}>
+                  AI 매칭 보기
+                </button>
+                <button className={`jsd-tabBtn ${activeTab === 1 ? "active" : ""}`} type="button" onClick={() => setActiveTab(1)}>
+                  추천 기업
+                </button>
               </div>
 
               <div className="jsd-stats">
-                {/* 탭 0: AI 매칭 보기 */}
                 {activeTab === 0 && (
                   <>
                     <div className="jsd-stat fixed-content">
@@ -167,7 +203,9 @@ const handleLogout = async () => {
                           <li>○ 이력서 업로드</li>
                           <li>○ 희망조건 설정</li>
                         </ul>
-                        <button className="jsd-backBtn" onClick={goResume} type="button">지금 완성하기</button>
+                        <button className="jsd-backBtn" onClick={goResume} type="button">
+                          지금 완성하기
+                        </button>
                       </div>
                     </div>
                     <div className="jsd-stat fixed-content">
@@ -184,32 +222,82 @@ const handleLogout = async () => {
                       <div className="jsd-backContent">
                         <div className="jsd-backTitle">역량 분석 결과</div>
                         <ul className="jsd-backList">
-                          <li><strong>상위 20%</strong><br/>React, 문제해결력</li>
-                          <li><strong>평균 수준</strong><br/>Node.js, DB설계</li>
-                          <li><strong>강화 필요</strong><br/>영어, 리더십</li>
+                          <li>
+                            <strong>상위 20%</strong>
+                            <br />
+                            React, 문제해결력
+                          </li>
+                          <li>
+                            <strong>평균 수준</strong>
+                            <br />
+                            Node.js, DB설계
+                          </li>
+                          <li>
+                            <strong>강화 필요</strong>
+                            <br />
+                            영어, 리더십
+                          </li>
                         </ul>
                       </div>
                     </div>
                   </>
                 )}
-
-                {/* 탭 1: 추천 기업 */}
+                {/* 기업 추천 TOP3 */}
                 {activeTab === 1 && (
                   <>
-                    {[
-                      { name: "테크 스타트업 A", reasons: ["React 경험", "영어 상급", "GIT 숙련도"] },
-                      { name: "핀테크 회사 B", reasons: ["Node.js 경험", "일본어 기초", "API 설계"] },
-                      { name: "클라우드 서비스 C", reasons: ["Python 경험", "AWS 자격증", "데이터베이스"] }
-                    ].map((company, i) => (
-                      <div key={i} className="jsd-stat fixed-content">
+                    {topLoading && (
+                      <div className="jsd-stat fixed-content">
                         <div className="jsd-backContent">
-                          <div className="jsd-backTitle">{company.name} 적합 이유</div>
+                          <div className="jsd-backTitle">추천 기업 불러오는 중...</div>
                           <ul className="jsd-backList">
-                            {company.reasons.map((reason, j) => <li key={j}>✓ {reason}</li>)}
+                            <li>잠시만 기다려 주세요</li>
                           </ul>
                         </div>
                       </div>
-                    ))}
+                    )}
+
+                    {!topLoading && topCompanies.length === 0 && (
+                      <div className="jsd-stat fixed-content">
+                        <div className="jsd-backContent">
+                          <div className="jsd-backTitle">추천 기업이 없습니다</div>
+                          <ul className="jsd-backList">
+                            <li>AI 매칭을 먼저 실행하거나</li>
+                            <li>자소서/희망조건을 채워주세요</li>
+                          </ul>
+                          <button className="jsd-backBtn" onClick={() => nav("/ai-match")} type="button">
+                            AI 매칭 하러가기
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {!topLoading &&
+                      topCompanies.map((c, i) => {
+                        const name = c?.cName ?? "기업명 없음";
+                        const score = c?.mRate ?? 0;
+                        const jobPos = c?.jobPos ?? "";
+                        const reasonText = c?.aiReason ?? "";
+                        const reasons = reasonText
+                          ? reasonText
+                              .split(/\r?\n|•|·|\/|,|;/)
+                              .map((x) => x.trim())
+                              .filter(Boolean)
+                              .slice(0, 3)
+                          : [];
+
+                        return (
+                          <div key={c?.mIdx ?? i} className="jsd-stat fixed-content">
+                            <div className="jsd-backContent">
+                              <div className="jsd-backTitle">{name} 적합 이유</div>
+                              <ul className="jsd-backList">
+                                <li>✓ 점수: {score}</li>
+                                {jobPos ? <li>✓ 포지션: {jobPos}</li> : null}
+                                {reasons.length > 0 ? reasons.map((r, j) => <li key={j}>✓ {r}</li>) : <li>✓ (사유 데이터 없음)</li>}
+                              </ul>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </>
                 )}
               </div>
@@ -218,7 +306,11 @@ const handleLogout = async () => {
             <div className="jsd-heroRight">
               <aside className="jsd-idBadge">
                 <div className="jsd-lanyardWrap">
-                  <div className="jsd-idLanyard"><span className="jsd-idStrap left" /><span className="jsd-idStrap right" /><span className="jsd-idClip" /></div>
+                  <div className="jsd-idLanyard">
+                    <span className="jsd-idStrap left" />
+                    <span className="jsd-idStrap right" />
+                    <span className="jsd-idClip" />
+                  </div>
                 </div>
                 <div className="jsd-idCard">
                   <div className="jsd-idTop">
@@ -227,8 +319,14 @@ const handleLogout = async () => {
                     <div className="jsd-idSub">웹 개발자 · 서울</div>
                   </div>
                   <div className="jsd-idStats">
-                    <div className="jsd-idStat"><div className="jsd-idStatLabel">지원 수</div><div className="jsd-idStatValue">3</div></div>
-                    <div className="jsd-idStat"><div className="jsd-idStatLabel">면접대기</div><div className="jsd-idStatValue">14</div></div>
+                    <div className="jsd-idStat">
+                      <div className="jsd-idStatLabel">지원 수</div>
+                      <div className="jsd-idStatValue">3</div>
+                    </div>
+                    <div className="jsd-idStat">
+                      <div className="jsd-idStatLabel">면접대기</div>
+                      <div className="jsd-idStatValue">14</div>
+                    </div>
                   </div>
                   <div className="jsd-idBrand">JOB MATCH · JOB SEEKER ID</div>
                 </div>
@@ -240,7 +338,9 @@ const handleLogout = async () => {
           <section className="jsd-grid">
             <button className="jsd-card" type="button" onClick={goResume}>
               <div className="jsd-cardTop">
-                <div className="jsd-cardIco"><Ico name="doc" /></div>
+                <div className="jsd-cardIco">
+                  <Ico name="doc" />
+                </div>
               </div>
               <h3>자소서 작성/수정</h3>
               <p>자신의 경험을 잘 드러내는 자소서를 작성하세요</p>
@@ -248,7 +348,9 @@ const handleLogout = async () => {
 
             <button className="jsd-card" type="button" onClick={() => nav("/jedit")}>
               <div className="jsd-cardTop">
-                <div className="jsd-cardIco"><Ico name="lock-solid" /></div>
+                <div className="jsd-cardIco">
+                  <Ico name="lock-solid" />
+                </div>
               </div>
               <h3>회원 정보 수정</h3>
               <p>보안을 위해 회원자님의 정보를 보호하세요!</p>
@@ -257,7 +359,9 @@ const handleLogout = async () => {
 
             <button className="jsd-card" type="button" onClick={() => nav("/ai-job")}>
               <div className="jsd-cardTop">
-                <div className="jsd-cardIco"><Ico name="spark" /></div>
+                <div className="jsd-cardIco">
+                  <Ico name="spark" />
+                </div>
               </div>
               <h3>AI 매칭 결과</h3>
               <p>나에게 맞는 기업을 확인하세요</p>
@@ -266,7 +370,9 @@ const handleLogout = async () => {
 
             <button className="jsd-card" type="button" onClick={() => nav("/ai-view")}>
               <div className="jsd-cardTop">
-                <div className="jsd-cardIco"><Ico name="mic" /></div>
+                <div className="jsd-cardIco">
+                  <Ico name="mic" />
+                </div>
               </div>
               <h3>AI 모의 면접 결과</h3>
               <p>AI와 함께 면접 연습하기</p>
@@ -275,7 +381,9 @@ const handleLogout = async () => {
 
             <button className="jsd-card" type="button" onClick={() => nav("/myactivity")}>
               <div className="jsd-cardTop">
-                <div className="jsd-cardIco"><Ico name="file-text-solid" /></div>
+                <div className="jsd-cardIco">
+                  <Ico name="file-text-solid" />
+                </div>
               </div>
               <h3>지원 현황 보기</h3>
               <p>내가 지원한 현황을 모두 확인해보세요</p>
@@ -300,9 +408,7 @@ const handleLogout = async () => {
               <span className="jsd-sep">|</span>
               <span>서울특별시 강남구 테헤란로 123 잡매치빌딩</span>
             </div>
-            <div className="jsd-copy">
-              &copy; 2025 JobMatch Corp. All rights reserved.
-            </div>
+            <div className="jsd-copy">&copy; 2025 JobMatch Corp. All rights reserved.</div>
           </div>
         </footer>
 
@@ -334,4 +440,3 @@ const handleLogout = async () => {
     </BackgroundShell>
   );
 }
-
