@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import BackgroundShell from "../../components/BackgroundShell";
 import "./CompanyDashboard.css";
 
 function Ico({ name }) {
-  const common = { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none" }; // 아이콘 크기도 약간 키움
+  const common = { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none" };
   switch (name) {
     case "briefcase":
       return (
@@ -22,23 +22,13 @@ function Ico({ name }) {
             strokeWidth="2"
             strokeLinejoin="round"
           />
-          <path
-            d="M4 13h16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          <path d="M4 13h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
     case "check":
       return (
         <svg {...common} aria-hidden="true">
-          <path
-            d="M7 7h14M7 12h14M7 17h14"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          <path d="M7 7h14M7 12h14M7 17h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <path
             d="M3 7l1 1 2-3M3 12l1 1 2-3M3 17l1 1 2-3"
             stroke="currentColor"
@@ -68,35 +58,20 @@ function Ico({ name }) {
     case "users":
       return (
         <svg {...common} aria-hidden="true">
+          <path d="M16 11a4 4 0 1 0-8 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path d="M4 21a6 6 0 0 1 16 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path d="M17.5 7.5a3 3 0 1 0-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      );
+    case "lock-solid":
+      return (
+        <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
           <path
-            d="M16 11a4 4 0 1 0-8 0"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M4 21a6 6 0 0 1 16 0"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M17.5 7.5a3 3 0 1 0-3-3"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
+            d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 0 0-8 0v2Z"
+            fill="currentColor"
           />
         </svg>
       );
-      case "lock-solid":
-        return (
-          <svg {...common} viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 0 0-8 0v2Z"
-              fill="currentColor"
-            />
-          </svg>
-        );
     default:
       return null;
   }
@@ -104,56 +79,103 @@ function Ico({ name }) {
 
 export default function CompanyDashboard() {
   const nav = useNavigate();
-  
-   const isLoggedIn = !!localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("token");
 
-  const [activeTab, setActiveTab] = useState(0); // 0: 인재매칭, 1: 공고관리
-  const [flipped, setFlipped] = useState([false, false, false]);
+  // 0: 공고/지원자/최신매칭(요약), 1: 추천 인재
+  const [activeTab, setActiveTab] = useState(0);
 
-  const toggleFlip = (index) => {
-    const newFlipped = [...flipped];
-    newFlipped[index] = !newFlipped[index];
-    setFlipped(newFlipped);
+  // ✅ 더미 제거: 초기값은 "비어있음" 상태로
+  const [loading, setLoading] = useState(false);
+  const [postCount, setPostCount] = useState(0);
+  const [applicantCount, setApplicantCount] = useState(0);
+  const [top3, setTop3] = useState([]);
+  const [recommendedTalents, setRecommendedTalents] = useState([]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    setLoading(true);
+
+    api
+      .get("/api/ai/companySummary")
+      .then((res) => {
+        const data = res?.data?.data ?? res?.data ?? {};
+
+        const pc = data.postCount ?? data.jobPostCount ?? data.postsCount ?? data.postCnt ?? 0;
+        const ac = data.applicantCount ?? data.applyCount ?? data.applicantsCount ?? data.applicantCnt ?? 0;
+
+        const top3List = data.top3 ?? data.matchTop3 ?? data.matchingTop3 ?? data.top3Matching ?? [];
+        const talents = data.recommendedTalents ?? data.talents ?? data.recommendList ?? data.aiTalentList ?? [];
+
+        setPostCount(Number(pc) || 0);
+        setApplicantCount(Number(ac) || 0);
+
+        // top3
+        if (Array.isArray(top3List)) {
+          setTop3(
+            top3List.slice(0, 3).map((x, idx) => ({
+              jobseekerName: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? `지원자${idx + 1}`,
+              matchScore: x?.matchScore ?? x?.score ?? x?.MATCH_SCORE ?? 0,
+            }))
+          );
+        } else {
+          setTop3([]);
+        }
+
+        // recommendedTalents
+        if (Array.isArray(talents)) {
+          setRecommendedTalents(
+            talents.slice(0, 3).map((x, idx) => ({
+              id: x?.jobseekerIdx ?? x?.id ?? idx + 1,
+              name: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? "지원자",
+              job: x?.hopeJob ?? x?.job ?? x?.position ?? "직무",
+              score: x?.matchScore ?? x?.score ?? 0,
+              tags: Array.isArray(x?.tags)
+                ? x.tags
+                : typeof x?.tags === "string"
+                ? x.tags
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean)
+                : [],
+            }))
+          );
+        } else {
+          setRecommendedTalents([]);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [isLoggedIn]);
+
+  const handleLogout = () => {
+    api.post("/api/auth/logout").finally(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userRole");
+      nav("/select");
+    });
   };
 
+  const goHome = () => {
+    const token = localStorage.getItem("token");
+    const userRole = localStorage.getItem("userRole");
 
-const handleLogout = async () => {
-  try {
-    await api.post("/api/auth/logout"); // ✅ 통합 로그아웃
-  } catch (e) {
-    alert("로그아웃 중 오류가 발생했습니다.");
-  } finally {
-    localStorage.removeItem("token");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userRole");
-    nav("/select");
-  }
-};
-    const goHome = () => {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
+    if (!token) {
+      nav("/select");
+      return;
+    }
 
-  if (!token) {
-    nav("/select");
-    return;
-  }
+    if (userRole === "company") nav("/company-dashboard");
+    else if (userRole === "jobseeker") nav("/jobseeker");
+    else nav("/select");
+  };
 
-  if (userRole === "company") nav("/company-dashboard");
-  else if (userRole === "jobseeker") nav("/jobseeker");
-  else nav("/select"); // role 이상하면 안전하게
-};
   const goLogin = () => nav("/login");
   const goSignup = () => nav("/signup");
-  
-  const [recommendedTalents] = useState([
-    { id: 1, name: "김철수", job: "프론트엔드", score: 95, tags: ["React", "3년차"] },
-    { id: 2, name: "이영희", job: "UI/UX 디자이너", score: 88, tags: ["Figma", "신입"] },
-    { id: 3, name: "박지성", job: "백엔드", score: 82, tags: ["Java", "Spring"] },
-  ]);
 
   return (
     <BackgroundShell>
-      <div className="jsd"> 
+      <div className="jsd">
         <header className="jsd-header">
           <div className="jsd-headerInner">
             <div
@@ -166,18 +188,32 @@ const handleLogout = async () => {
               <div className="jsd-mark" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                   <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
-                  <path d="M4 10V6a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
-                  <path d="M20 14v4a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
+                  <path
+                    d="M4 10V6a2 2 0 0 1 2-2h4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    opacity=".9"
+                  />
+                  <path
+                    d="M20 14v4a2 2 0 0 1-2 2h-4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    opacity=".9"
+                  />
                 </svg>
               </div>
               <div className="jsd-brandText">
-                <div className="jsd-brandName" >잡매치</div>
+                <div className="jsd-brandName">잡매치</div>
                 <div className="jsd-brandSub">기업 메인</div>
               </div>
             </div>
 
             <nav className="jsd-nav" aria-label="메인 메뉴">
-              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}>AI 추천 인재</button>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}>
+                AI 추천 인재
+              </button>
             </nav>
 
             <div className="jsd-actions">
@@ -191,11 +227,9 @@ const handleLogout = async () => {
                   </button>
                 </>
               ) : (
-                <>
-                  <button className="jsd-pillBtn" type="button" onClick={handleLogout}>
-                    로그아웃
-                  </button>
-                </>
+                <button className="jsd-pillBtn" type="button" onClick={handleLogout}>
+                  로그아웃
+                </button>
               )}
             </div>
           </div>
@@ -209,89 +243,111 @@ const handleLogout = async () => {
               </div>
               <h1 className="cd-title">딱 맞는 인재를 빠르게</h1>
               <p className="cd-desc">
-                채용 공고와 조건을 입력하면 AI가 적합한 지원자를 추천해요.<br/>
+                채용 공고와 조건을 입력하면 AI가 적합한 지원자를 추천해요.<br />
                 메인에서 핵심 기능을 바로 실행하세요.
               </p>
 
               <div className="cd-cta">
-                <button className= {`cd-ctaBtn ${activeTab === 0 ? 'primary' : ''}`} type="button" onClick={() => setActiveTab(0)}>
-                  공고 작성
+                <button
+                  className={`cd-ctaBtn ${activeTab === 0 ? "primary" : ""}`}
+                  type="button"
+                  onClick={() => setActiveTab(0)}
+                >
+                  공고/지원자
                 </button>
-                <button className={`cd-ctaBtn ${activeTab === 1 ? 'primary' : ''}`} type="button" onClick={() => setActiveTab(1)}>
+                <button
+                  className={`cd-ctaBtn ${activeTab === 1 ? "primary" : ""}`}
+                  type="button"
+                  onClick={() => setActiveTab(1)}
+                >
                   추천 인재
                 </button>
               </div>
 
-              {/* 통계 섹션 전체 */}
+              {loading && <div style={{ marginTop: 12 }}>불러오는 중...</div>}
+
               <div className="cd-stats">
-                 
-                  {/* 1. 공고 현황 카드 */}
-                  {activeTab === 0 && (
+                {activeTab === 0 && (
                   <>
                     <div className="cd-stat">
                       <div className="cd-statContent">
                         <div className="cd-cardTitle">
                           <span className="cd-cardIcon">📢</span> 공고 현황
                         </div>
-                        <div className="cd-statBig">3건</div>
-                        <div className="cd-cardSubtext">활성화된 공고 | 3건</div>
+                        <div className="cd-statBig">{postCount}건</div>
+                        <div className="cd-cardSubtext">활성화된 공고 | {postCount}건</div>
                         <button className="cd-backBtn" onClick={() => nav("/postlist")}>
                           공고 관리하기
                         </button>
                       </div>
                     </div>
 
-                    {/* 2. 지원자 현황 카드 */}
                     <div className="cd-stat">
                       <div className="cd-statContent">
                         <div className="cd-cardTitle">
                           <span className="cd-cardIcon">👥</span> 지원자 현황
                         </div>
-                        <div className="cd-statBig">14명</div>
-                        <div className="cd-cardSubtext">지원자 | 14건</div>
+                        <div className="cd-statBig">{applicantCount}명</div>
+                        <div className="cd-cardSubtext">지원자 | {applicantCount}건</div>
                         <button className="cd-backBtn" onClick={() => nav("/management")}>
                           지원자 보기
                         </button>
                       </div>
                     </div>
 
-                    {/* 3. 매칭 상세 카드 */}
                     <div className="cd-stat">
                       <div className="cd-statContent">
                         <div className="cd-cardTitle">
                           <span className="cd-cardIcon">🏆</span> 최신 매칭
                         </div>
-                        <ul className="cd-backCandidateList">
-                          <li><strong>1. 김준호</strong> <span className="cd-backCandidateScore">88%</span></li>
-                          <li><strong>2. 이서진</strong> <span className="cd-backCandidateScore">85%</span></li>
-                          <li><strong>3. 오현</strong> <span className="cd-backCandidateScore">70%</span></li>
-                        </ul>
+
+                        {top3.length === 0 ? (
+                          <div style={{ marginTop: 8, opacity: 0.7 }}>데이터 없음</div>
+                        ) : (
+                          <ul className="cd-backCandidateList">
+                            {top3.map((x, i) => (
+                              <li key={i}>
+                                <strong>
+                                  {i + 1}. {x?.jobseekerName ?? "지원자"}
+                                </strong>{" "}
+                                <span className="cd-backCandidateScore">{x?.matchScore ?? 0}%</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     </div>
                   </>
                 )}
+
                 {activeTab === 1 && (
                   <>
-                    {recommendedTalents.map((talent) => (
-                      <div key={talent.id} className="cd-stat">
-                        <div className="cd-statContent">
-                          <div className="cd-cardTitle">
-                            <span className="cd-cardIcon">✨</span> {talent.job}
+                    {recommendedTalents.length === 0 ? (
+                      <div style={{ marginTop: 8, opacity: 0.7 }}>추천 인재 데이터 없음</div>
+                    ) : (
+                      recommendedTalents.map((talent) => (
+                        <div key={talent.id} className="cd-stat">
+                          <div className="cd-statContent">
+                            <div className="cd-cardTitle">
+                              <span className="cd-cardIcon">✨</span> {talent.job}
+                            </div>
+                            <div className="cd-statBig" style={{ color: "#2f6fff" }}>
+                              {talent.score}점
+                            </div>
+                            <div className="cd-cardSubtext">
+                              {talent.name}님 {talent.tags?.length ? `| ${talent.tags.join(", ")}` : ""}
+                            </div>
+                            <button className="cd-backBtn" onClick={() => nav(`/talent-detail/${talent.id}`)}>
+                              상세 프로필 보기
+                            </button>
                           </div>
-                          <div className="cd-statBig" style={{color:'#2f6fff'}}>{talent.score}점</div>
-                          <div className="cd-cardSubtext">
-                            {talent.name}님 | {talent.tags.join(', ')}
-                          </div>
-                          <button className="cd-backBtn" onClick={() => nav(`/talent-detail/${talent.id}`)}>
-                            상세 프로필 보기
-                          </button>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </>
                 )}
-                </div>
               </div>
+            </div>
 
             <div className="cd-heroRight">
               <aside className="cd-idBadge" aria-label="내 프로필(사원증)">
@@ -315,11 +371,11 @@ const handleLogout = async () => {
                   <div className="cd-idStats">
                     <div className="cd-idStat">
                       <div className="cd-idStatLabel">공고 수</div>
-                      <div className="cd-idStatValue">3</div>
+                      <div className="cd-idStatValue">{postCount}</div>
                     </div>
                     <div className="cd-idStat">
                       <div className="cd-idStatLabel">지원자</div>
-                      <div className="cd-idStatValue">14</div>
+                      <div className="cd-idStatValue">{applicantCount}</div>
                     </div>
                   </div>
 
@@ -333,7 +389,7 @@ const handleLogout = async () => {
 
           <div className="cd-sectionTitle">내 프로필 관리</div>
           <section className="cd-grid" aria-label="기업 기능 카드">
-            <button className="cd-card" type="button" onClick={() => nav('/helpwanted/create')}>
+            <button className="cd-card" type="button" onClick={() => nav("/helpwanted/create")}>
               <div className="cd-cardTop">
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="briefcase" />
@@ -381,9 +437,7 @@ const handleLogout = async () => {
               <span className="cd-sep">|</span>
               <span>서울특별시 강남구 테헤란로 123 잡매치빌딩</span>
             </div>
-            <div className="cd-copy">
-              &copy; 2025 JobMatch Corp. All rights reserved.
-            </div>
+            <div className="cd-copy">&copy; 2025 JobMatch Corp. All rights reserved.</div>
           </div>
         </footer>
       </div>
