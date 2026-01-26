@@ -325,24 +325,37 @@ export default function CompanyDashboard() {
                     {recommendedTalents.length === 0 ? (
                       <div style={{ marginTop: 8, opacity: 0.7 }}>추천 인재 데이터 없음</div>
                     ) : (
-                      recommendedTalents.map((talent) => (
-                        <div key={talent.id} className="cd-stat">
-                          <div className="cd-statContent">
-                            <div className="cd-cardTitle">
-                              <span className="cd-cardIcon">✨</span> {talent.job}
+                      recommendedTalents.map((talent, index) => {
+                        const rankLabel =
+                          index === 0 ? "AI 최상 매칭" :
+                          index === 1 ? "AI 상위 매칭" :
+                          "AI 우수 매칭"
+
+                        return (
+                          <div key={talent.id} className="cd-stat">
+                            <div className="cd-statContent">
+                              <div className="cd-cardTitle">
+                                <span className="cd-cardIcon">✨</span> {rankLabel}
+                              </div>
+
+                              <div className="cd-statBig" style={{ color: "#2f6fff" }}>
+                                {talent.score}점
+                              </div>
+
+                              <div className="cd-cardSubtext">
+                                {talent.name}님 {talent.tags?.length ? `| ${talent.tags.join(", ")}` : ""}
+                              </div>
+
+                              <button
+                                className="cd-backBtn"
+                                onClick={() => nav(`/talent-detail/${talent.id}`)}
+                              >
+                                상세 프로필 보기
+                              </button>
                             </div>
-                            <div className="cd-statBig" style={{ color: "#2f6fff" }}>
-                              {talent.score}점
-                            </div>
-                            <div className="cd-cardSubtext">
-                              {talent.name}님 {talent.tags?.length ? `| ${talent.tags.join(", ")}` : ""}
-                            </div>
-                            <button className="cd-backBtn" onClick={() => nav(`/talent-detail/${talent.id}`)}>
-                              상세 프로필 보기
-                            </button>
                           </div>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </>
                 )}

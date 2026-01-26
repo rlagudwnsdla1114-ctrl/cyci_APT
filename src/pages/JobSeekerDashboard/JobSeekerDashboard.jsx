@@ -108,7 +108,7 @@ export default function JobSeekerDashboard() {
     setTopLoading(true);
 
     api
-      .get("/api/ai/selectJobMatchTop3")
+      .get("/api/ai/selectJobMatchTop")
       .then((res) => {
         const list = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
         const cleaned = (list || []).filter(Boolean);
@@ -288,7 +288,7 @@ export default function JobSeekerDashboard() {
                         return (
                           <div key={c?.mIdx ?? i} className="jsd-stat fixed-content">
                             <div className="jsd-backContent">
-                              <div className="jsd-backTitle">{name} 적합 이유</div>
+                              <div className="jsd-backTitle">{name}</div>
                               <ul className="jsd-backList">
                                 <li>✓ 점수: {score}</li>
                                 {jobPos ? <li>✓ 포지션: {jobPos}</li> : null}
