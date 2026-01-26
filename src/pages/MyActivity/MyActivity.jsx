@@ -43,6 +43,38 @@ export default function MyActivity() {
     loadAll();
   }, []);
 
+    // ✅ 지원한 공고 삭제(지원 취소) - 2번 확인 + 검토중만 가능
+    const handleDeleteApplied = async (jobPostsIdx, status) => {
+      if (status !== "검토중") {
+        alert("검토중 상태일 때만 지원 취소가 가능합니다.");
+        return;
+      }
+
+
+      const first = window.confirm("지원 내역을 삭제(지원 취소)할까요?");
+      if (!first) return;
+
+
+      const second = window.confirm("정말로 지원을 취소하시겠습니까? (되돌릴 수 없습니다)");
+      if (!second) return;
+
+
+      try {
+        await api.delete(`/api/jobseeker/activity/applied/${jobPostsIdx}`);
+        alert("지원 내역이 삭제되었습니다.");
+
+
+        // ✅ 즉시 화면에서 제거(확실하게)
+        setAppliedList((prev) => prev.filter((x) => x.jobPostsIdx !== jobPostsIdx));
+
+
+        // ✅ 그리고 서버 기준으로 한 번 더 동기화
+        await loadAll();
+      } catch (e) {
+        alert("지원 내역 삭제 실패");
+      }
+    };
+
   // ✅ 관심공고에서 지원하기 (SCRAP -> 검토중 전환 or 신규 지원)
   const handleApply = async (jobPostsIdx) => {
     if (!window.confirm("바로 지원하시겠습니까?")) return;
@@ -126,6 +158,13 @@ export default function MyActivity() {
                           onClick={() => nav(`/helpwanted/${item.jobPostsIdx}`)}
                         >
                           공고 보기
+                        </button>
+                        <button
+                          className="btn-apply-sm"
+                          style={{ marginLeft: 8, opacity: 0.85 }}
+                          onClick={() => handleDeleteApplied(item.jobPostsIdx, item.status)}
+                          >
+                          지원 취소
                         </button>
                       </div>
 

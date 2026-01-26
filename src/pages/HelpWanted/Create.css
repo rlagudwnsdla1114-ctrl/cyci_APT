@@ -183,3 +183,17 @@ select.rc-input {
   background-position: right 1rem center;
   background-size: 1em;
 }
+
+/* input 오른쪽에 단위(명/만원) 붙이기 */
+.rc-inlineUnit {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+
+.rc-unit {
+opacity: 0.85;
+font-weight: 700;
+white-space: nowrap;
+}
