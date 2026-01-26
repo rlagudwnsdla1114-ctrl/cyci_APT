@@ -10,12 +10,21 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
+ // ✅ 세션 만료 등으로 리다이렉트 됐을 때 메시지 띄우기
+    useEffect(() => {
+    const msg = sessionStorage.getItem("loginFlashMsg");
+    if (msg) {
+    alert(msg);
+    sessionStorage.removeItem("loginFlashMsg");
+    }
+    }, []);
+
+
+    useEffect(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userRole");
-  }, []);
-
+    }, []);
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
