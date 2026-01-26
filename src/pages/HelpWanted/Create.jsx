@@ -57,6 +57,7 @@ function parseSalary(raw) {
     return { salaryType: "협의", salaryAmount: "", salaryNote: s };
   }
 
+  // "연봉 3,000만원" -> 3000
   const num = s.replace(/[^0-9]/g, "");
   return {
     salaryType: found,
@@ -95,8 +96,8 @@ export default function Create() {
     applicationNote: "",
 
     // ✅ 파일 저장명/원본명 분리
-    attachFile: "",        // 서버 저장명(UUID...)
-    attachFileOrigin: "",  // 원본 파일명
+    attachFile: "", // 서버 저장명(UUID...)
+    attachFileOrigin: "", // 원본 파일명
   });
 
   const canUseWorkTimeRange = !!(form.workStart && form.workEnd);
@@ -211,13 +212,15 @@ export default function Create() {
 
   // payload 생성
   const payload = useMemo(() => {
+    // ✅ DB는 int라서 숫자만 보냄
     const recruitCount = form.recruitCount === "" ? null : Number(form.recruitCount);
 
+    // ✅ 급여: 입력은 "만원 단위", 저장은 "연봉 3,000만원"
     const salary =
       form.salaryType === "협의"
         ? (form.salaryNote?.trim() ? form.salaryNote.trim() : "협의")
         : (form.salaryAmount?.trim()
-            ? `${form.salaryType} ${Number(form.salaryAmount).toLocaleString()}`
+            ? `${form.salaryType} ${Number(form.salaryAmount).toLocaleString()}만원`
             : "");
 
     const workTime =
@@ -242,8 +245,8 @@ export default function Create() {
       applicationPeriod,
 
       // ✅ DB에 둘 다 저장
-      attachFile: form.attachFile,               // 저장명(UUID...)
-      attachFileOrigin: form.attachFileOrigin,   // 원본명
+      attachFile: form.attachFile, // 저장명(UUID...)
+      attachFileOrigin: form.attachFileOrigin, // 원본명
     };
   }, [form]);
 
@@ -268,7 +271,7 @@ export default function Create() {
     }
 
     if (form.salaryType !== "협의" && !form.salaryAmount.trim()) {
-      alert("급여 유형이 협의가 아니면 금액을 입력하세요.");
+      alert("급여 유형이 협의가 아니면 금액을 입력하세요. (만원 단위)");
       return false;
     }
 
@@ -335,17 +338,21 @@ export default function Create() {
               <div className="rc-row">
                 <div className="rc-field half">
                   <label>모집 인원</label>
-                  <input
-                    type="number"
-                    className="rc-input"
-                    name="recruitCount"
-                    placeholder="예: 3"
-                    value={form.recruitCount}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                    min={0}
-                    step={1}
-                  />
+                  {/* ✅ 화면에만 '명' 표시, DB는 int */}
+                  <div className="rc-inlineUnit">
+                    <input
+                      type="number"
+                      className="rc-input"
+                      name="recruitCount"
+                      placeholder="예: 3"
+                      value={form.recruitCount}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      min={0}
+                      step={1}
+                    />
+                    <span className="rc-unit">명</span>
+                  </div>
                 </div>
 
                 <div className="rc-field half">
@@ -385,7 +392,7 @@ export default function Create() {
                 </div>
 
                 <div className="rc-field half">
-                  <label>{form.salaryType === "협의" ? "급여 설명(선택)" : "금액"}</label>
+                  <label>{form.salaryType === "협의" ? "급여 설명(선택)" : "금액 (만원 단위)"}</label>
                   {form.salaryType === "협의" ? (
                     <input
                       className="rc-input"
@@ -396,16 +403,19 @@ export default function Create() {
                       disabled={isLoading}
                     />
                   ) : (
-                    <input
-                      type="number"
-                      className="rc-input"
-                      name="salaryAmount"
-                      placeholder="숫자만 입력"
-                      value={form.salaryAmount}
-                      onChange={handleChange}
-                      disabled={isLoading}
-                      min={0}
-                    />
+                    <div className="rc-inlineUnit">
+                      <input
+                        type="number"
+                        className="rc-input"
+                        name="salaryAmount"
+                        placeholder="예: 3000"
+                        value={form.salaryAmount}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        min={0}
+                      />
+                      <span className="rc-unit">만원</span>
+                    </div>
                   )}
                 </div>
               </div>
