@@ -42,16 +42,20 @@ function processQueue(error, newToken = null) {
   pendingQueue = [];
 }
 
-function forceLogoutAndRedirect() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("isLoggedIn");
-  const role = localStorage.getItem("userRole");
-  localStorage.removeItem("userRole");
+function forceLogoutAndRedirect(reason = "세션이 만료되어 다시 로그인해주세요.") {
+// ✅ 로그인 페이지에서 보여줄 메세지 저장(새로고침해도 유지됨)
+sessionStorage.setItem("loginFlashMsg", reason);
 
-  // 원하는 페이지로 보내면 됨
-  if (role === "company") window.location.href = "/login";
-  else if (role === "jobseeker") window.location.href = "/login";
-  else window.location.href = "/select";
+
+localStorage.removeItem("token");
+localStorage.removeItem("isLoggedIn");
+const role = localStorage.getItem("userRole");
+localStorage.removeItem("userRole");
+
+
+if (role === "company") window.location.href = "/login";
+else if (role === "jobseeker") window.location.href = "/login";
+else window.location.href = "/select";
 }
 
 api.interceptors.response.use(
@@ -112,12 +116,12 @@ api.interceptors.response.use(
         original.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(original);
       } catch (e) {
-        processQueue(e, null);
-        forceLogoutAndRedirect();
-        return Promise.reject(e);
-      } finally {
-        isRefreshing = false;
-      }
+          processQueue(e, null);
+          forceLogoutAndRedirect("세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요.");
+          return Promise.reject(e);
+        } finally {
+          isRefreshing = false;
+        }
     }
 
     // ✅ 403은 권한 문제(역할 다른데 접근 등) — 필요하면 여기서 처리
