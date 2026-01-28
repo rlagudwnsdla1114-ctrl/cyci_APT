@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import BackgroundShell from '../../components/BackgroundShell';
 import './AIRecommendedTalent.css';
 import { api } from "../../api/api";
@@ -17,6 +18,7 @@ const AIRecommendedTalent = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [myPostings, setMyPostings] = useState([]);
 
+  const nav = useNavigate();
 
   const [talents, setTalents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -80,6 +82,13 @@ const AIRecommendedTalent = () => {
                 ? "AI가 해당 공고에 가장 적합한 인재를 선별했습니다." 
                 : "인재를 추천받고 싶은 공고를 하나 선택해 주세요."}
             </p>
+            <button
+              type="button"
+              className="ait-dash-btn"
+              onClick={() => nav("/company-dashboard")}
+              >
+              메인 페이지로 이동
+            </button>
           </div>
         </header>
 

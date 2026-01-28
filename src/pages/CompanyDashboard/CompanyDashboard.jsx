@@ -81,6 +81,9 @@ export default function CompanyDashboard() {
   const nav = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token");
 
+  const [companyName, setCompanyName] = useState("");
+  const [companyRegion, setCompanyRegion] = useState("");
+
   // 0: 공고/지원자/최신매칭(요약), 1: 추천 인재
   const [activeTab, setActiveTab] = useState(0);
 
@@ -91,61 +94,94 @@ export default function CompanyDashboard() {
   const [top3, setTop3] = useState([]);
   const [recommendedTalents, setRecommendedTalents] = useState([]);
 
-  useEffect(() => {
+  const getAvatarText = (name) => {
+const s = (name ?? "").trim();
+if (!s) return "CM";
+
+
+// 한글 포함이면 1글자만
+const hasKorean = /[가-힣]/.test(s);
+if (hasKorean) return s[0];
+
+
+// 영문이면 이니셜 2글자(단어 2개면 첫글자+첫글자)
+const parts = s.split(/\s+/).filter(Boolean);
+if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+
+
+return s.slice(0, 2).toUpperCase();
+};
+
+ useEffect(() => {
     if (!isLoggedIn) return;
+
 
     setLoading(true);
 
-    api
-      .get("/api/ai/companySummary")
-      .then((res) => {
-        const data = res?.data?.data ?? res?.data ?? {};
 
-        const pc = data.postCount ?? data.jobPostCount ?? data.postsCount ?? data.postCnt ?? 0;
-        const ac = data.applicantCount ?? data.applyCount ?? data.applicantsCount ?? data.applicantCnt ?? 0;
+    const token = localStorage.getItem("token");
 
-        const top3List = data.top3 ?? data.matchTop3 ?? data.matchingTop3 ?? data.top3Matching ?? [];
-        const talents = data.recommendedTalents ?? data.talents ?? data.recommendList ?? data.aiTalentList ?? [];
 
-        setPostCount(Number(pc) || 0);
-        setApplicantCount(Number(ac) || 0);
+    Promise.all([
+    api.get("/api/ai/companySummary", {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    }),
+    api.get("/api/company/userinfo", {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    }),
+    ])
+    .then(([summaryRes, infoRes]) => {
 
-        // top3
-        if (Array.isArray(top3List)) {
-          setTop3(
-            top3List.slice(0, 3).map((x, idx) => ({
-              jobseekerName: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? `지원자${idx + 1}`,
-              matchScore: x?.matchScore ?? x?.score ?? x?.MATCH_SCORE ?? 0,
-            }))
-          );
-        } else {
-          setTop3([]);
-        }
+    // ✅ 기존 companySummary 처리 (너 원래 코드 그대로)
+    const data = summaryRes?.data?.data ?? summaryRes?.data ?? {};
 
-        // recommendedTalents
-        if (Array.isArray(talents)) {
-          setRecommendedTalents(
-            talents.slice(0, 3).map((x, idx) => ({
-              id: x?.jobseekerIdx ?? x?.id ?? idx + 1,
-              name: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? "지원자",
-              job: x?.hopeJob ?? x?.job ?? x?.position ?? "직무",
-              score: x?.matchScore ?? x?.score ?? 0,
-              tags: Array.isArray(x?.tags)
-                ? x.tags
-                : typeof x?.tags === "string"
-                ? x.tags
-                    .split(",")
-                    .map((t) => t.trim())
-                    .filter(Boolean)
-                : [],
-            }))
-          );
-        } else {
-          setRecommendedTalents([]);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, [isLoggedIn]);
+
+    const pc = data.postCount ?? data.jobPostCount ?? data.postsCount ?? data.postCnt ?? 0;
+    const ac = data.applicantCount ?? data.applyCount ?? data.applicantsCount ?? data.applicantCnt ?? 0;
+
+
+    const top3List = data.top3 ?? data.matchTop3 ?? data.matchingTop3 ?? data.top3Matching ?? [];
+    const talents = data.recommendedTalents ?? data.talents ?? data.recommendList ?? data.aiTalentList ?? [];
+
+
+    setPostCount(Number(pc) || 0);
+    setApplicantCount(Number(ac) || 0);
+
+
+    if (Array.isArray(top3List)) {
+    setTop3(
+    top3List.slice(0, 3).map((x, idx) => ({
+    jobseekerName: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? `지원자${idx + 1}`,
+    matchScore: x?.matchScore ?? x?.score ?? x?.MATCH_SCORE ?? 0,
+    }))
+    );
+    } else setTop3([]);
+
+
+    if (Array.isArray(talents)) {
+    setRecommendedTalents(
+    talents.slice(0, 3).map((x, idx) => ({
+    id: x?.jobseekerIdx ?? x?.id ?? idx + 1,
+    name: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? "지원자",
+    job: x?.hopeJob ?? x?.job ?? x?.position ?? "직무",
+    score: x?.matchScore ?? x?.score ?? 0,
+    tags: Array.isArray(x?.tags)
+    ? x.tags
+    : typeof x?.tags === "string"
+    ? x.tags.split(",").map((t) => t.trim()).filter(Boolean)
+    : [],
+    }))
+    );
+    } else setRecommendedTalents([]);
+
+
+    // ✅ 회사 userinfo 처리
+    const info = infoRes?.data?.data ?? infoRes?.data ?? {};
+    setCompanyName(info.companyName ?? "");
+    setCompanyRegion(info.companyRegion ?? "");
+    })
+    .finally(() => setLoading(false));
+    }, [isLoggedIn]);
 
   const handleLogout = () => {
     api.post("/api/auth/logout").finally(() => {
@@ -375,10 +411,12 @@ export default function CompanyDashboard() {
                 <div className="cd-idCard">
                   <div className="cd-idTop">
                     <div className="cd-idAvatar" aria-hidden="true">
-                      CM
-                    </div>
-                    <div className="cd-idName">회사명 샘플</div>
-                    <div className="cd-idSub">채용 담당자 · 서울</div>
+                      {getAvatarText(companyName)}
+                      </div>
+
+
+                    <div className="cd-idName">{companyName || "회사명 샘플"}</div>
+                    <div className="cd-idSub">{companyRegion || "지역 미설정"}</div>
                   </div>
 
                   <div className="cd-idStats">

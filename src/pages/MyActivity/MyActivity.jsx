@@ -109,20 +109,59 @@ export default function MyActivity() {
 
   return (
     <BackgroundShell>
+      <header className="ma-header">
+      <div className="ma-headerInner">
+      <div
+      className="ma-brand"
+      role="button"
+      tabIndex={0}
+      onClick={() => nav("/jobseeker")}
+      onKeyDown={(e) => {
+      if (e.key === "Enter" || e.key === " ") nav("/jobseeker");
+      }}
+      >
+      <div className="ma-mark" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
+      <path
+      d="M4 10V6a2 2 0 0 1 2-2h4"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      opacity=".9"
+      />
+      <path
+      d="M20 14v4a2 2 0 0 1-2 2h-4"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      opacity=".9"
+      />
+      </svg>
+      </div>
+      <div className="ma-brandText">잡매치 · 나의 활동 내역</div>
+      </div>
+
+
+      <div className="ma-actions">
+      <button className="ma-pillBtn" type="button" onClick={() => nav("/jobseeker")}>
+      나가기
+      </button>
+      </div>
+      </div>
+      </header>
       <div className="activity-page">
         <div className="activity-bg" />
 
         <main className="activity-shell">
           <section className="activity-card">
-            <header className="activity-header">
-              <div className="header-left">
-                <h1 className="activity-title">나의 활동 내역</h1>
-                <p className="activity-sub">지원한 공고와 관심 있는 공고를 관리하세요.</p>
-              </div>
-              <button className="btn-back" onClick={() => nav("/jobseeker")}>
-                대시보드로 돌아가기
-              </button>
-            </header>
+            <div className="activity-header">
+            <div className="header-left">
+            <h1 className="activity-title">나의 활동 내역</h1>
+            <p className="activity-sub">지원한 공고와 관심 있는 공고를 관리하세요.</p>
+            </div>
+
+            </div>
 
             <nav className="activity-tabs">
               <button

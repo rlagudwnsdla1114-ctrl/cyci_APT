@@ -212,3 +212,16 @@
 .ait-btn:hover {
   background: #000;
 }
+
+.ait-dash-btn{
+margin-top: 14px;
+padding: 10px 14px;
+border-radius: 10px;
+border: 1px solid rgba(59,130,246,.35);
+background: rgba(255,255,255,.7);
+font-weight: 700;
+cursor: pointer;
+}
+.ait-dash-btn:hover{
+background: #fff;
+}
