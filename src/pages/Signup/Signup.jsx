@@ -158,7 +158,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="signup-page">
+    <div className={`signup-page ${role}`}>
       <div className="signup-bg" />
 
       <main className="signup-shell">
@@ -191,8 +191,8 @@ export default function Signup() {
           </header>
 
           <form className="signup-form" onSubmit={onSubmit}>
-            <div className="grid">
-              {/* 공통 필드 */}
+         <div className="grid">
+              {/* 1) 이메일 */}
               <Field
                 label="이메일"
                 placeholder="example@domain.com"
@@ -201,17 +201,32 @@ export default function Signup() {
                 error={errors.email}
                 type="email"
               />
-              {/* 기업일 때만 지역 필드 표시 */}
-              {role === "company" && (
+
+              {/* 2) (구직자면 이름) / (기업이면 지역) */}
+              {role === "company" ? (
                 <Field
                   label="지역"
                   type="select"
                   value={common.region}
                   onChange={(v) => setCommon((p) => ({ ...p, region: v }))}
                   error={errors.region}
-                  options={["", "서울", "경기", "인천", "대전", "대구", "부산", "광주", "세종", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"]}
+                  options={[
+                    "",
+                    "서울","경기","인천","대전","대구","부산","광주","세종","강원",
+                    "충북","충남","전북","전남","경북","경남","제주",
+                  ]}
+                />
+              ) : (
+                <Field
+                  label="이름"
+                  placeholder="이름을 입력해 주세요"
+                  value={jobseeker.name}
+                  onChange={(v) => setJobseeker((p) => ({ ...p, name: v }))}
+                  error={errors.name}
                 />
               )}
+
+              {/* 3) 비밀번호 */}
               <Field
                 label="비밀번호"
                 type="password"
@@ -220,6 +235,8 @@ export default function Signup() {
                 onChange={(v) => setCommon((p) => ({ ...p, password: v }))}
                 error={errors.password}
               />
+
+              {/* 4) 비밀번호 확인 */}
               <Field
                 label="비밀번호 확인"
                 type="password"
@@ -229,7 +246,7 @@ export default function Signup() {
                 error={errors.password2}
               />
 
-              {/* 역할별 필드 */}
+              {/* 5~) 역할별 나머지 */}
               {role === "company" ? (
                 <>
                   <Field
@@ -264,17 +281,12 @@ export default function Signup() {
               ) : (
                 <>
                   <Field
-                    label="이름"
-                    placeholder="이름을 입력해 주세요"
-                    value={jobseeker.name}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, name: v }))}
-                    error={errors.name}
-                  />
-                  <Field
                     label="생년월일"
                     placeholder="예) 19980505 (8자리)"
                     value={jobseeker.birthDate}
-                    onChange={(v) => setJobseeker((p) => ({ ...p, birthDate: v.replace(/[^0-9]/g, "") }))}
+                    onChange={(v) =>
+                      setJobseeker((p) => ({ ...p, birthDate: v.replace(/[^0-9]/g, "") }))
+                    }
                     error={errors.birthDate}
                     maxLength={8}
                   />
@@ -305,7 +317,11 @@ export default function Signup() {
               </button>
               {/* [변경 전] <button className="btn primary" type="submit" disabled={!canSubmit}> */}
               {/* [변경 후] isLoading 상태 추가 및 로딩 중 버튼 텍스트 변경 */}
-              <button className="btn primary" type="submit" disabled={!canSubmit || isLoading}>
+              <button
+                className={`btn primary ${role === "company" ? "is-company" : "is-jobseeker"}`}
+                type="submit"
+                disabled={!canSubmit || isLoading}
+              >
                 {isLoading ? "처리 중..." : role === "company" ? "기업 회원가입" : "구직자 회원가입"}
               </button>
             </div>

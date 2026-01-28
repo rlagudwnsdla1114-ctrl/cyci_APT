@@ -902,6 +902,7 @@
   text-align: center;
   z-index: 5;
   overflow: hidden;
+  margin-bottom: 50px;
 }
 
 .jsd-idCard::after{
@@ -925,6 +926,7 @@
   background: linear-gradient(135deg, #fff, #eff6ff);
   border: 3px solid #fff;
   box-shadow: 0 10px 30px rgba(0,0,0,.1);
+
 }
 
 .jsd-idName{ font-weight: 980; letter-spacing: -1px; font-size: 24px; color: #0f172a; }

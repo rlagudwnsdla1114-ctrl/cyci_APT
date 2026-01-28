@@ -120,7 +120,7 @@ export default function JobSeekerDashboard() {
   }, [activeTab, isLoggedIn]);
 
   return (
-    <BackgroundShell>
+    <BackgroundShell type="jobseeker">
       <div className="jsd">
         <header className="jsd-header">
           <div className="jsd-headerInner">
@@ -133,12 +133,12 @@ export default function JobSeekerDashboard() {
                 </svg>
               </div>
               <div className="jsd-brandText">
-                <div className="jsd-brandName">잡매치</div>
-                <div className="jsd-brandSub">구직자 메인</div>
+                <div className="jsd-brandName">잡매치 · 구직자 메인페이지 </div>
+                
               </div>
             </div>
 
-            <nav className="jsd-nav" aria-label="메인 메뉴">
+            <nav className="jsd-nav" aria-label="메인 메뉴" style={{ marginLeft: -180 }}>
               <button className="jsd-navBtn" type="button" onClick={() => nav("/helpwanted")}>
                 채용정보
               </button>
@@ -328,7 +328,13 @@ export default function JobSeekerDashboard() {
                       <div className="jsd-idStatValue">14</div>
                     </div>
                   </div>
+                    <br/>
+                  <br/>
+                  <br/>
+                
                   <div className="jsd-idBrand">JOB MATCH · JOB SEEKER ID</div>
+                  
+                
                 </div>
               </aside>
             </div>

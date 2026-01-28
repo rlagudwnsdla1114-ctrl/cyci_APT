@@ -77,8 +77,8 @@ export default function Login() {
   };
 
   return (
-    <BackgroundShell>
-      <div className="lg-page">
+    <BackgroundShell type={role}>
+     <div className={`lg-page ${role}`}>
         <div className="lg-card">
           <div className="lg-head">
             <div className="lg-title">로그인</div>
@@ -106,7 +106,7 @@ export default function Login() {
 
           <form className="lg-form" onSubmit={handleLoginSubmit}>
             <label className="lg-field">
-              <span>{role === "company" ? "기업 이메일" : "이메일"}</span>
+              <span>{role === "company" ? "기업 이메일" : "구직자이메일"}</span>
               <input 
                 type="email" 
                 placeholder="example@email.com" 

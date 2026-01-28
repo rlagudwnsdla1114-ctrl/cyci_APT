@@ -174,7 +174,7 @@ export default function CompanyDashboard() {
   const goSignup = () => nav("/signup");
 
   return (
-    <BackgroundShell>
+    <BackgroundShell type="company">
       <div className="jsd">
         <header className="jsd-header">
           <div className="jsd-headerInner">
@@ -185,6 +185,7 @@ export default function CompanyDashboard() {
               onClick={goHome}
               onKeyDown={(e) => e.key === "Enter" && goHome()}
             >
+              
               <div className="jsd-mark" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                   <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
@@ -205,17 +206,16 @@ export default function CompanyDashboard() {
                 </svg>
               </div>
               <div className="jsd-brandText">
-                <div className="jsd-brandName">잡매치</div>
-                <div className="jsd-brandSub">기업 메인</div>
+                <div className="jsd-brandName">잡매치 · 기업 메인페이지</div>
+              
               </div>
             </div>
 
-            <nav className="jsd-nav" aria-label="메인 메뉴">
-              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}>
+            <nav className="jsd-nav" aria-label="메인 메뉴" style={{ marginLeft: -170 }}>
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}> 
                 AI 추천 인재
               </button>
             </nav>
-
             <div className="jsd-actions">
               {!isLoggedIn ? (
                 <>
@@ -393,6 +393,11 @@ export default function CompanyDashboard() {
                   </div>
 
                   <div className="cd-idBrand" aria-hidden="true">
+                    <br />
+                    <br />
+                     <br />
+                      <br />
+                       <br />
                     JOB MATCH · COMPANY ID
                   </div>
                 </div>
@@ -457,3 +462,4 @@ export default function CompanyDashboard() {
     </BackgroundShell>
   );
 }
+

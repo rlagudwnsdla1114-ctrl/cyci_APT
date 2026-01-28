@@ -7,38 +7,118 @@
   font-family: "Pretendard Variable", sans-serif;
   color: #1e293b;
   
-  /* Flexbox로 수직/수평 중앙 정렬 */
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 수직 중앙 */
-  align-items: center;     /* 수평 중앙 */
-  
+  padding-top: 80px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
   position: relative;
-  padding: 40px 20px;      /* 모바일 등 작은 화면 대비 여백 */
-  box-sizing: border-box;
 }
 
-/* 심플 헤더: 왼쪽 상단 고정 텍스트 */
-.rc-simple-header {
+.rc-wrap::before {
+  content: "";
   position: absolute;
-  top: 40px;
-  left: 60px;
-  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(600px 400px at 10% 20%, rgba(59, 130, 246, 0.08), transparent 60%),
+    radial-gradient(600px 400px at 90% 80%, rgba(59, 130, 246, 0.08), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.rc-page-label {
-  font-size: 24px;
+/* Header */
+.rc-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+  border-bottom: 1px solid rgba(255,255,255,.6);
+}
+
+.rc-headerInner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rc-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.rc-brand:hover {
+  opacity: 0.8;
+}
+
+.rc-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff, #e0f2fe);
+  border: 1px solid rgba(255,255,255,.9);
+  display: grid;
+  place-items: center;
+  color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59,130,246,.15);
+}
+
+.rc-brandText {
+  font-size: 18px;
   font-weight: 800;
   color: #0f172a;
-  letter-spacing: -0.5px;
 }
 
-/* 메인 패널 영역 */
+.rc-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.rc-pillBtn {
+  padding: 10px 20px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,255,255,.8);
+  background: rgba(255,255,255,.5);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.rc-pillBtn:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+/* 메인 영역 */
 .rc-main {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.rc-container {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .rc-panel {

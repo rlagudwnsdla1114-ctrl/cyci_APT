@@ -308,14 +308,31 @@ export default function Create() {
   };
 
   return (
-    <BackgroundShell>
+    <BackgroundShell type="company">
       <div className="rc-wrap">
-        <div className="rc-simple-header">
-          <span className="rc-page-label">{isEditMode ? "공고 수정" : "공고 등록"}</span>
-        </div>
+        <header className="rc-header">
+          <div className="rc-headerInner">
+            <div className="rc-brand" onClick={() => nav("/postlist")}>
+              <div className="rc-mark">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
+                  <path d="M4 10V6a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" opacity=".9"/>
+                  <path d="M20 14v4a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeWidth="2" opacity=".9"/>
+                </svg>
+              </div>
+              <div className="rc-brandText">잡매치 · {isEditMode ? "공고 수정" : "공고 등록"}</div>
+            </div>
+            <div className="rc-actions">
+              <button className="rc-pillBtn" onClick={() => nav("/postlist")}>
+                공고 목록으로
+              </button>
+            </div>
+          </div>
+        </header>
 
         <main className="rc-main">
-          <div className="rc-panel fade-in">
+          <div className="rc-container">
+            <div className="rc-panel fade-in">
             <h2 className="rc-title">{isEditMode ? "기존 공고를 수정합니다" : "새로운 인재를 찾아보세요"}</h2>
             <p className="rc-desc">JOB_POSTS 테이블에 저장될 상세 정보를 입력해주세요.</p>
 
@@ -587,6 +604,7 @@ export default function Create() {
                 </button>
               </div>
             </form>
+            </div>
           </div>
         </main>
       </div>
