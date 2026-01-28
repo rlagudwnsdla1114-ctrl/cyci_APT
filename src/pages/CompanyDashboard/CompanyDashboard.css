@@ -29,6 +29,7 @@
   border-bottom: 1.5px solid rgba(34,197,94,.13);
   box-shadow: 0 4px 16px rgba(34,197,94,.06);
   min-height: 89px;
+  
 }
 
 .cd-headerInner{
@@ -307,6 +308,7 @@
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 340px;
   /* 뒤집기 관련 설정 모두 삭제 */
 }
 
@@ -638,26 +640,19 @@
 /* =========================
    COMPANY ID BADGE (Premium Quality UP)
    ========================= */
-.cd-idBadge{
+.cd-idBadge {
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 480px;
   margin: 0 auto;
-  padding-top: 100px;
+  padding-top: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.cd-lanyardWrap{
-  position: absolute;
-  top: -60px; 
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 220px;
-  pointer-events: none;
-  z-index: 0;
+.cd-lanyardWrap {
+  display: none !important;
 }
 
 .cd-idLanyard{ position: relative; width: 100%; height: 100%; }
@@ -736,24 +731,48 @@
 }
 
 /* === [MODIFIED] Card Body Quality UP === */
-.cd-idCard{
+
+/* --- New ID Card Design: Green top, white bottom, no social icons --- */
+.cd-idCard {
   position: relative;
-  width: 100%;
-  border-radius: 28px;
-  /* Richer Gradient for thickness */
-  background: linear-gradient(145deg, #ffffff, #f1f5f9);
-  /* Depth Shadows + Border Highlight */
-  box-shadow: 
-    0 30px 60px rgba(0,0,0,.12), /* Deep drop shadow */
-    0 0 0 1px rgba(255,255,255,1) inset, /* Bright inset rim */
-    0 -4px 10px rgba(0,0,0,0.03) inset; /* Subtle bottom inner shade */
-  padding: 30px 24px;
+  width: 90%;
+  border-radius: 32px;
+  background: linear-gradient(180deg, #6ee7b7 0 44%, #fff 44% 100%);
+  box-shadow:
+    0 36px 80px rgba(0,0,0,.13),
+    0 0 0 1.5px rgba(255,255,255,1) inset,
+    0 -4px 16px rgba(0,0,0,0.04) inset;
+  padding: 0;
   text-align: center;
   z-index: 5;
   overflow: hidden;
-  /* Top lighting bevel */
   border-top: 1px solid rgba(255,255,255,1);
   border-bottom: 1px solid rgba(0,0,0,0.05);
+  min-height: 420px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  margin-left: -20px;
+}
+
+/* 상단 초록 영역 */
+.cd-idCard-top {
+  background: transparent;
+  padding: 54px 32px 18px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 하단 흰색 영역 */
+.cd-idCard-bottom {
+  background: transparent;
+  flex: 1;
+  padding: 18px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 /* Enhanced Glass Sheen */
@@ -769,28 +788,94 @@
 
 .cd-idTop{ position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:12px; }
 
-.cd-idAvatar{
-  width: 96px; height: 96px;
+.cd-idAvatar {
+  width: 120px;
+  height: 120px;
+  margin: 50px;
   border-radius: 50%;
-  display:grid; place-items:center;
-  font-weight: 950; font-size: 26px;
-  color: #166534;
-  background: linear-gradient(135deg, #fff, #dcfce7);
-  border: 3px solid #fff;
-  box-shadow: 0 10px 30px rgba(0,0,0,.1);
+  display: grid;
+  place-items: center;
+  font-weight: 950;
+  font-size: 34px;
+  color: #16a34a;
+  background: linear-gradient(135deg, #fff 60%, #bbf7d0 100%);
+  border: 5px solid #fff;
+  box-shadow: 0 12px 36px rgba(0,0,0,.13);
+  margin-bottom: -40px;
+  
 }
 
-.cd-idName{ font-weight: 980; letter-spacing: -1px; font-size: 24px; color: #0f172a; }
-.cd-idSub{ font-weight: 700; font-size: 15px; color: #64748b; }
+.cd-idName {
+  font-weight: 980;
+  letter-spacing: -1px;
+  font-size: 28px;
+  color: #134e2e;
+  margin-top: 150px;
+  margin-bottom:  -10px;
+  text-shadow: 0 2px 8px rgba(255,255,255,0.7);
+}
+.cd-idSub {
+  font-weight: 700;
+  font-size: 17px;
+  color: #0f5132;
+  text-shadow: 0 2px 8px rgba(255,255,255,0.7);
+}
 
-.cd-idStats{ position:relative; z-index:2; margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.cd-idStat{ background:#fff; border-radius:18px; padding:14px; border:1px solid rgba(0,0,0,.04); box-shadow:0 4px 15px rgba(0,0,0,.03); }
-.cd-idStatLabel{ font-size:12px; font-weight:800; color:#94a3b8; letter-spacing:0.5px; text-transform:uppercase; }
-.cd-idStatValue{ font-size:22px; font-weight: 950; color:#0f172a; margin-top:4px; }
+.cd-idStats {
+  position: relative;
+  z-index: 2;
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.cd-idStat {
+  background: #f6fef7;
+  border-radius: 18px;
+  padding: 12px;
+  border: 1px solid #d1fae5;
+  box-shadow: 0 2px 8px rgba(34,197,94,0.06);
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.cd-idStatLabel {
+  font-size: 14px;
+  font-weight: 800;
+  color: #16a34a;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.cd-idStatValue {
+  font-size: 24px;
+  font-weight: 950;
+  color: #134e2e;
+  margin-top: 2px;
+}
 
-.cd-idSection{ position:relative; z-index:2; margin-top:20px; padding-top:16px; border-top:1px dashed rgba(0,0,0,.1); }
-.cd-idSectionTitle{ font-weight:900; font-size:14px; margin-bottom:10px; color:#475569; }
-.cd-idList{ list-style:none; padding:0; margin:0; font-size:14px; font-weight:700; color:#334155; display:flex; flex-direction:column; gap:8px; }
+.cd-idSection {
+  position: relative;
+  z-index: 2;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed #d1fae5;
+}
+.cd-idSectionTitle {
+  font-weight: 900;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #16a34a;
+}
+.cd-idList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
 .cd-idBrand{ position:relative; z-index:2; margin-top:24px; font-size:11px; font-weight:900; letter-spacing:2px; color:#94a3b8; }
 
