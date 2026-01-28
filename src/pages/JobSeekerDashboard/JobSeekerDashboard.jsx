@@ -65,7 +65,9 @@ export default function JobSeekerDashboard() {
   const [activeTab, setActiveTab] = useState(0);
   const [gateOpen, setGateOpen] = useState(false);
   const [jobseekerName, setJobseekerName] = useState("");
-const [jobseekerBirth, setJobseekerBirth] = useState("");
+  const [jobseekerBirth, setJobseekerBirth] = useState("");
+  const [applyCount, setApplyCount] = useState(0);
+  const [interviewWaitCount, setInterviewWaitCount] = useState(0);
 
 const getAvatarText = (name) => {
 const s = (name ?? "").trim();
@@ -375,11 +377,11 @@ setJobseekerBirth(data.jobseekerBirth ?? "");
                   <div className="jsd-idStats">
                     <div className="jsd-idStat">
                       <div className="jsd-idStatLabel">지원 수</div>
-                      <div className="jsd-idStatValue">3</div>
+                      <div className="jsd-idStatValue">{applyCount}</div>
                     </div>
                     <div className="jsd-idStat">
                       <div className="jsd-idStatLabel">면접대기</div>
-                      <div className="jsd-idStatValue">14</div>
+                      <div className="jsd-idStatValue">{interviewWaitCount}</div>
                     </div>
                   </div>
                     <br/>
