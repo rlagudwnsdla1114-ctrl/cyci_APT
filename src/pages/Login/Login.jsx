@@ -106,7 +106,7 @@ export default function Login() {
 
           <form className="lg-form" onSubmit={handleLoginSubmit}>
             <label className="lg-field">
-              <span>{role === "company" ? "기업 이메일" : "구직자이메일"}</span>
+              <span>이메일</span>
               <input 
                 type="email" 
                 placeholder="example@email.com" 

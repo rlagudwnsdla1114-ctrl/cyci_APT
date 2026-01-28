@@ -64,6 +64,37 @@ export default function JobSeekerDashboard() {
 
   const [activeTab, setActiveTab] = useState(0);
   const [gateOpen, setGateOpen] = useState(false);
+  const [jobseekerName, setJobseekerName] = useState("");
+const [jobseekerBirth, setJobseekerBirth] = useState("");
+
+const getAvatarText = (name) => {
+const s = (name ?? "").trim();
+if (!s) return "JS";
+if (/[가-힣]/.test(s)) return s[0];
+
+
+const parts = s.split(/\s+/).filter(Boolean);
+if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+return s.slice(0, 2).toUpperCase();
+};
+
+
+// 생년월일 → 연령대(개인정보 최소화)
+const getAgeGroup = (birthStr) => {
+const s = (birthStr ?? "").toString().trim();
+const yearMatch = s.match(/(\d{4})/);
+if (!yearMatch) return "";
+
+
+const year = Number(yearMatch[1]);
+if (!year || year < 1900 || year > 2100) return "";
+
+
+const nowYear = new Date().getFullYear();
+const age = nowYear - year + 1; // 한국식 대략
+const group = Math.floor(age / 10) * 10;
+return group > 0 ? `${group}대` : "";
+};
 
   const isLoggedIn = !!localStorage.getItem("token");
 
@@ -118,6 +149,27 @@ export default function JobSeekerDashboard() {
         setTopLoading(false);
       });
   }, [activeTab, isLoggedIn]);
+
+  useEffect(() => {
+if (!isLoggedIn) return;
+
+
+const token = localStorage.getItem("token");
+
+
+api
+.get("/api/jobseeker/userinfo", {
+headers: token ? { Authorization: `Bearer ${token}` } : {},
+})
+.then((res) => {
+const data = res?.data?.data ?? res?.data ?? {};
+setJobseekerName(data.jobseekerName ?? "");
+setJobseekerBirth(data.jobseekerBirth ?? "");
+})
+.catch(() => {
+// 실패해도 화면은 샘플 그대로 보이게 두면 됨
+});
+}, [isLoggedIn]);
 
   return (
     <BackgroundShell type="jobseeker">
@@ -314,9 +366,11 @@ export default function JobSeekerDashboard() {
                 </div>
                 <div className="jsd-idCard">
                   <div className="jsd-idTop">
-                    <div className="jsd-idAvatar">KJ</div>
-                    <div className="jsd-idName">구직자 샘플</div>
-                    <div className="jsd-idSub">웹 개발자 · 서울</div>
+                    <div className="jsd-idAvatar">{getAvatarText(jobseekerName)}</div>
+                    <div className="jsd-idName">{jobseekerName || "구직자 샘플"}</div>
+                    <div className="jsd-idSub">
+                    {getAgeGroup(jobseekerBirth) ? `${getAgeGroup(jobseekerBirth)} · 구직자` : "구직자 · 정보 미설정"}
+                    </div>
                   </div>
                   <div className="jsd-idStats">
                     <div className="jsd-idStat">

@@ -26,6 +26,7 @@
   width: 100%;
   max-width: 900px;
   padding: 60px 20px;
+  padding-top: 100px !important;
 }
 
 .activity-card {
@@ -200,4 +201,78 @@
 
 .btn-detail-view{
   margin-left: 12px; /* 원하는 만큼: 8~24px */
+}
+
+/* ✅ 상단 고정 헤더 */
+.ma-header{
+position: fixed;
+top: 0; left: 0;
+width: 100%;
+z-index: 100;
+backdrop-filter: blur(20px);
+background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+border-bottom: 1px solid rgba(255,255,255,.6);
+}
+
+
+.ma-headerInner{
+max-width: 1400px;
+margin: 0 auto;
+padding: 16px 24px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+
+.ma-brand{
+display: flex;
+align-items: center;
+gap: 12px;
+cursor: pointer;
+}
+
+
+.ma-mark{
+width: 40px;
+height: 40px;
+border-radius: 12px;
+background: linear-gradient(135deg, #fff, #e0f2fe);
+border: 1px solid rgba(255,255,255,.9);
+display: grid;
+place-items: center;
+color: #3b82f6;
+box-shadow: 0 4px 12px rgba(59, 130, 246, .15);
+}
+
+
+.ma-brandText{
+font-size: 18px;
+font-weight: 900; /* 더 굵게 */
+font-weight: bold;
+color: #0f172a;
+letter-spacing: -0.2px;
+}
+
+
+.ma-actions{
+display: flex;
+gap: 10px;
+}
+
+
+.ma-pillBtn{
+padding: 10px 20px;
+border-radius: 99px;
+border: 1px solid rgba(255,255,255,.8);
+background: rgba(255,255,255,.5);
+font-weight: 700;
+cursor: pointer;
+transition: 0.2s;
+}
+
+
+.ma-pillBtn:hover{
+background: #fff;
+transform: translateY(-2px);
 }

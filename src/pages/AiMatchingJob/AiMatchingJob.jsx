@@ -28,25 +28,49 @@ const AiMatchingSeeker = () => {
   };
   return (
     <BackgroundShell type="jobseeker">
-      <div className="jsd-header">
-        <div className="jsd-headerInner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div className="jsd-brand" role="button" tabIndex={0} onClick={() => nav('/jobseeker')}>
-            <div className="jsd-mark" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
-                <path d="M4 10V6a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
-                <path d="M20 14v4a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".9" />
-              </svg>
+        <header className="rl-header">
+          <div className="rl-headerInner">
+            <div
+              className="rl-brand"
+              role="button"
+              tabIndex={0}
+              onClick={() => nav("/jobseeker")}
+              onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") nav("/jobseeker");
+              }}
+            >
+            <div className="rl-mark" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
+            <path
+            d="M4 10V6a2 2 0 0 1 2-2h4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            opacity=".9"
+            />
+            <path
+            d="M20 14v4a2 2 0 0 1-2 2h-4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            opacity=".9"
+            />
+            </svg>
             </div>
-            <div className="jsd-brandText">
-              <div className="jsd-brandName">잡매치 · AI매칭결과</div>
+
+
+            <div className="rl-brandText">잡매치 · AI매칭결과</div>
+            </div>
+
+
+            <div className="rl-actions">
+            <button className="rl-pillBtn" type="button" onClick={goMain} style={{ minWidth: 90 }}>
+            나가기
+            </button>
             </div>
           </div>
-          <div className="jsd-actions" style={{ marginLeft: 'auto' }}>
-            <button className="jsd-pillBtn" type="button" onClick={goMain} style={{ marginLeft: 32, minWidth: 90 }}>나가기</button>
-          </div>
-        </div>
-      </div>
+        </header>
       <div className="bg-content" style={{ marginTop: 80 }}>
         <div className="match-page">
           <div className="match-header">
