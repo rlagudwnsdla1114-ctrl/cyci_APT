@@ -173,6 +173,28 @@ setJobseekerBirth(data.jobseekerBirth ?? "");
 });
 }, [isLoggedIn]);
 
+useEffect(() => {
+  if (!isLoggedIn) return;
+
+  const token = localStorage.getItem("token");
+
+  api
+    .get("/api/ai/dashboardCounts", {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+    .then((res) => {
+      const data = res?.data?.data ?? res?.data ?? {};
+      setApplyCount(Number(data.applyCount ?? 0));
+      setInterviewWaitCount(Number(data.interviewWaitCount ?? 0));
+    })
+    .catch(() => {
+      // 실패해도 0 유지
+      setApplyCount(0);
+      setInterviewWaitCount(0);
+    });
+}, [isLoggedIn]);
+
+
   return (
     <BackgroundShell type="jobseeker">
       <div className="jsd">
@@ -380,7 +402,7 @@ setJobseekerBirth(data.jobseekerBirth ?? "");
                       <div className="jsd-idStatValue">{applyCount}</div>
                     </div>
                     <div className="jsd-idStat">
-                      <div className="jsd-idStatLabel">면접대기</div>
+                      <div className="jsd-idStatLabel">검토중</div>
                       <div className="jsd-idStatValue">{interviewWaitCount}</div>
                     </div>
                   </div>
