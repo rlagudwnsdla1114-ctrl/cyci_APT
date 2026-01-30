@@ -465,7 +465,7 @@ return s.slice(0, 2).toUpperCase();
               <p>보안을 위해 회원자님의 정보를 보호하세요!</p>
             </button>
 
-            <button className="cd-card" type="button" onClick={() => nav("/management")}>
+            <button className="cd-card" type="button" onClick={() => nav("/ai-com")}>
               <div className="cd-cardTop">
                 <div className="cd-cardIco" aria-hidden="true">
                   <Ico name="users" />
