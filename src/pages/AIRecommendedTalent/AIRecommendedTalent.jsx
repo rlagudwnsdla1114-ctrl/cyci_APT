@@ -10,6 +10,7 @@ function Ico({ name }) {
   if (name === "arrow-left") return <svg {...common} viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>;
   return null;
 }
+
 const token = localStorage.getItem("token");
 
 const AIRecommendedTalent = () => {
@@ -17,7 +18,6 @@ const AIRecommendedTalent = () => {
   const [myPostings, setMyPostings] = useState([]);
 
   const nav = useNavigate();
-
   const [talents, setTalents] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -60,6 +60,14 @@ const AIRecommendedTalent = () => {
     setSelectedJob(null);
     setTalents([]);
     setLoading(false);
+  };
+
+  // 이력서 상세보기 클릭 시 상세 페이지로 이동
+  const handleResumeClick = (talent) => {
+    const jobseekerIdx = talent.jobseekerIdx ?? talent.jobseekersIdx;
+
+    // jobseekerIdx로 상세 페이지 이동
+    nav(`/talent-detail/${jobseekerIdx}`);
   };
 
   return (
@@ -107,7 +115,6 @@ const AIRecommendedTalent = () => {
                     <h3 className="ait-job-title">{post.title}</h3>
                     <span className="ait-job-date">등록일: {post.postsCreateAt}</span>
                   </div>
-
                   <button
                     className="ait-job-select-btn"
                     type="button"
@@ -141,28 +148,28 @@ const AIRecommendedTalent = () => {
                       <p className="ait-reason-text">{talent.reason}</p>
                     </div>
                     <button
-                        className="ait-btn"
-                        type="button"
-                        onClick={() => {
-                          const jobPostsIdx = talent.jobPostsIdx ?? selectedJob?.jobPostsIdx ?? selectedJob?.JobPostsIdx ?? selectedJob?.id;
+                      className="ait-btn"
+                      type="button"
+                      onClick={() => {
+                        const jobPostsIdx = talent.jobPostsIdx ?? selectedJob?.jobPostsIdx ?? selectedJob?.JobPostsIdx ?? selectedJob?.id;
 
-                          if (jobPostsIdx == null) {
-                            console.log("no jobPostsIdx", { talent, selectedJob });
-                            return;
+                        if (jobPostsIdx == null) {
+                          console.log("no jobPostsIdx", { talent, selectedJob });
+                          return;
+                        }
+
+                        nav(`/talent-detail/${jobPostsIdx}`, {
+                          state: {
+                            jobPostsIdx,
+                            coverPostsIdx: talent.coverPostsIdx,
+                            jobseekersIdx: talent.jobseekersIdx,
+                            compnayApplicantIdx: talent.compnayApplicantIdx,
                           }
-
-                          nav(`/talent-detail/${jobPostsIdx}`, {
-                            state: {
-                              jobPostsIdx,
-                              coverPostsIdx: talent.coverPostsIdx,
-                              jobseekersIdx: talent.jobseekersIdx,
-                              compnayApplicantIdx: talent.compnayApplicantIdx, // 필요하면 같이 넘겨두기
-                            }
-                          });
-                        }}
-                      >
-                        이력서 상세 보기
-                  </button>
+                        });
+                      }}
+                    >
+                      이력서 상세 보기
+                    </button>
                   </article>
                 ))
               )}
