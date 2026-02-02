@@ -84,10 +84,8 @@ export default function CompanyDashboard() {
   const [companyName, setCompanyName] = useState("");
   const [companyRegion, setCompanyRegion] = useState("");
 
-  // 0: 공고/지원자/최신매칭(요약), 1: 추천 인재
   const [activeTab, setActiveTab] = useState(0);
 
-  // ✅ 더미 제거: 초기값은 "비어있음" 상태로
   const [loading, setLoading] = useState(false);
   const [postCount, setPostCount] = useState(0);
   const [applicantCount, setApplicantCount] = useState(0);
@@ -95,93 +93,132 @@ export default function CompanyDashboard() {
   const [recommendedTalents, setRecommendedTalents] = useState([]);
 
   const getAvatarText = (name) => {
-const s = (name ?? "").trim();
-if (!s) return "CM";
+    const s = (name ?? "").trim();
+    if (!s) return "CM";
+    const hasKorean = /[가-힣]/.test(s);
+    if (hasKorean) return s[0];
+    const parts = s.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return s.slice(0, 2).toUpperCase();
+  };
 
+  const pickFirst = (obj, keys, fallback = null) => {
+    for (const k of keys) {
+      const v = obj?.[k];
+      if (v !== undefined && v !== null && v !== "") return v;
+    }
+    return fallback;
+  };
 
-// 한글 포함이면 1글자만
-const hasKorean = /[가-힣]/.test(s);
-if (hasKorean) return s[0];
-
-
-// 영문이면 이니셜 2글자(단어 2개면 첫글자+첫글자)
-const parts = s.split(/\s+/).filter(Boolean);
-if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-
-
-return s.slice(0, 2).toUpperCase();
-};
-
- useEffect(() => {
+  useEffect(() => {
     if (!isLoggedIn) return;
 
-
     setLoading(true);
-
-
     const token = localStorage.getItem("token");
 
-
     Promise.all([
-    api.get("/api/ai/companySummary", {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    }),
-    api.get("/api/company/userinfo", {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    }),
+      api.get("/api/ai/companySummary", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }),
+      api.get("/api/company/userinfo", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }),
     ])
-    .then(([summaryRes, infoRes]) => {
+      .then(([summaryRes, infoRes]) => {
+        const data = summaryRes?.data?.data ?? summaryRes?.data ?? {};
 
-    // ✅ 기존 companySummary 처리 (너 원래 코드 그대로)
-    const data = summaryRes?.data?.data ?? summaryRes?.data ?? {};
+        const pc = data.postCount ?? data.jobPostCount ?? data.postsCount ?? data.postCnt ?? 0;
+        const ac = data.applicantCount ?? data.applyCount ?? data.applicantsCount ?? data.applicantCnt ?? 0;
 
+        const top3List = data.top3 ?? data.matchTop3 ?? data.matchingTop3 ?? data.top3Matching ?? [];
+        const talents = data.recommendedTalents ?? data.talents ?? data.recommendList ?? data.aiTalentList ?? [];
 
-    const pc = data.postCount ?? data.jobPostCount ?? data.postsCount ?? data.postCnt ?? 0;
-    const ac = data.applicantCount ?? data.applyCount ?? data.applicantsCount ?? data.applicantCnt ?? 0;
+        setPostCount(Number(pc) || 0);
+        setApplicantCount(Number(ac) || 0);
 
+        if (Array.isArray(top3List)) {
+          setTop3(
+            top3List.slice(0, 3).map((x, idx) => ({
+              jobseekerName: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? `지원자${idx + 1}`,
+              matchScore: x?.matchScore ?? x?.score ?? x?.MATCH_SCORE ?? 0,
+            }))
+          );
+        } else {
+          setTop3([]);
+        }
 
-    const top3List = data.top3 ?? data.matchTop3 ?? data.matchingTop3 ?? data.top3Matching ?? [];
-    const talents = data.recommendedTalents ?? data.talents ?? data.recommendList ?? data.aiTalentList ?? [];
+        if (Array.isArray(talents)) {
+          setRecommendedTalents(
+            talents.slice(0, 3).map((x, idx) => {
+              console.log("RAW TALENT =", x);
+              console.log("RAW TALENT KEYS =", x ? Object.keys(x) : []);
 
+              const rawJobPostsIdx = pickFirst(x, [
+                "jobPostsIdx",
+                "JOB_POSTS_IDX",
+                "job_posts_idx",
+                "jobPostsId",
+                "JOB_POSTS_ID",
+                "job_post_id",
+                "jobPostIdx",
+                "JOB_POST_IDX",
+              ]);
+              const jobPostsIdx = rawJobPostsIdx !== null ? Number(rawJobPostsIdx) : null;
 
-    setPostCount(Number(pc) || 0);
-    setApplicantCount(Number(ac) || 0);
+              const rawComMatchingIdx = pickFirst(x, [
+                "comMatchingIdx",
+                "COM_MATCHING_IDX",
+                "com_matching_idx",
+                "matchingIdx",
+                "MATCHING_IDX",
+                "companyMatchingIdx",
+                "COMPANY_MATCHING_IDX",
+                "company_matching_idx",
+                "comMatchIdx",
+                "COM_MATCH_IDX",
+                "com_match_idx",
+                "companyMatchIdx",
+                "COMPANY_MATCH_IDX",
+              ]);
+              const comMatchingIdx = rawComMatchingIdx !== null ? Number(rawComMatchingIdx) : null;
 
+              const rawId = pickFirst(x, ["companyApplicantIdx", "COMPANY_APPLICANT_IDX", "id"], idx + 1);
+              const id = Number(rawId) || idx + 1;
 
-    if (Array.isArray(top3List)) {
-    setTop3(
-    top3List.slice(0, 3).map((x, idx) => ({
-    jobseekerName: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? `지원자${idx + 1}`,
-    matchScore: x?.matchScore ?? x?.score ?? x?.MATCH_SCORE ?? 0,
-    }))
-    );
-    } else setTop3([]);
+              const rawJobseekerIdx = pickFirst(x, ["jobseekerIdx", "JOBSEEKER_IDX", "job_seeker_idx"]);
+              const jobseekerIdx = rawJobseekerIdx !== null ? Number(rawJobseekerIdx) : null;
 
+              return {
+                id,
+                comMatchingIdx: Number.isFinite(comMatchingIdx) ? comMatchingIdx : null,
+                jobPostsIdx: Number.isFinite(jobPostsIdx) ? jobPostsIdx : null,
+                jobseekerIdx: Number.isFinite(jobseekerIdx) ? jobseekerIdx : null,
 
-    if (Array.isArray(talents)) {
-    setRecommendedTalents(
-    talents.slice(0, 3).map((x, idx) => ({
-    id: x?.jobseekerIdx ?? x?.id ?? idx + 1,
-    name: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? "지원자",
-    job: x?.hopeJob ?? x?.job ?? x?.position ?? "직무",
-    score: x?.matchScore ?? x?.score ?? 0,
-    tags: Array.isArray(x?.tags)
-    ? x.tags
-    : typeof x?.tags === "string"
-    ? x.tags.split(",").map((t) => t.trim()).filter(Boolean)
-    : [],
-    }))
-    );
-    } else setRecommendedTalents([]);
+                name: pickFirst(x, ["jobseekerName", "name", "JOBSEEKER_NAME"], "지원자"),
+                job: pickFirst(x, ["hopeJob", "job", "position"], "직무"),
+                score: Number(pickFirst(x, ["comMatchScore", "matchScore", "score"], 0)) || 0,
 
+                tags: Array.isArray(x?.tags)
+                  ? x.tags
+                  : typeof x?.tags === "string"
+                  ? x.tags
+                      .split(",")
+                      .map((t) => t.trim())
+                      .filter(Boolean)
+                  : [],
+              };
+            })
+          );
+        } else {
+          setRecommendedTalents([]);
+        }
 
-    // ✅ 회사 userinfo 처리
-    const info = infoRes?.data?.data ?? infoRes?.data ?? {};
-    setCompanyName(info.companyName ?? "");
-    setCompanyRegion(info.companyRegion ?? "");
-    })
-    .finally(() => setLoading(false));
-    }, [isLoggedIn]);
+        const info = infoRes?.data?.data ?? infoRes?.data ?? {};
+        setCompanyName(info.companyName ?? "");
+        setCompanyRegion(info.companyRegion ?? "");
+      })
+      .finally(() => setLoading(false));
+  }, [isLoggedIn]);
 
   const handleLogout = () => {
     api.post("/api/auth/logout").finally(() => {
@@ -196,14 +233,10 @@ return s.slice(0, 2).toUpperCase();
     const token = localStorage.getItem("token");
     const userRole = localStorage.getItem("userRole");
 
-    if (!token) {
-      nav("/select");
-      return;
-    }
-
-    if (userRole === "company") nav("/company-dashboard");
-    else if (userRole === "jobseeker") nav("/jobseeker");
-    else nav("/select");
+    if (!token) return nav("/select");
+    if (userRole === "company") return nav("/company-dashboard");
+    if (userRole === "jobseeker") return nav("/jobseeker");
+    return nav("/select");
   };
 
   const goLogin = () => nav("/login");
@@ -221,7 +254,6 @@ return s.slice(0, 2).toUpperCase();
               onClick={goHome}
               onKeyDown={(e) => e.key === "Enter" && goHome()}
             >
-              
               <div className="jsd-mark" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                   <path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="2" />
@@ -243,15 +275,15 @@ return s.slice(0, 2).toUpperCase();
               </div>
               <div className="jsd-brandText">
                 <div className="jsd-brandName">잡매치 · 기업 메인페이지</div>
-              
               </div>
             </div>
 
             <nav className="jsd-nav" aria-label="메인 메뉴" style={{ marginLeft: -170 }}>
-              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}> 
+              <button className="jsd-navBtn" type="button" onClick={() => nav("/ai-talent")}>
                 AI 추천 인재
               </button>
             </nav>
+
             <div className="jsd-actions">
               {!isLoggedIn ? (
                 <>
@@ -279,7 +311,8 @@ return s.slice(0, 2).toUpperCase();
               </div>
               <h1 className="cd-title">딱 맞는 인재를 빠르게</h1>
               <p className="cd-desc">
-                채용 공고와 조건을 입력하면 AI가 적합한 지원자를 추천해요.<br />
+                채용 공고와 조건을 입력하면 AI가 적합한 지원자를 추천해요.
+                <br />
                 메인에서 핵심 기능을 바로 실행하세요.
               </p>
 
@@ -312,7 +345,7 @@ return s.slice(0, 2).toUpperCase();
                         </div>
                         <div className="cd-statBig">{postCount}건</div>
                         <div className="cd-cardSubtext">활성화된 공고 | {postCount}건</div>
-                        <button className="cd-backBtn" onClick={() => nav("/postlist")}>
+                        <button className="cd-backBtn" type="button" onClick={() => nav("/postlist")}>
                           공고 관리하기
                         </button>
                       </div>
@@ -325,7 +358,7 @@ return s.slice(0, 2).toUpperCase();
                         </div>
                         <div className="cd-statBig">{applicantCount}명</div>
                         <div className="cd-cardSubtext">지원자 | {applicantCount}건</div>
-                        <button className="cd-backBtn" onClick={() => nav("/management")}>
+                        <button className="cd-backBtn" type="button" onClick={() => nav("/management")}>
                           지원자 보기
                         </button>
                       </div>
@@ -363,9 +396,13 @@ return s.slice(0, 2).toUpperCase();
                     ) : (
                       recommendedTalents.map((talent, index) => {
                         const rankLabel =
-                          index === 0 ? "AI 최상 매칭" :
-                          index === 1 ? "AI 상위 매칭" :
-                          "AI 우수 매칭"
+                          index === 0 ? "AI 최상 매칭" : index === 1 ? "AI 상위 매칭" : "AI 우수 매칭";
+
+                        const hasComMatching = Number.isFinite(talent.comMatchingIdx) && talent.comMatchingIdx > 0;
+                        const hasJobseeker = Number.isFinite(talent.jobseekerIdx) && talent.jobseekerIdx > 0;
+
+                        // ✅ 이동 가능 조건: comMatchingIdx 또는 jobseekerIdx 둘 중 하나라도 있어야 함
+                        const canGo = hasComMatching || hasJobseeker;
 
                         return (
                           <div key={talent.id} className="cd-stat">
@@ -384,10 +421,32 @@ return s.slice(0, 2).toUpperCase();
 
                               <button
                                 className="cd-backBtn"
-                                onClick={() => nav(`/talent-detail/${talent.id}`)}
+                                type="button"
+                                disabled={!canGo}
+                                onClick={() => {
+                                  console.log("CLICK TALENT:", talent);
+
+                                  const jobseekerIdx = Number(talent.jobseekerIdx);
+                                  if (!Number.isFinite(jobseekerIdx) || jobseekerIdx <= 0) {
+                                    console.warn("NO jobseekerIdx");
+                                    return;
+                                  }
+
+                                  const qs = talent.jobPostsIdx ? `?jobPostsIdx=${talent.jobPostsIdx}` : "";
+                                  const to = `/talent-detail/${jobseekerIdx}${qs}`;
+
+                                  console.log("NAV TO =", to);
+                                  nav(to, { state: { talent } });
+                                }}
                               >
                                 상세 프로필 보기
                               </button>
+
+                              {!canGo && (
+                                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.7 }}>
+                                  상세 조회에 필요한 ID(comMatchingIdx/jobseekerIdx)가 응답에 없음
+                                </div>
+                              )}
                             </div>
                           </div>
                         );
@@ -412,8 +471,7 @@ return s.slice(0, 2).toUpperCase();
                   <div className="cd-idTop">
                     <div className="cd-idAvatar" aria-hidden="true">
                       {getAvatarText(companyName)}
-                      </div>
-
+                    </div>
 
                     <div className="cd-idName">{companyName || "회사명 샘플"}</div>
                     <div className="cd-idSub">{companyRegion || "지역 미설정"}</div>
@@ -433,9 +491,9 @@ return s.slice(0, 2).toUpperCase();
                   <div className="cd-idBrand" aria-hidden="true">
                     <br />
                     <br />
-                     <br />
-                      <br />
-                       <br />
+                    <br />
+                    <br />
+                    <br />
                     JOB MATCH · COMPANY ID
                   </div>
                 </div>
@@ -500,4 +558,3 @@ return s.slice(0, 2).toUpperCase();
     </BackgroundShell>
   );
 }
-

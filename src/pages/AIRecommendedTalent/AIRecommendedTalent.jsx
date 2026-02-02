@@ -26,16 +26,16 @@ const AIRecommendedTalent = () => {
   // 2. 내 공고 목록 (DB: HELP_WANTED 테이블 데이터 예시)
   useEffect(() => {
     api.post("/api/ai/JobPostsList", null, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {}
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
     })
       .then(res => {
-        const list = Array.isArray(res.data)? res.data : (res.data?.data ?? []);
+        const list = Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
 
         const cleaned = list.filter(x => x != null);
 
         setMyPostings(cleaned);
       });
-  },[]);
+  }, []);
 
   // 3. 공고별 추천 인재 데이터
   const handleSelectJob = (post) => {
@@ -48,10 +48,10 @@ const AIRecommendedTalent = () => {
     api.post("/api/ai/AIComapnyMatch", {
       jobPostsIdx,
       topN: 20
-    },{
-    headers: token ? { Authorization: `Bearer ${token}` } : {}
+    }, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
     }).then(res => {
-      const list = Array.isArray(res.data)? res.data : (res.data?.data ?? []);
+      const list = Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
       const cleaned = list.filter(x => x != null);
       setTalents(cleaned);
       setLoading(false);
@@ -64,13 +64,21 @@ const AIRecommendedTalent = () => {
     setLoading(false);
   }
 
+  // 이력서 상세보기 클릭 시 상세 페이지로 이동
+  const handleResumeClick = (talent) => {
+    const jobseekerIdx = talent.jobseekerIdx ?? talent.jobseekersIdx;
+
+    // jobseekerIdx로 상세 페이지 이동
+    nav(`/talent-detail/${jobseekerIdx}`);
+  };
+
   return (
     <BackgroundShell>
       <div className="ait-container">
         <header className="ait-header">
           <div className="ait-header-inner">
             {selectedJob ? (
-              <button className="ait-back-btn" onClick={() => setSelectedJob(null)}>
+              <button className="ait-back-btn" onClick={handleBack}>
                 <Ico name="arrow-left" /> 공고 목록으로 돌아가기
               </button>
             ) : null}
@@ -78,15 +86,15 @@ const AIRecommendedTalent = () => {
               {selectedJob ? `[${selectedJob.title}] 추천 인재` : "추천받을 공고 선택"}
             </h1>
             <p className="ait-subtitle">
-              {selectedJob 
-                ? "AI가 해당 공고에 가장 적합한 인재를 선별했습니다." 
+              {selectedJob
+                ? "AI가 해당 공고에 가장 적합한 인재를 선별했습니다."
                 : "인재를 추천받고 싶은 공고를 하나 선택해 주세요."}
             </p>
             <button
               type="button"
               className="ait-dash-btn"
               onClick={() => nav("/company-dashboard")}
-              >
+            >
               메인 페이지로 이동
             </button>
           </div>
@@ -98,13 +106,13 @@ const AIRecommendedTalent = () => {
               {myPostings.map(post => (
                 <div key={post.jobPostsIdx ?? post.JobPostsIdx ?? post.id} className="ait-job-card" onClick={() => setSelectedJob(post)}>
                   <div className="ait-job-info">
-                    <span className="ait-job-dept">{post.techStack}</span> 
+                    <span className="ait-job-dept">{post.techStack}</span>
                     <h3 className="ait-job-title">{post.title}</h3>
                     <span className="ait-job-date">등록일: {post.postsCreateAt}</span>
                   </div>
-                  <button className="ait-job-select-btn"type="button"onClick={(e) => { e.stopPropagation(); handleSelectJob(post); }}>
-                  인재 추천 보기
-                </button>
+                  <button className="ait-job-select-btn" type="button" onClick={(e) => { e.stopPropagation(); handleSelectJob(post); }}>
+                    인재 추천 보기
+                  </button>
                 </div>
               ))}
             </div>
@@ -128,7 +136,9 @@ const AIRecommendedTalent = () => {
                     <p className="ait-reason-text">{talent.reason}</p>
                   </div>
 
-                  <button className="ait-btn">이력서 상세 보기</button>
+                  <button className="ait-btn" onClick={() => handleResumeClick(talent)}>
+                    이력서 상세 보기
+                  </button>
                 </article>
               ))}
             </div>
