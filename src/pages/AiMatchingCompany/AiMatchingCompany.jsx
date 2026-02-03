@@ -4,7 +4,7 @@ import './AiMatching.css';
 
 const AiMatchingCompany = () => {
   const [jobPosts, setJobPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState('');
+  const [selectedPost, setSelectedPost] = useState("");
   const [applicants, setApplicants] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,20 +12,46 @@ const AiMatchingCompany = () => {
 
   useEffect(() => {
     const fetchMyPosts = async () => {
-      const res = await api.post('/api/ai/JobPostsList'); 
-      setJobPosts(res.data);
-      if (res.data.length > 0) setSelectedPost(res.data[0].job_POSTS_IDX);
+      try {
+        const res = await api.post('/api/ai/JobPostsList');
+        
+        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          const validJobPosts = res.data.filter(post => post.jobPostsIdx || post.JobPostsIdx);
+
+          if (validJobPosts.length > 0) {
+            setJobPosts(validJobPosts);
+            const firstJobPost = validJobPosts[0];
+            setSelectedPost(firstJobPost.jobPostsIdx?.toString() || firstJobPost.JobPostsIdx?.toString());
+          } else {
+            alert("공고 목록에 문제가 있습니다.");
+          }
+        } else {
+          alert("공고 목록이 없습니다.");
+        }
+      } catch (error) {
+        alert("공고 목록 로드 실패");
+      }
     };
+
     fetchMyPosts();
   }, []);
 
-  const handleSearch = async () => {
-    if (!selectedPost) return alert("공고를 선택해주세요.");
-    setIsLoading(true);
-    const res = await api.get(`/api/ai/selectComMatch?jobPostsIdx=${selectedPost}`);
-    setApplicants(res.data);
-    setCurrentPage(1);
-    setIsLoading(false);
+  const handleSearch = () => {
+    if (!selectedPost) {
+      alert("공고를 선택해주세요.");
+      return;
+    }
+
+    const jobPostsIdx = parseInt(selectedPost, 10);
+    
+    api.get(`/api/ai/selectComMatch?jobPostsIdx=${jobPostsIdx}`)
+      .then(res => {
+        setApplicants(res.data);
+        setCurrentPage(1);
+      })
+      .catch(() => {
+        alert("인재 검색에 실패했습니다.");
+      });
   };
 
   const currentItems = applicants.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -35,13 +61,27 @@ const AiMatchingCompany = () => {
       <div className="match-header">
         <h2>👥 회사 공고 적합 인재 리포트</h2>
         <div className="search-bar-container">
-          <select value={selectedPost} onChange={(e) => setSelectedPost(e.target.value)}>
-            <option value="">공고 선택</option>
-            {jobPosts.map(post => (
-              <option key={post.job_POSTS_IDX} value={post.job_POSTS_IDX}>{post.title}</option>
-            ))}
-          </select>
-          <button onClick={handleSearch} disabled={isLoading}>인재 검색</button>
+          {jobPosts.length > 0 ? (
+            <>
+              <select 
+                value={selectedPost} 
+                onChange={(e) => setSelectedPost(e.target.value)}
+              >
+                <option value="">공고 선택</option>
+                {jobPosts.map((post) => {
+                  const jobPostId = post.jobPostsIdx || post.JobPostsIdx || '';
+                  return (
+                    <option key={jobPostId} value={jobPostId}>
+                      {post.title}
+                    </option>
+                  );
+                })}
+              </select>
+              <button onClick={handleSearch} disabled={isLoading}>인재 검색</button>
+            </>
+          ) : (
+            <p>공고 목록을 불러오는 중입니다...</p>
+          )}
         </div>
       </div>
 
@@ -54,22 +94,25 @@ const AiMatchingCompany = () => {
               <th>보유 기술</th>
               <th>적합도</th>
               <th>분석일</th>
-              <th>상세보기</th>
             </tr>
           </thead>
           <tbody>
             {applicants.length > 0 ? currentItems.map((item, idx) => (
-              <tr key={idx}>
+              <tr key={item.jobseekerIdx || item.jobPostsIdx}>
                 <td>{idx + 1 + (currentPage - 1) * 10}</td>
                 <td className="bold-blue">{item.name}</td>
                 <td>
                   <div className="skill-tag-wrap">
-                    {item.keySkill?.split(',').map(s => <span key={s} className="s-badge">{s.trim()}</span>)}
+                    {item.keySkill ? item.keySkill.split(',').map((s, index) => (
+                      <span key={`${s.trim()}-${index}`} className="s-badge">
+                        {s.trim()}
+                      </span>
+                    )) : <span>정보 없음</span>}
                   </div>
                 </td>
-                <td>{item.matchRate}%</td>
+                <td>{item.comAiReason}</td>
+                <td>{item.matchRate}</td>
                 <td>{item.matchDate}</td>
-                <td><button className="btn-contact">상세보기</button></td>
               </tr>
             )) : (
               <tr><td colSpan="6">결과가 없습니다.</td></tr>
