@@ -81,6 +81,17 @@ export default function CompanyDashboard() {
   const nav = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token");
 
+  const handleViewResume = (jobseekerApplicantIdx, jobPostsIdx) => {
+    if (!jobseekerApplicantIdx) {
+      alert("지원서 idx(jobseekerApplicantIdx)가 없어서 이력서를 열 수 없습니다.");
+      return;
+    }
+    nav(`/company/management/applicants/${jobseekerApplicantIdx}/resume`, {
+      state: { jobPostsIdx }
+    });
+  };
+
+
   const [companyName, setCompanyName] = useState("");
   const [companyRegion, setCompanyRegion] = useState("");
 
@@ -95,8 +106,8 @@ export default function CompanyDashboard() {
   const [recommendedTalents, setRecommendedTalents] = useState([]);
 
   const getAvatarText = (name) => {
-const s = (name ?? "").trim();
-if (!s) return "CM";
+    const s = (name ?? "").trim();
+    if (!s) return "CM";
 
 
 // 한글 포함이면 1글자만
@@ -120,6 +131,7 @@ return s.slice(0, 2).toUpperCase();
 
 
     const token = localStorage.getItem("token");
+
 
 
     Promise.all([
@@ -158,20 +170,24 @@ return s.slice(0, 2).toUpperCase();
 
 
     if (Array.isArray(talents)) {
-    setRecommendedTalents(
-    talents.slice(0, 3).map((x, idx) => ({
-    id: x?.jobseekerIdx ?? x?.id ?? idx + 1,
-    name: x?.jobseekerName ?? x?.name ?? x?.JOBSEEKER_NAME ?? "지원자",
-    job: x?.hopeJob ?? x?.job ?? x?.position ?? "직무",
-    score: x?.matchScore ?? x?.score ?? 0,
-    tags: Array.isArray(x?.tags)
-    ? x.tags
-    : typeof x?.tags === "string"
-    ? x.tags.split(",").map((t) => t.trim()).filter(Boolean)
-    : [],
-    }))
-    );
-    } else setRecommendedTalents([]);
+      setRecommendedTalents(
+        talents.slice(0, 3).map((x, idx) => ({
+          id: x?.jobseekerIdx ?? idx + 1,
+          jobseekerApplicantIdx: x?.jobseekerApplicantIdx ?? null,
+          jobPostsIdx: x?.jobPostsIdx ?? null,
+          name: x?.jobseekerName ?? `지원자${idx + 1}`,
+          job: x?.hopeJob ?? "직무",
+          score: x?.matchScore ?? 0,
+          tags: typeof x?.tags === "string"
+            ? x.tags.split(",").map(t => t.trim()).filter(Boolean)
+            : Array.isArray(x?.tags) ? x.tags : [],
+        }))
+      );
+    } else {
+      setRecommendedTalents([]);
+    }
+
+
 
 
     const info = infoRes?.data?.data ?? infoRes?.data ?? {};
@@ -382,7 +398,7 @@ return s.slice(0, 2).toUpperCase();
 
                               <button
                                 className="cd-backBtn"
-                                onClick={() => nav(`/talent-detail/${talent.id}`)}
+                                onClick={() => handleViewResume(talent.jobseekerApplicantIdx, talent.jobPostsIdx)}
                               >
                                 상세 프로필 보기
                               </button>
