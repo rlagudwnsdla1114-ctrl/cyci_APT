@@ -132,7 +132,6 @@ return s.slice(0, 2).toUpperCase();
     ])
     .then(([summaryRes, infoRes]) => {
 
-    // ✅ 기존 companySummary 처리 (너 원래 코드 그대로)
     const data = summaryRes?.data?.data ?? summaryRes?.data ?? {};
 
 
@@ -175,7 +174,6 @@ return s.slice(0, 2).toUpperCase();
     } else setRecommendedTalents([]);
 
 
-    // ✅ 회사 userinfo 처리
     const info = infoRes?.data?.data ?? infoRes?.data ?? {};
     setCompanyName(info.companyName ?? "");
     setCompanyRegion(info.companyRegion ?? "");
