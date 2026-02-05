@@ -1,7 +1,7 @@
 // src/api/api.js
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://192.168.40.81:8080";
 
 // ✅ 일반 API (AccessToken 붙는 애)
 export const api = axios.create({
