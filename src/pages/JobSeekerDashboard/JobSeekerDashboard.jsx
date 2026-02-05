@@ -261,7 +261,7 @@ useEffect(() => {
 
               <div className="jsd-cta">
                 <button className={`jsd-tabBtn ${activeTab === 0 ? "active" : ""}`} type="button" onClick={() => setActiveTab(0)}>
-                  AI 매칭 보기
+                  프로필/역량 요약
                 </button>
                 <button className={`jsd-tabBtn ${activeTab === 1 ? "active" : ""}`} type="button" onClick={() => setActiveTab(1)}>
                   추천 기업
@@ -438,7 +438,7 @@ useEffect(() => {
               </div>
               <h3>회원 정보 수정</h3>
               <p>보안을 위해 회원자님의 정보를 보호하세요!</p>
-              <div className="jsd-meta">보안 중요!</div>
+              <div className="jsd-meta"></div>
             </button>
 
             <button className="jsd-card" type="button" onClick={() => nav("/ai-job")}>
@@ -449,7 +449,7 @@ useEffect(() => {
               </div>
               <h3>AI 매칭 결과</h3>
               <p>나에게 맞는 기업을 확인하세요</p>
-              <div className="jsd-meta">매칭 완료</div>
+              <div className="jsd-meta"></div>
             </button>
 
             <button className="jsd-card" type="button" onClick={() => nav("/ai-view")}>
@@ -460,7 +460,7 @@ useEffect(() => {
               </div>
               <h3>AI 모의 면접 결과</h3>
               <p>AI와 함께 면접 연습하기</p>
-              <div className="jsd-meta">연습 진행 중</div>
+              <div className="jsd-meta"></div>
             </button>
 
             <button className="jsd-card" type="button" onClick={() => nav("/myactivity")}>
@@ -471,7 +471,7 @@ useEffect(() => {
               </div>
               <h3>지원 현황 보기</h3>
               <p>내가 지원한 현황을 모두 확인해보세요</p>
-              <div className="jsd-meta">지원한 곳 보기</div>
+              <div className="jsd-meta"></div>
             </button>
           </section>
         </main>

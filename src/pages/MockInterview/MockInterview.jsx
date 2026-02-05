@@ -45,60 +45,197 @@ const MockInterview = () => {
   };
 
   const toggleRecording = async () => {
-    if(isListening) {
+    if (isListening) {
       stopRecordingAndNext();
-    }
-    else {
-      startRecording();
+    } else {
+      await startRecording();
     }
   };
 
+
   const startRecording = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-    mediaRecorderRef.current = new MediaRecorder(stream);
-    audioChunksRef.current = [];
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      alert(
+        "이 환경에서는 마이크 접근이 불가능합니다.\n" +
+        "1) http://localhost:5173 로 접속해서 테스트하거나\n" +
+        "2) HTTPS로 접속해야 합니다."
+      );
+      return;
+    }
 
-    recordStartedAtRef.current = Date.now();
+    let stream = null;
+    let audioCtx = null;
 
-    mediaRecorderRef.current.ondataavailable = (e) => {
-      if(e.data.size > 0) audioChunksRef.current.push(e.data);
-    };
+    try {
+      // 0) 권한 먼저 받아야 label이 채워짐
+      const temp = await navigator.mediaDevices.getUserMedia({ audio: true });
+      temp.getTracks().forEach(t => t.stop());
 
-    mediaRecorderRef.current.onstop = () => {
-      const audioBlob = new Blob(audioChunksRef.current,{type: 'audio/mp3'});
-      submitAnswerToBackend(audioBlob);
-    };
+      // 1) 장치 목록
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const inputs = devices.filter(d => d.kind === "audioinput");
+      console.log("[AUDIO DEVICES]", inputs);
 
-    mediaRecorderRef.current.start();
-    setisListening(true);
-    setStep('listening');
-  }
+      // 2) 마이크 선택 (기본: 첫 번째 / 필요하면 label로 골라)
+      const mic = inputs[0];
+      console.log("[SELECTED MIC]", mic);
+
+      // 3) 선택 마이크로 stream 생성
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          deviceId: mic?.deviceId ? { exact: mic.deviceId } : undefined,
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
+      // 4) 트랙 상태
+      const track = stream.getAudioTracks()[0];
+      console.log("[MIC TRACK]", {
+        label: track?.label,
+        enabled: track?.enabled,
+        muted: track?.muted,
+        readyState: track?.readyState,
+        settings: track?.getSettings?.(),
+      });
+
+      // 5) RMS 측정 (2초)
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      await audioCtx.resume();
+
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      source.connect(analyser);
+
+      const buf = new Float32Array(analyser.fftSize);
+      let maxRms = 0;
+      const t0 = Date.now();
+
+      const timer = setInterval(() => {
+        analyser.getFloatTimeDomainData(buf);
+        let sum = 0;
+        for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+        const rms = Math.sqrt(sum / buf.length);
+        if (rms > maxRms) maxRms = rms;
+        console.log("[MIC RMS]", rms);
+
+        if (Date.now() - t0 > 2000) {
+          clearInterval(timer);
+          console.log("[MIC RMS MAX 2s] =", maxRms);
+        }
+      }, 200);
+
+      // 6) MediaRecorder 설정
+      const preferredTypes = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+        "audio/ogg",
+      ];
+
+      let mimeType = "";
+      for (const t of preferredTypes) {
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported(t)) {
+          mimeType = t;
+          break;
+        }
+      }
+
+      const mr = mimeType
+        ? new MediaRecorder(stream, { mimeType, audioBitsPerSecond: 128000 })
+        : new MediaRecorder(stream);
+
+      mediaRecorderRef.current = mr;
+      audioChunksRef.current = [];
+      recordStartedAtRef.current = Date.now();
+
+      mr.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mr.onstop = async () => {
+        try {
+          const finalType = mimeType || "audio/webm";
+          const audioBlob = new Blob(audioChunksRef.current, { type: finalType });
+          console.log("[REC] blob type =", audioBlob.type, "size =", audioBlob.size);
+
+          // 로컬 재생(참고용). 막힐 수 있음.
+          try {
+            const url = URL.createObjectURL(audioBlob);
+            const a = new Audio(url);
+            a.onended = () => URL.revokeObjectURL(url);
+            await a.play();
+          } catch (e) {
+            console.warn("[LOCAL PLAY BLOCKED]", e);
+          }
+
+          // 정리
+          stream?.getTracks().forEach(t => t.stop());
+          try { audioCtx?.close(); } catch {}
+
+          // 전송
+          await submitAnswerToBackend(audioBlob);
+        } catch (e) {
+          console.error("onstop 처리 실패:", e);
+          alert("녹음 처리 중 오류가 발생했습니다.");
+          setStep("question");
+        }
+      };
+
+      mr.start(250);
+      setisListening(true);
+      setStep("listening");
+    } catch (err) {
+      console.error("마이크 접근 실패:", err);
+      alert("마이크 권한/장치 접근 실패. 브라우저 권한을 확인하세요.");
+
+      // 실패 시 정리
+      try { stream?.getTracks().forEach(t => t.stop()); } catch {}
+      try { audioCtx?.close(); } catch {}
+    }
+  };
+
+
 
   const stopRecordingAndNext = () => {
-    if(mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-      setisListening(false);
-      setStep('processing')
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state !== "inactive") {
+      mr.stop();
     }
+    setisListening(false);
+    setStep("processing");
   };
 
   const submitAnswerToBackend = async (audioBlob) => {
     const formData = new FormData();
-    formData.append('interviewId',interviewId);
+
+    formData.append("interviewId", String(interviewId));
 
     const qId = currentQIndex + 1;
     formData.append("questionId", String(qId));
 
-    formData.append('silenceDuration', String(0));
-    formData.append('speakingDuration', String(0));
+    formData.append("silenceDuration", "0");
+    formData.append("speakingDuration", "0");
 
-    formData.append('audioFile', audioBlob, 'answer.mp3');
+    const name = audioBlob.type.includes("ogg") ? "answer.ogg" : "answer.webm";
+    formData.append("audioFile", audioBlob, name);
 
-    const response = await api.post("/api/ai/InterviewProcess", formData, {
-      headers: {'Content-Type': 'multipart/form-data'}
-    });
-    handleVisualSteps(response.data);
+    try {
+      const res = await api.post("/api/ai/InterviewProcess", formData);
+      handleVisualSteps(res.data);     // ✅ 성공시에만 다음 단계
+    } catch (e) {
+      console.error("[UPLOAD FAIL]", e);
+      console.error("status =", e?.response?.status);
+      console.error("server data =", e?.response?.data);
+      alert(e?.response?.data?.message || "InterviewProcess 500 - 백엔드 로그 확인");
+      setStep("question");             // ✅ 실패면 질문 화면으로 복귀
+    }
   };
+
+
+
 
 
   const handleVisualSteps = (feedbackData) => {
